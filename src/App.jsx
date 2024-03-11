@@ -4,6 +4,7 @@ import CreatedAccount from './pages/CreatedAccount/CreatedAccount';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
+import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/registre-se" element={<Register />} />
         <Route path="/conta-criada" element={<CreatedAccount />} />
+        <Route path="/validar-email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );
