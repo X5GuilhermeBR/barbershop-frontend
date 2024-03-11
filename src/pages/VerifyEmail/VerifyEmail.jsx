@@ -39,7 +39,7 @@ function VerifyEmail() {
   return (
     <Box
       sx={{
-        width: '100%',
+        width: '100vw',
         height: '100vh',
         display: 'flex',
         alignItems: 'center',
@@ -59,7 +59,6 @@ function VerifyEmail() {
             padding: 2,
           }}
         >
-          {console.log('status', verificationStatus)}
           {loading ? (
             <CircularProgress />
           ) : verificationStatus === 'verified' ? (

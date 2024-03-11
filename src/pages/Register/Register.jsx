@@ -156,7 +156,7 @@ function Register() {
                 ) : undefined
               }
             >
-              ENTRAR
+              CRIAR CONTA
             </Button>
           </Box>
         </CardActions>
