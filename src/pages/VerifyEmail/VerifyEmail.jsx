@@ -1,8 +1,41 @@
-import { Box, Card, Typography } from '@mui/material';
-import React from 'react';
+/* eslint-disable no-nested-ternary */
+import { Box, Card, CircularProgress, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import background from '../../assets/background.jpg';
+import { verifyToken } from '../../service/api';
 
 function VerifyEmail() {
+  const [loading, setLoading] = useState(true);
+  const [verificationStatus, setVerificationStatus] = useState('');
+
+  useEffect(() => {
+    const queryString = window.location.search;
+    const params = new URLSearchParams(queryString);
+    const token = params.get('token');
+
+    const verifyEmail = async () => {
+      try {
+        const response = await verifyToken(token);
+
+        if (response.status === 204) {
+          setVerificationStatus('verified');
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setVerificationStatus('invalidToken');
+        } else if (error.response && error.response.status === 400) {
+          setVerificationStatus('alreadyVerified');
+        } else {
+          console.error('Erro ao verificar o e-mail:', error);
+          setVerificationStatus('unknownError');
+        }
+      }
+      setLoading(false);
+    };
+
+    verifyEmail();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -26,10 +59,22 @@ function VerifyEmail() {
             padding: 2,
           }}
         >
-          <Typography variant="h5" align="center">
-            Teste
-          </Typography>
-          <Typography align="center">Teste</Typography>
+          {console.log('status', verificationStatus)}
+          {loading ? (
+            <CircularProgress />
+          ) : verificationStatus === 'verified' ? (
+            <Typography variant="h6" align="center">
+              E-mail verificado com sucesso!
+            </Typography>
+          ) : verificationStatus === 'alreadyVerified' ? (
+            <Typography variant="h6" align="center">
+              E-mail já verificado.
+            </Typography>
+          ) : (
+            <Typography variant="h6" align="center">
+              Falha ao verificar o e-mail. Token inválido.
+            </Typography>
+          )}
         </Box>
       </Card>
     </Box>
