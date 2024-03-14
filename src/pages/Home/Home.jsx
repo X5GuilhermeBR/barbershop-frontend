@@ -1,8 +1,23 @@
 import { Card, CardContent, Container, Grid, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
 
 function HomePage() {
-  // Exemplo de lista de agendamentos
+  const { userInfo } = useAuth();
+
+  useEffect(() => {
+    // Você pode acessar os dados do usuário aqui se necessário
+    console.log(userInfo);
+  }, [userInfo]);
+
+  // Função para obter apenas o primeiro nome do usuário
+  const getFirstName = () => {
+    if (!userInfo) return '';
+    const fullName = userInfo.name || '';
+    const firstName = fullName.split(' ')[0];
+    return firstName;
+  };
+
   const appointments = [
     {
       date: '14/03/2024',
@@ -27,7 +42,7 @@ function HomePage() {
   return (
     <Container>
       <Typography variant="h4" gutterBottom>
-        Bem-vindo!
+        Bem-vindo, {userInfo ? getFirstName() : ''}!
       </Typography>
       <Grid container spacing={3}>
         {appointments.map((appointment, index) => (

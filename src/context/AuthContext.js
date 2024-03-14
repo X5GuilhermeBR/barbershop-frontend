@@ -9,15 +9,9 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [token, setToken] = useState(() => sessionStorage.getItem('token'));
   const [status, setStatus] = useState(null); // Adicionando estado para armazenar o erro
+  const [userInfo, setUserInfo] = useState(null);
 
-  useEffect(() => {
-    const storedToken = sessionStorage.getItem('token');
-
-    if (storedToken) {
-      setToken(storedToken);
-    }
-  }, []);
-
+    
   const parseJwt = (token) => {
     // Função para decodificar o token JWT
     try {
@@ -27,16 +21,20 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const getUserIdAndEmail = () => {
-    const token = sessionStorage.getItem('token') || null;
-    if (!token) return null;
-
-    const decodedToken = parseJwt(token);
-    if (!decodedToken || !decodedToken.user) return null;
-
-    const { id, email } = decodedToken.user;
-    return { id, email };
+  const setUserDataFromToken = (token) => {
+    const userData = parseJwt(token); // Realize o parse do token para obter os dados do usuário
+    setUserInfo(userData);
   };
+
+  useEffect(() => {
+    const storedToken = sessionStorage.getItem('token');
+    console.log(storedToken)
+
+    if (storedToken) {
+      setToken(storedToken);
+      setUserDataFromToken(storedToken)
+    }
+  }, []);
 
   const getTokenExpirationTime = (token) => {
     const decodedToken = parseJwt(token);
@@ -61,6 +59,7 @@ export function AuthProvider({ children }) {
   
       sessionStorage.setItem('token', token);
       setToken(token);
+      setUserDataFromToken(token);
       setStatus(201); // Define o status de sucesso
     } catch (error) {
       setStatus(401); // Define o erro no estado
@@ -72,7 +71,7 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, getUserIdAndEmail, login, logout, status }}>
+    <AuthContext.Provider value={{ token, isAuthenticated, userInfo, setUserDataFromToken, login, logout, status }}>
       {children}
     </AuthContext.Provider>
   );
