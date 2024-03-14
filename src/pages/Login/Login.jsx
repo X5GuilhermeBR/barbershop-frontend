@@ -11,10 +11,11 @@ function Login() {
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [alertOpen, setAlertOpen] = useState(false); // Estado para controlar a exibição do alerta
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [message, setMessage] = useState();
+  const navigate = useNavigate();
 
   const { login, status } = useAuth();
-  const navigate = useNavigate();
 
   const registerSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -25,9 +26,13 @@ function Login() {
     if (status === 201) {
       navigate('/inicio');
     } else if (status === 401) {
-      setAlertOpen(true); // Exibir alerta de credenciais inválidas
+      setAlertOpen(true);
+      setMessage('Credenciais inválidas. Por favor, verifique seu email e senha.');
+    } else if (status === 203) {
+      setAlertOpen(true);
+      setMessage('Por favor, verifique seu email para concluir o registro.');
     }
-  }, [status, navigate]);
+  }, [status]);
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -124,7 +129,7 @@ function Login() {
         open={alertOpen}
         autoHideDuration={6000}
         onClose={handleAlertClose}
-        message="Credenciais inválidas. Por favor, verifique seu email e senha."
+        message={message}
       />
     </Box>
   );
