@@ -1,16 +1,11 @@
-import { Card, CardContent, Container, Grid, Typography } from '@mui/material';
-import React, { useEffect } from 'react';
+import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material';
+import React from 'react';
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import { useAuth } from '../../context/AuthContext';
 
 function HomePage() {
   const { userInfo } = useAuth();
 
-  useEffect(() => {
-    // Você pode acessar os dados do usuário aqui se necessário
-    console.log(userInfo);
-  }, [userInfo]);
-
-  // Função para obter apenas o primeiro nome do usuário
   const getFirstName = () => {
     if (!userInfo) return '';
     const fullName = userInfo.name || '';
@@ -40,33 +35,41 @@ function HomePage() {
   ];
 
   return (
-    <Container>
-      <Typography variant="h4" gutterBottom>
-        Bem-vindo, {userInfo ? getFirstName() : ''}!
-      </Typography>
-      <Grid container spacing={3}>
-        {appointments.map((appointment, index) => (
-          <Grid item xs={12} sm={6} md={4}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6" component="h2" gutterBottom>
-                  Agendamento {index + 1}:
-                </Typography>
-                <Typography variant="body1" component="p">
-                  <strong>Data:</strong> {appointment.date}
-                  <br />
-                  <strong>Hora:</strong> {appointment.time}
-                  <br />
-                  <strong>Serviço:</strong> {appointment.service}
-                  <br />
-                  <strong>Barbeiro:</strong> {appointment.barber}
-                </Typography>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
-    </Container>
+    <>
+      <Container>
+        <Typography variant="h4" gutterBottom>
+          Bem-vindo, {userInfo ? getFirstName() : ''}!
+        </Typography>
+        <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
+          <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
+          <strong>Com previsão de início ás 16:12h</strong>
+        </Alert>
+
+        <Grid container spacing={3} marginTop={0.5}>
+          {appointments.map((appointment, index) => (
+            <Grid item xs={12} sm={6} md={4}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Typography variant="h6" component="h2" gutterBottom>
+                    Agendamento {index + 1}:
+                  </Typography>
+                  <Typography variant="body1" component="p">
+                    <strong>Data:</strong> {appointment.date}
+                    <br />
+                    <strong>Hora:</strong> {appointment.time}
+                    <br />
+                    <strong>Serviço:</strong> {appointment.service}
+                    <br />
+                    <strong>Barbeiro:</strong> {appointment.barber}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+      <FooterNavigation />
+    </>
   );
 }
 
