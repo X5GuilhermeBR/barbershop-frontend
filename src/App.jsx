@@ -7,6 +7,7 @@ import Profile from './pages/Profile/Profile';
 import Register from './pages/Register/Register';
 import Schedule from './pages/Schedule/Schedule';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
+import PrivateRoute from './privateRoute';
 
 function App() {
   return (
@@ -16,9 +17,32 @@ function App() {
         <Route path="/registre-se" element={<Register />} />
         <Route path="/conta-criada" element={<CreatedAccount />} />
         <Route path="/validar-email" element={<VerifyEmail />} />
-        <Route path="/perfil" element={<Profile />} />
-        <Route path="/agendar" element={<Schedule />} />
-        <Route path="/historico" element={<History />} />
+
+        {/* Rotas Privadas */}
+        <Route
+          path="/perfil"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/agendar"
+          element={
+            <PrivateRoute>
+              <Schedule />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/historico"
+          element={
+            <PrivateRoute>
+              <History />
+            </PrivateRoute>
+          }
+        />
       </Routes>
     </Router>
   );
