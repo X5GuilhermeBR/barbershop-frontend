@@ -9,7 +9,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import background from '../../assets/background.jpg';
@@ -31,9 +31,13 @@ function Login() {
     password: yup.string().required().min(6),
   });
 
-  const handleAlertClose = () => {
-    setAlertOpen(false);
-  };
+  useEffect(() => {
+    if (status === 201) {
+      navigate('/inicio');
+    } else if (status === 401) {
+      setAlertOpen(true); // Exibir alerta de credenciais inválidas
+    }
+  }, [status, navigate]);
 
   const handleSubmit = () => {
     setIsLoading(true);
@@ -42,10 +46,6 @@ function Login() {
       .validate({ email, password }, { abortEarly: false })
       .then(async () => {
         await login(email, password);
-        if (status === 201) {
-          navigate('/inicio');
-        }
-        setAlertOpen(true);
         setIsLoading(false);
       })
       .catch((errors) => {
@@ -61,10 +61,11 @@ function Login() {
             default:
           }
         });
-
-        // Exibir alerta de credenciais inválidas
-        setAlertOpen(true);
       });
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
   };
 
   return (

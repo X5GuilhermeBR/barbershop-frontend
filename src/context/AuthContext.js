@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
   const [status, setStatus] = useState(null); // Adicionando estado para armazenar o erro
   const [userInfo, setUserInfo] = useState(null);
 
-    
   const parseJwt = (token) => {
     // Função para decodificar o token JWT
     try {
@@ -28,13 +27,17 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const storedToken = sessionStorage.getItem('token');
-    console.log(storedToken)
 
     if (storedToken) {
       setToken(storedToken);
       setUserDataFromToken(storedToken)
     }
   }, []);
+
+  useEffect(() => {
+    // Aqui você pode executar qualquer ação necessária quando o status mudar
+    console.log('Status mudou:', status);
+  }, [status]);
 
   const getTokenExpirationTime = (token) => {
     const decodedToken = parseJwt(token);
@@ -78,3 +81,4 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
+
