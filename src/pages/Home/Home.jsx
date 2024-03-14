@@ -44,7 +44,6 @@ function HomePage() {
           <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
           <strong>Com previsão de início ás 16:12h</strong>
         </Alert>
-
         <Grid container spacing={3} marginTop={0.5}>
           {appointments.map((appointment, index) => (
             <Grid item xs={12} sm={6} md={4}>
