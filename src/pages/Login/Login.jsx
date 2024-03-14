@@ -42,8 +42,7 @@ function Login() {
       .validate({ email, password }, { abortEarly: false })
       .then(async () => {
         await login(email, password);
-        console.log('status', status);
-        if (status === 401) {
+        if (status === 201) {
           navigate('/inicio');
         }
         setAlertOpen(true);
