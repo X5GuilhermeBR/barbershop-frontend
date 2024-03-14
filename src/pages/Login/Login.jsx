@@ -1,16 +1,6 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CircularProgress,
-  Snackbar,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import background from '../../assets/background.jpg';
 import { useAuth } from '../../context/AuthContext';
@@ -82,7 +72,6 @@ function Login() {
       }}
     >
       <Card sx={{ maxWidth: 400 }}>
-        <CardContent />
         <Box
           sx={{
             display: 'flex',
@@ -116,19 +105,18 @@ function Login() {
           />
         </Box>
         <CardActions>
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            {isLoading ? (
-              <CircularProgress variant="indeterminate" color="inherit" size={20} />
-            ) : (
-              <Button
-                variant="contained"
-                sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
-                onClick={handleSubmit}
-                disabled={isLoading}
-              >
-                ENTRAR
-              </Button>
-            )}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 2 }}>
+            <Button
+              variant="contained"
+              sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
+              onClick={handleSubmit}
+              disabled={isLoading}
+            >
+              Entrar
+            </Button>
+            <Button component={Link} to="/registre-se">
+              Registre-se
+            </Button>
           </Box>
         </CardActions>
       </Card>
