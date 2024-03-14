@@ -1,12 +1,14 @@
 /* eslint-disable no-nested-ternary */
-import { Box, Card, CircularProgress, Typography } from '@mui/material';
+import { Box, Button, Card, CircularProgress, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import background from '../../assets/background.jpg';
 import { verifyToken } from '../../service/api';
 
 function VerifyEmail() {
   const [loading, setLoading] = useState(true);
   const [verificationStatus, setVerificationStatus] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const queryString = window.location.search;
@@ -36,6 +38,10 @@ function VerifyEmail() {
     verifyEmail();
   }, []);
 
+  const handleGoToLogin = () => {
+    navigate('/');
+  };
+
   return (
     <Box
       sx={{
@@ -62,17 +68,32 @@ function VerifyEmail() {
           {loading ? (
             <CircularProgress />
           ) : verificationStatus === 'verified' ? (
-            <Typography variant="h6" align="center">
-              E-mail verificado com sucesso!
-            </Typography>
+            <>
+              <Typography variant="h6" align="center">
+                E-mail verificado com sucesso!
+              </Typography>
+              <Button variant="contained" onClick={handleGoToLogin}>
+                IR PARA TELA DE LOGIN
+              </Button>
+            </>
           ) : verificationStatus === 'alreadyVerified' ? (
-            <Typography variant="h6" align="center">
-              E-mail já verificado.
-            </Typography>
+            <>
+              <Typography variant="h6" align="center">
+                E-mail já verificado.
+              </Typography>
+              <Button variant="contained" onClick={handleGoToLogin}>
+                IR PARA TELA DE LOGIN
+              </Button>
+            </>
           ) : (
-            <Typography variant="h6" align="center">
-              Falha ao verificar o e-mail. Token inválido.
-            </Typography>
+            <>
+              <Typography variant="h6" align="center">
+                Falha ao verificar o e-mail. Token inválido.
+              </Typography>
+              <Button variant="contained" onClick={handleGoToLogin}>
+                IR PARA TELA DE LOGIN
+              </Button>
+            </>
           )}
         </Box>
       </Card>

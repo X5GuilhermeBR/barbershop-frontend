@@ -3,10 +3,10 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-
-const isAuthenticated = () => false;
+import { useAuth } from './context/AuthContext';
 
 function PrivateRoute({ children }) {
+  const { isAuthenticated } = useAuth();
   return isAuthenticated() ? children : <Navigate to="/" replace />;
 }
 

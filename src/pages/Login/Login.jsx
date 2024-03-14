@@ -5,23 +5,25 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
+  Snackbar,
   TextField,
   Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as yup from 'yup';
 import background from '../../assets/background.jpg';
-import { createAccount } from '../../service/api';
+import { useAuth } from '../../context/AuthContext';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
-  const [isLoading, setIsLoading] = useState('');
-  const profile = 'Clients';
+  const [isLoading, setIsLoading] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false); // Estado para controlar a exibição do alerta
+
+  const { login, status } = useAuth();
   const navigate = useNavigate();
 
   const registerSchema = yup.object().shape({
@@ -29,16 +31,23 @@ function Login() {
     password: yup.string().required().min(6),
   });
 
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+  };
+
   const handleSubmit = () => {
     setIsLoading(true);
 
     registerSchema
       .validate({ email, password }, { abortEarly: false })
-      .then(() => {
-        createAccount({ profile, email, password }).then(() => {
-          setIsLoading(false);
-          navigate('/login');
-        });
+      .then(async () => {
+        await login(email, password);
+        console.log('status', status);
+        if (status !== 401) {
+          navigate('/inicio');
+        }
+        setAlertOpen(true);
+        setIsLoading(false);
       })
       .catch((errors) => {
         setIsLoading(false);
@@ -53,6 +62,9 @@ function Login() {
             default:
           }
         });
+
+        // Exibir alerta de credenciais inválidas
+        setAlertOpen(true);
       });
   };
 
@@ -89,6 +101,7 @@ function Login() {
             label="Email"
             type="email"
             error={!!emailError}
+            helperText={emailError}
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={() => setEmailError('')}
           />
@@ -97,28 +110,34 @@ function Login() {
             label="Senha"
             type="password"
             error={!!passwordError}
+            helperText={passwordError}
             onChange={(e) => setPassword(e.target.value)}
             onKeyDown={() => setPasswordError('')}
           />
         </Box>
         <CardActions>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
-              onClick={handleSubmit}
-              disabled={isLoading}
-              endIcon={
-                isLoading ? (
-                  <CircularProgress variant="indeterminate" color="inherit" size={20} />
-                ) : undefined
-              }
-            >
-              ENTRAR
-            </Button>
+            {isLoading ? (
+              <CircularProgress variant="indeterminate" color="inherit" size={20} />
+            ) : (
+              <Button
+                variant="contained"
+                sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
+                onClick={handleSubmit}
+                disabled={isLoading}
+              >
+                ENTRAR
+              </Button>
+            )}
           </Box>
         </CardActions>
       </Card>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        message="Credenciais inválidas. Por favor, verifique seu email e senha."
+      />
     </Box>
   );
 }
