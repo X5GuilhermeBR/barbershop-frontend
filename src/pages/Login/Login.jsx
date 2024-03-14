@@ -43,7 +43,7 @@ function Login() {
       .then(async () => {
         await login(email, password);
         console.log('status', status);
-        if (status !== 401) {
+        if (status === 401) {
           navigate('/inicio');
         }
         setAlertOpen(true);

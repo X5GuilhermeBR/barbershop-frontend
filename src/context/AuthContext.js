@@ -53,14 +53,15 @@ export function AuthProvider({ children }) {
     try {
       const response = await loginApi(email, password);
       const { token } = response.data;
-
-      if (!response.ok) {
+  
+      if (response.status !== 201) {
         setStatus(401); // Define o erro no estado
         return; // Retorna para interromper o fluxo do código
       }
-
+  
       sessionStorage.setItem('token', token);
       setToken(token);
+      setStatus(201); // Define o status de sucesso
     } catch (error) {
       setStatus(401); // Define o erro no estado
     }
