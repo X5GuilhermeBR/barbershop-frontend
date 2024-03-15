@@ -28,7 +28,7 @@ function HomePage() {
 
   return (
     <>
-      <Container>
+      <Container sx={{ mt: 4, mb: 10 }}>
         <Typography variant="h4" gutterBottom>
           Bem-vindo, {userInfo ? getFirstName() : ''}!
         </Typography>
@@ -36,8 +36,10 @@ function HomePage() {
           <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
           <strong>Com previsão de início ás 16:12h</strong>
         </Alert>
-        <Typography variant="h6">Próximos agendamentos:</Typography>
-        <Grid container spacing={3} marginTop={0.5}>
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Próximos agendamentos:
+        </Typography>
+        <Grid container spacing={1}>
           {Array.isArray(schedule) &&
             schedule.map((appointment) => (
               <Grid item xs={12} sm={6} md={4} key={appointment.id}>
