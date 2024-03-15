@@ -1,9 +1,53 @@
+/* eslint-disable no-plusplus */
 import { Button, Container, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import { getBarbers, getSchedule, getServices } from '../../service/api';
 
 function Schedule() {
-  // Função para obter a data atual no formato YYYY-MM-DD
+  // Vetor de barbeiros
+  const [barbers, setBarbers] = useState([]);
+  const [services, setServices] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+  const [selectedBarber, setSelectedBarber] = useState('');
+  const [selectedService, setSelectedService] = useState('');
+  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedHour, setSelectedHour] = useState('');
+
+  useEffect(() => {
+    async function fetchBarbers() {
+      const { data } = await getBarbers();
+      setBarbers(data);
+    }
+
+    fetchBarbers();
+  }, []);
+
+  useEffect(() => {
+    async function fetchServices() {
+      const { data } = await getServices();
+      setServices(data);
+    }
+
+    fetchServices();
+  }, []);
+
+  const fetchScheduleData = async () => {
+    if (selectedBarber && selectedService && selectedDate) {
+      try {
+        const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
+        setSchedule(data);
+      } catch (error) {
+        console.error('Erro ao buscar agendamentos:', error);
+      }
+    }
+  };
+
+  // UseEffect para chamar fetchScheduleData sempre que selectedBarber, selectedService ou selectedDate mudar
+  useEffect(() => {
+    fetchScheduleData();
+  }, [selectedBarber, selectedService, selectedDate]);
+
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -12,7 +56,6 @@ function Schedule() {
     return `${year}-${month}-${day}`;
   };
 
-  // Função para calcular a data daqui a 45 dias no formato YYYY-MM-DD
   const getFutureDate = () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 45);
@@ -20,6 +63,35 @@ function Schedule() {
     const month = (futureDate.getMonth() + 1).toString().padStart(2, '0');
     const day = futureDate.getDate().toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
+  };
+
+  const generateAvailableHours = () => {
+    const availableHours = [];
+    for (let hour = 9; hour <= 18; hour++) {
+      // Alterei para 18 para corresponder aos horários de 9 às 18h
+      availableHours.push(`${hour}:00`);
+    }
+    return availableHours;
+  };
+
+  const getDisabledHours = () => {
+    const availableHours = generateAvailableHours();
+    const disabledHours = availableHours.map((hour) => {
+      const isScheduled = schedule.some((appointment) => appointment.time === hour);
+      return { time: hour, disabled: isScheduled };
+    });
+    return disabledHours;
+  };
+  const disabledHours = getDisabledHours();
+
+  const handleSubmit = () => {
+    console.log('Barbeiro selecionado:', selectedBarber);
+    console.log('Serviço selecionado:', selectedService);
+    console.log('Data selecionada:', selectedDate);
+    console.log('Hora selecionada:', selectedHour);
+
+    console.log('Schedule:', schedule); // Verifique se os dados de agendamento estão corretos
+    console.log('Disabled hours:', disabledHours); // V
   };
 
   return (
@@ -30,17 +102,33 @@ function Schedule() {
             Agendamento
           </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <Select label="Barbeiro" variant="outlined" fullWidth defaultValue="">
+            <Select
+              label="Barbeiro"
+              variant="outlined"
+              fullWidth
+              value={selectedBarber}
+              onChange={(e) => setSelectedBarber(e.target.value)}
+            >
               <MenuItem value="">Selecione um barbeiro</MenuItem>
-              <MenuItem value="barbeiro1">Barbeiro 1</MenuItem>
-              <MenuItem value="barbeiro2">Barbeiro 2</MenuItem>
-              <MenuItem value="barbeiro3">Barbeiro 3</MenuItem>
+              {barbers.map((barber) => (
+                <MenuItem key={barber.id} value={barber}>
+                  {barber.barber_name}
+                </MenuItem>
+              ))}
             </Select>
-            <Select label="Serviço" variant="outlined" fullWidth defaultValue="">
+            <Select
+              label="Serviço"
+              variant="outlined"
+              fullWidth
+              value={selectedService}
+              onChange={(e) => setSelectedService(e.target.value)}
+            >
               <MenuItem value="">Selecione um serviço</MenuItem>
-              <MenuItem value="servico1">Serviço 1</MenuItem>
-              <MenuItem value="servico2">Serviço 2</MenuItem>
-              <MenuItem value="servico3">Serviço 3</MenuItem>
+              {services.map((service) => (
+                <MenuItem key={service.id} value={service}>
+                  {service.name}
+                </MenuItem>
+              ))}
             </Select>
             <TextField
               label="Data"
@@ -51,14 +139,24 @@ function Schedule() {
                 shrink: true,
               }}
               inputProps={{
-                min: getCurrentDate(), // Define a data mínima como a data atual
-                max: getFutureDate(), // Define a data máxima como a data daqui a 45 dias
+                min: getCurrentDate(),
+                max: getFutureDate(),
               }}
+              value={selectedDate}
+              onChange={(e) => setSelectedDate(e.target.value)}
             />
-            <Select label="Hora" variant="outlined" fullWidth defaultValue="">
+            <Select
+              label="Hora"
+              variant="outlined"
+              fullWidth
+              value={selectedHour}
+              onChange={(e) => setSelectedHour(e.target.value)}
+            >
               <MenuItem value="">Selecione uma hora</MenuItem>
-              {[...Array(10).keys()].map((hour) => (
-                <MenuItem key={hour} value={hour + 9}>{`${hour + 9}:00`}</MenuItem>
+              {getDisabledHours().map((hour) => (
+                <MenuItem key={hour.time} value={hour.time} disabled={hour.disabled}>
+                  {hour.time}
+                </MenuItem>
               ))}
             </Select>
           </div>
@@ -71,6 +169,7 @@ function Schedule() {
           size="large"
           fullWidth
           style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
+          onClick={handleSubmit}
         >
           Agendar
         </Button>
