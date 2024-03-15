@@ -6,7 +6,6 @@ import { useAuth } from '../../context/AuthContext';
 import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
 
 function Schedule() {
-  // Vetor de barbeiros
   const [barbers, setBarbers] = useState([]);
   const [services, setServices] = useState([]);
   const [schedule, setSchedule] = useState([]);
@@ -15,6 +14,7 @@ function Schedule() {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedHour, setSelectedHour] = useState('');
   const { userInfo } = useAuth();
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
     async function fetchBarbers() {
@@ -45,10 +45,13 @@ function Schedule() {
     }
   };
 
-  // UseEffect para chamar fetchScheduleData sempre que selectedBarber, selectedService ou selectedDate mudar
   useEffect(() => {
     fetchScheduleData();
   }, [selectedBarber, selectedService, selectedDate]);
+
+  useEffect(() => {
+    setIsFormValid(selectedBarber && selectedService && selectedDate && selectedHour);
+  }, [selectedBarber, selectedService, selectedDate, selectedHour]);
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -59,12 +62,12 @@ function Schedule() {
   };
 
   const createScheduleObject = () => ({
-    id_user_client: userInfo.id, // Substitua selectedClient.id pelo ID do cliente selecionado
-    id_user_barber: selectedBarber.user_id, // Substitua selectedBarber.id pelo ID do barbeiro selecionado
+    id_user_client: userInfo.id,
+    id_user_barber: selectedBarber.user_id,
     type: 'Agendado',
     date: selectedDate,
     time: selectedHour,
-    id_service: selectedService.id, // Substitua selectedService.id pelo ID do serviço selecionado
+    id_service: selectedService.id,
     status: 'Agendado',
   });
 
@@ -80,7 +83,6 @@ function Schedule() {
   const generateAvailableHours = () => {
     const availableHours = [];
     for (let hour = 9; hour <= 18; hour++) {
-      // Alterei para 18 para corresponder aos horários de 9 às 18h
       availableHours.push(`${hour}:00`);
     }
     return availableHours;
@@ -96,11 +98,19 @@ function Schedule() {
   };
 
   const handleSubmit = async () => {
+    if (!isFormValid) {
+      return;
+    }
+
     const scheduleData = createScheduleObject();
     try {
       createSchedule(scheduleData).then(() => {
-        // setIsLoading(false);
-        // navigate('/inicio');
+        // Limpar o estado após o envio bem-sucedido
+        setSelectedBarber('');
+        setSelectedService('');
+        setSelectedDate('');
+        setSelectedHour('');
+        setSchedule([]);
       });
     } catch (error) {
       console.error('Erro ao criar agendamento:', error);
@@ -184,6 +194,7 @@ function Schedule() {
           fullWidth
           style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
           onClick={handleSubmit}
+          disabled={!isFormValid}
         >
           Agendar
         </Button>
