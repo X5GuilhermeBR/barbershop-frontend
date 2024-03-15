@@ -34,11 +34,6 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  useEffect(() => {
-    // Aqui você pode executar qualquer ação necessária quando o status mudar
-    console.log('Status mudou:', status);
-  }, [status]);
-
   const getTokenExpirationTime = (token) => {
     const decodedToken = parseJwt(token);
     if (!decodedToken || !decodedToken.exp) return null;
