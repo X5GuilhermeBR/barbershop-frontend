@@ -39,27 +39,27 @@ export const verifyToken = async (token) =>
       throw error; // Lança o erro para ser tratado no componente que chama a função
     });
 
-    export const getBarbers = async () => {
-      const token = sessionStorage.getItem('token');
-      if (!token) {
-        throw new Error('Token não encontrado na sessionStorage');
-      }
-    
-      return api
-        .get(`/accounts/barbers`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          console.log(response.data);
-          return response;
-        })
-        .catch((error) => {
-          console.error('Erro ao fazer a requisição:', error);
-          throw error;
-        });
-    };
+export const getBarbers = async () => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  return api
+    .get(`/accounts/barbers`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
 
 export const login = async (email, password) =>
   api
@@ -151,4 +151,26 @@ export const getSchedule = async (startDate, endDate, userId) => {
       console.error('Erro ao fazer a requisição:', error);
       throw error;
     });
+};
+
+export const createSchedule = async (scheduleInfo) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await api.post('/schedule', scheduleInfo, config);
+    console.log(response.data);
+    return response.data; // Retorna os dados da resposta para quem chamar esta função
+  } catch (error) {
+    console.error('Erro ao fazer a requisição:', error);
+    throw error; // Lança o erro para quem chamar esta função
+  }
 };

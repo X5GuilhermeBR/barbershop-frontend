@@ -2,7 +2,8 @@
 import { Button, Container, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
-import { getBarbers, getSchedule, getServices } from '../../service/api';
+import { useAuth } from '../../context/AuthContext';
+import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
 
 function Schedule() {
   // Vetor de barbeiros
@@ -13,6 +14,7 @@ function Schedule() {
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedHour, setSelectedHour] = useState('');
+  const { userInfo } = useAuth();
 
   useEffect(() => {
     async function fetchBarbers() {
@@ -56,6 +58,16 @@ function Schedule() {
     return `${year}-${month}-${day}`;
   };
 
+  const createScheduleObject = () => ({
+    id_user_client: userInfo.id, // Substitua selectedClient.id pelo ID do cliente selecionado
+    id_user_barber: selectedBarber.user_id, // Substitua selectedBarber.id pelo ID do barbeiro selecionado
+    type: 'Agendado',
+    date: selectedDate,
+    time: selectedHour,
+    id_service: selectedService.id, // Substitua selectedService.id pelo ID do serviço selecionado
+    status: 'Agendado',
+  });
+
   const getFutureDate = () => {
     const futureDate = new Date();
     futureDate.setDate(futureDate.getDate() + 45);
@@ -82,16 +94,17 @@ function Schedule() {
     });
     return disabledHours;
   };
-  const disabledHours = getDisabledHours();
 
-  const handleSubmit = () => {
-    console.log('Barbeiro selecionado:', selectedBarber);
-    console.log('Serviço selecionado:', selectedService);
-    console.log('Data selecionada:', selectedDate);
-    console.log('Hora selecionada:', selectedHour);
-
-    console.log('Schedule:', schedule); // Verifique se os dados de agendamento estão corretos
-    console.log('Disabled hours:', disabledHours); // V
+  const handleSubmit = async () => {
+    const scheduleData = createScheduleObject();
+    try {
+      createSchedule(scheduleData).then(() => {
+        // setIsLoading(false);
+        // navigate('/inicio');
+      });
+    } catch (error) {
+      console.error('Erro ao criar agendamento:', error);
+    }
   };
 
   return (
@@ -110,11 +123,12 @@ function Schedule() {
               onChange={(e) => setSelectedBarber(e.target.value)}
             >
               <MenuItem value="">Selecione um barbeiro</MenuItem>
-              {barbers.map((barber) => (
-                <MenuItem key={barber.id} value={barber}>
-                  {barber.barber_name}
-                </MenuItem>
-              ))}
+              {barbers &&
+                barbers.map((barber) => (
+                  <MenuItem key={barber.id} value={barber}>
+                    {barber.barber_name}
+                  </MenuItem>
+                ))}
             </Select>
             <Select
               label="Serviço"
