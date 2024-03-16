@@ -112,8 +112,9 @@ function Login() {
         <CardActions>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 2 }}>
             <Button
+              color="primary"
               variant="contained"
-              sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
+              // sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
               onClick={handleSubmit}
               disabled={isLoading}
             >
