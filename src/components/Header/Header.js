@@ -3,7 +3,8 @@ import React from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
 import ListItemIcon from '@mui/material/ListItemIcon';
 
-function PageHeader({ icon, title }) {
+function Header
+({ icon, title }) {
   return (
     <ListSubheader
       component="div"
@@ -32,4 +33,5 @@ function PageHeader({ icon, title }) {
   );
 }
 
-export default PageHeader;
+export default Header
+;

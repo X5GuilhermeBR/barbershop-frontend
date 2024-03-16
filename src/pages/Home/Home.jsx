@@ -2,7 +2,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut'
 import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
-import PageHeader from '../../components/PageHeader/PageHeader'
+import PageHeader from '../../components/Header/Header'
 import { useAuth } from '../../context/AuthContext'
 import { checkScheduleById } from '../../service/api'
 
@@ -31,7 +31,8 @@ function HomePage() {
   return (
     <>
     <PageHeader icon={<ContentCutIcon/>} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`}/>
-      <Container sx={{ mt: 4, mb: 10 }}>
+    <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
+      <Container>
         <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
           <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
           <strong>Com previsão de início ás 16:12h</strong>
@@ -63,6 +64,7 @@ function HomePage() {
             ))}
         </Grid>
       </Container>
+      </Grid>
       <FooterNavigation />
     </>
   );

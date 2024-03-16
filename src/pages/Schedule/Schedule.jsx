@@ -1,11 +1,13 @@
 /* eslint-disable no-plusplus */
-import { Button, Container, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
-import SelectComponent from '../../components/SelectComponent/SelectComponent';
-import { useAuth } from '../../context/AuthContext';
-import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
-import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
+import ArticleIcon from '@mui/icons-material/Article'
+import { Button, Container, Grid, MenuItem, Select, TextField } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
+import Header from '../../components/Header/Header'
+import SelectComponent from '../../components/SelectComponent/SelectComponent'
+import { useAuth } from '../../context/AuthContext'
+import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api'
+import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions'
 
 function Schedule() {
   const [barbers, setBarbers] = useState([]);
@@ -85,12 +87,10 @@ function Schedule() {
   };
 
   return (
-    <Grid container direction="column">
-      <Grid item style={{ marginBottom: '2rem', flex: '1 0 auto', zIndex: 1 }}>
+    <>
+      <Header icon={<ArticleIcon/>} title='Novo Agendamento' />
+      <Grid item style={{ marginBottom: '2rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
-          <Typography variant="h4" style={{ marginBottom: '2rem', marginTop: '4rem' }}>
-            Agendamento
-          </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <SelectComponent
               label="Barbeiro"
@@ -150,7 +150,7 @@ function Schedule() {
         </Button>
       </Grid>
       <FooterNavigation />
-    </Grid>
+    </>
   );
 }
 
