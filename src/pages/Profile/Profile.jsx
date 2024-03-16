@@ -1,20 +1,15 @@
 /* eslint-disable no-nested-ternary */
-import { Button, Container, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import { Button, Container, Grid, TextField } from '@mui/material'
+import React from 'react'
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
+import Header from '../../components/Header/Header'
 
 function Profile() {
   return (
-    <Grid container direction="column" style={{ minHeight: '100vh' }}>
-      <Grid item style={{ marginBottom: '2rem', flex: '1 0 auto', zIndex: 1 }}>
+    <>
+      <Header  title="Editar Perfil" />
+      <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
-          <Typography
-            variant="h4"
-            style={{ marginBottom: '2rem', marginTop: '4rem' }}
-            align="center"
-          >
-            Perfil
-          </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <TextField label="Nome" variant="outlined" />
             <TextField label="Data de Nascimento" type="date" outlined />
@@ -36,7 +31,7 @@ function Profile() {
         </Button>
       </Grid>
       <FooterNavigation />
-    </Grid>
+    </>
   );
 }
 

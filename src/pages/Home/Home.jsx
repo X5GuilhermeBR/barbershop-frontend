@@ -2,7 +2,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut'
 import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
-import PageHeader from '../../components/Header/Header'
+import Header from '../../components/Header/Header'
 import { useAuth } from '../../context/AuthContext'
 import { checkScheduleById } from '../../service/api'
 
@@ -39,7 +39,7 @@ function HomePage() {
 
   return (
     <>
-      <PageHeader icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
+      <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
       <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container>
           {hasScheduledAppointment && ( // Exibir o Alert somente se houver um agendamento para hoje com o status "Agendado"
