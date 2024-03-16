@@ -72,7 +72,7 @@ export const login = async (email, password) =>
       throw error;
     });
 
-export const checkScheduleById = async (userId) => {
+export const checkScheduleById = async (userId, startDate) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
     throw new Error('Token não encontrado na sessionStorage');
@@ -82,6 +82,10 @@ export const checkScheduleById = async (userId) => {
 
   if (userId) {
     params.userId = userId;
+  }
+
+  if (startDate) {
+    params.startDate = startDate;
   }
 
   return api
