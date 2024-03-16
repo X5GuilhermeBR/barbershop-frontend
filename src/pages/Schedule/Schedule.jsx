@@ -2,8 +2,10 @@
 import { Button, Container, Grid, MenuItem, Select, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import SelectComponent from '../../components/SelectComponent/SelectComponent';
 import { useAuth } from '../../context/AuthContext';
 import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
+import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
 
 function Schedule() {
   const [barbers, setBarbers] = useState([]);
@@ -53,14 +55,6 @@ function Schedule() {
     setIsFormValid(selectedBarber && selectedService && selectedDate && selectedHour);
   }, [selectedBarber, selectedService, selectedDate, selectedHour]);
 
-  const getCurrentDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = (today.getMonth() + 1).toString().padStart(2, '0');
-    const day = today.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
   const createScheduleObject = () => ({
     id_user_client: userInfo.id,
     id_user_barber: selectedBarber.user_id,
@@ -71,32 +65,6 @@ function Schedule() {
     status: 'Agendado',
   });
 
-  const getFutureDate = () => {
-    const futureDate = new Date();
-    futureDate.setDate(futureDate.getDate() + 45);
-    const year = futureDate.getFullYear();
-    const month = (futureDate.getMonth() + 1).toString().padStart(2, '0');
-    const day = futureDate.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const generateAvailableHours = () => {
-    const availableHours = [];
-    for (let hour = 9; hour <= 18; hour++) {
-      availableHours.push(`${hour}:00`);
-    }
-    return availableHours;
-  };
-
-  const getDisabledHours = () => {
-    const availableHours = generateAvailableHours();
-    const disabledHours = availableHours.map((hour) => {
-      const isScheduled = schedule.some((appointment) => appointment.time === hour);
-      return { time: hour, disabled: isScheduled };
-    });
-    return disabledHours;
-  };
-
   const handleSubmit = async () => {
     if (!isFormValid) {
       return;
@@ -105,7 +73,6 @@ function Schedule() {
     const scheduleData = createScheduleObject();
     try {
       createSchedule(scheduleData).then(() => {
-        // Limpar o estado após o envio bem-sucedido
         setSelectedBarber('');
         setSelectedService('');
         setSelectedDate('');
@@ -125,35 +92,18 @@ function Schedule() {
             Agendamento
           </Typography>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <Select
+            <SelectComponent
               label="Barbeiro"
-              variant="outlined"
-              fullWidth
               value={selectedBarber}
               onChange={(e) => setSelectedBarber(e.target.value)}
-            >
-              <MenuItem value="">Selecione um barbeiro</MenuItem>
-              {barbers &&
-                barbers.map((barber) => (
-                  <MenuItem key={barber.id} value={barber}>
-                    {barber.barber_name}
-                  </MenuItem>
-                ))}
-            </Select>
-            <Select
+              items={barbers}
+            />
+            <SelectComponent
               label="Serviço"
-              variant="outlined"
-              fullWidth
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
-            >
-              <MenuItem value="">Selecione um serviço</MenuItem>
-              {services.map((service) => (
-                <MenuItem key={service.id} value={service}>
-                  {service.name}
-                </MenuItem>
-              ))}
-            </Select>
+              items={services}
+            />
             <TextField
               label="Data"
               type="date"
@@ -177,7 +127,7 @@ function Schedule() {
               onChange={(e) => setSelectedHour(e.target.value)}
             >
               <MenuItem value="">Selecione uma hora</MenuItem>
-              {getDisabledHours().map((hour) => (
+              {getDisabledHours(schedule).map((hour) => (
                 <MenuItem key={hour.time} value={hour.time} disabled={hour.disabled}>
                   {hour.time}
                 </MenuItem>
