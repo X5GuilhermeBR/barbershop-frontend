@@ -9,6 +9,7 @@ import { checkScheduleById } from '../../service/api'
 function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
+  const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
   
   useEffect(() => {
     async function fetchCheckScheduleById() {
@@ -17,6 +18,12 @@ function HomePage() {
         const formattedDate = today.toISOString().split('T')[0]; // Formatar como "ano-mes-dia"
         const { data } = await checkScheduleById(userInfo.id, formattedDate); // Passar a data formatada para a requisição
         setSchedule(data);
+        // Verificar se há um agendamento para hoje com o status "Agendado"
+        const hasAppointmentToday = data.some(appointment => {
+          const appointmentDate = new Date(appointment.date);
+          return appointmentDate.toISOString().split('T')[0] === formattedDate && appointment.status === 'Agendado';
+        });
+        setHasScheduledAppointment(hasAppointmentToday);
       }
     }
 
@@ -35,10 +42,12 @@ function HomePage() {
       <PageHeader icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
       <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container>
-          <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
-            <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
-            {/* <strong>Com previsão de início ás 16:12h</strong> */}
-          </Alert>
+          {hasScheduledAppointment && ( // Exibir o Alert somente se houver um agendamento para hoje com o status "Agendado"
+            <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
+              <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
+              {/* <strong>Com previsão de início ás 16:12h</strong> */}
+            </Alert>
+          )}
           <Typography variant="h6" sx={{ mt: 2 }}>
             Próximos agendamentos:
           </Typography>
