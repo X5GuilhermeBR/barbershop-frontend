@@ -1,8 +1,10 @@
-import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
-import { useAuth } from '../../context/AuthContext';
-import { checkScheduleById } from '../../service/api';
+import ContentCutIcon from '@mui/icons-material/ContentCut'
+import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
+import PageHeader from '../../components/PageHeader/PageHeader'
+import { useAuth } from '../../context/AuthContext'
+import { checkScheduleById } from '../../service/api'
 
 function HomePage() {
   const { userInfo } = useAuth();
@@ -28,10 +30,8 @@ function HomePage() {
 
   return (
     <>
+    <PageHeader icon={<ContentCutIcon/>} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`}/>
       <Container sx={{ mt: 4, mb: 10 }}>
-        <Typography variant="h4" gutterBottom>
-          Bem-vindo, {userInfo ? getFirstName() : ''}!
-        </Typography>
         <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
           <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
           <strong>Com previsão de início ás 16:12h</strong>
