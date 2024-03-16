@@ -3,7 +3,7 @@ import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 
 function FooterNavigation() {
   return (
@@ -18,7 +18,7 @@ function FooterNavigation() {
     >
       <BottomNavigationAction component={Link} to="/inicio" label="Início" icon={<HomeIcon />} showLabel />
       <BottomNavigationAction component={Link} to="/agendar" label="Agendar" icon={<AddCircleIcon />} showLabel />
-      <BottomNavigationAction component={Link} to="/perfil" label="Perfil" icon={<AccountCircleIcon />} showLabel />
+      <BottomNavigationAction component={Link} to="/configuracoes" label="Perfil" icon={<ManageAccountsIcon />} showLabel />
     </BottomNavigation>
   );
 }
