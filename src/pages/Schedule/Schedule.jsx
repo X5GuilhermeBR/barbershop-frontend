@@ -118,7 +118,7 @@ function Schedule() {
   };
 
   return (
-    <Grid container direction="column" style={{ minHeight: '100vh' }}>
+    <Grid container direction="column">
       <Grid item style={{ marginBottom: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <Typography variant="h4" style={{ marginBottom: '2rem', marginTop: '4rem' }}>
