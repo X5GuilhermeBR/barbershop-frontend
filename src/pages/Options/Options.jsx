@@ -35,13 +35,13 @@ export default function Options() {
           </ListItemIcon>
           <ListItemText primary="Editar Perfil" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/alterar-senha">
+        <ListItemButton component={Link} to="/configuracoes/alterar-senha">
           <ListItemIcon>
             <PasswordIcon />
           </ListItemIcon>
           <ListItemText primary="Alterar Senha" />
         </ListItemButton>
-        <ListItemButton component={Link} to="/historico">
+        <ListItemButton component={Link} to="/configuracoes/historico">
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>

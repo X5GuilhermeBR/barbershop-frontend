@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import CreatedAccount from './pages/CreatedAccount/CreatedAccount'
+import EditPassword from './pages/EditPassword/EditPassword'
 import EditProfile from './pages/EditProfile/EditProfile'
 import History from './pages/History/History'
 import Home from './pages/Home/Home'
@@ -48,6 +49,14 @@ function App() {
             }
           />
           <Route
+            path="/configuracoes/alterar-senha"
+            element={
+              <PrivateRoute>
+                <EditPassword />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/agendar"
             element={
               <PrivateRoute>
@@ -56,7 +65,7 @@ function App() {
             }
           />
           <Route
-            path="/historico"
+            path="/configuracoes/historico"
             element={
               <PrivateRoute>
                 <History />

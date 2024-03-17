@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon'
 import { Button, Container, Grid, TextField } from '@mui/material'
 import React from 'react'
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
@@ -7,7 +8,7 @@ import Header from '../../components/Header/Header'
 function EditProfile() {
   return (
     <>
-      <Header  title="Editar Perfil" />
+      <Header icon={<InsertEmoticonIcon />} title="Editar Perfil" />
       <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>

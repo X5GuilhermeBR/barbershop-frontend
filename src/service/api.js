@@ -188,3 +188,25 @@ export const createSchedule = async (scheduleInfo) => {
     throw error; // Lança o erro para quem chamar esta função
   }
 };
+
+export const changePassword = async (userId, currentPassword, newPassword) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  try {
+    const response = await api.put(`/user/${userId}/update-password`, {
+      currentPassword,
+      newPassword,
+    }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao alterar a senha:', error);
+    throw error;
+  }
+};
