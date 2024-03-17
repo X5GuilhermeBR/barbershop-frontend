@@ -234,3 +234,40 @@ export const getAccount = async (userId) => {
       throw error;
     });
 };
+
+export const updateAccount = async (userId, name, birthday, cellphone) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/account/${userId}`;
+
+  const requestData = {}; // Objeto para armazenar os dados a serem enviados na requisição
+
+  // Adiciona os campos ao objeto de dados apenas se eles não estiverem vazios
+  if (name) {
+    requestData.name = name;
+  }
+  if (birthday) {
+    requestData.birthday = birthday;
+  }
+  if (cellphone) {
+    requestData.cellphone = cellphone;
+  }
+
+  return api
+    .put(url, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
