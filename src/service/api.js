@@ -211,6 +211,25 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
   }
 };
 
+export const updateSchedule = async (scheduleId, scheduleData) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  try {
+    const response = await api.put(`/schedule/${scheduleId}`, scheduleData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao alterar a senha:', error);
+    throw error;
+  }
+};
+
 export const getAccount = async (userId) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
@@ -258,6 +277,30 @@ export const updateAccount = async (userId, name, birthday, cellphone) => {
 
   return api
     .put(url, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
+export const getScheduleById = async (scheduleId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/schedule/${scheduleId}`;
+
+  return api
+    .get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

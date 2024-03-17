@@ -2,12 +2,19 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
+import { useLocation, useNavigate } from 'react-router-dom';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SelectComponent from '../../components/SelectComponent/SelectComponent';
 import { useAuth } from '../../context/AuthContext';
-import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
+import {
+  createSchedule,
+  getBarbers,
+  getSchedule,
+  getScheduleById,
+  getServices,
+  updateSchedule, // Importa a função para atualizar a agenda
+} from '../../service/api';
 import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
 
 function Schedule() {
@@ -21,8 +28,9 @@ function Schedule() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false); // Variável de estado para controlar o estado de envio
-  const navigate = useNavigate(); // Hook useNavigate para redirecionamento
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
   const { userInfo } = useAuth();
 
   useEffect(() => {
@@ -31,36 +39,63 @@ function Schedule() {
       setBarbers(data);
     }
 
-    fetchBarbers();
-  }, []);
-
-  useEffect(() => {
     async function fetchServices() {
       const { data } = await getServices();
       setServices(data);
     }
 
+    fetchBarbers();
     fetchServices();
   }, []);
 
-  const fetchScheduleData = async () => {
-    if (selectedBarber && selectedService && selectedDate) {
-      try {
-        const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
-        setSchedule(data);
-      } catch (error) {
-        console.error('Erro ao buscar agendamentos:', error);
-      }
-    }
-  };
-
   useEffect(() => {
+    const fetchScheduleData = async () => {
+      if (selectedBarber && selectedService && selectedDate) {
+        try {
+          const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
+          setSchedule(data);
+        } catch (error) {
+          console.error('Erro ao buscar agendamentos:', error);
+        }
+      }
+    };
+
     fetchScheduleData();
   }, [selectedBarber, selectedService, selectedDate]);
 
   useEffect(() => {
     setIsFormValid(selectedBarber && selectedService && selectedDate && selectedHour);
   }, [selectedBarber, selectedService, selectedDate, selectedHour]);
+
+  useEffect(() => {
+    // Verifica se existe um parâmetro 'scheduleId' na query string
+    const params = new URLSearchParams(location.search);
+    const scheduleId = params.get('scheduleId');
+
+    if (scheduleId) {
+      const fetchScheduleById = async () => {
+        try {
+          const { data } = await getScheduleById(scheduleId);
+          setSelectedDate(data.date);
+          setSelectedHour(data.time);
+
+          // Encontra o barbeiro correspondente com base no ID recebido do response
+          const selectedBarberData = barbers.find(
+            (barber) => barber.user_id === data.id_user_barber
+          );
+          setSelectedBarber(selectedBarberData);
+
+          // Encontra o serviço correspondente com base no ID recebido do response
+          const selectedServiceData = services.find((service) => service.id === data.id_service);
+          setSelectedService(selectedServiceData);
+        } catch (error) {
+          console.error('Erro ao carregar agendamento:', error);
+        }
+      };
+
+      fetchScheduleById();
+    }
+  }, [barbers, services, location.search]);
 
   const createScheduleObject = () => ({
     id_user_client: userInfo.id,
@@ -74,26 +109,37 @@ function Schedule() {
 
   const handleSubmit = async () => {
     if (!isFormValid || isSubmitting) {
-      // Verifica se o formulário é válido e se não está sendo enviado
       return;
     }
 
-    setIsSubmitting(true); // Define isSubmitting como true para indicar que o formulário está sendo enviado
+    const params = new URLSearchParams(location.search);
+    const scheduleId = params.get('scheduleId');
+
+    setIsSubmitting(true);
     const scheduleData = createScheduleObject();
     try {
-      await createSchedule(scheduleData);
-      setMessage(
-        'Agendamento realizado com sucesso! Você será redirecionado para tela inicial em 3 segundos...'
-      );
+      if (location.search) {
+        // Se houver uma query string, atualiza a agenda
+        await updateSchedule(scheduleId, scheduleData);
+        setMessage(
+          'Agendamento atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+        );
+      } else {
+        // Se não houver query string, cria uma nova agenda
+        await createSchedule(scheduleData);
+        setMessage(
+          'Agendamento realizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+        );
+      }
       setSnackbarOpen(true);
-      setIsSubmitting(false); // Define isSubmitting como false após o envio bem-sucedido
+      setIsSubmitting(false);
       setSchedule([]);
-      setTimeout(() => navigate('/inicio'), 3000); // Redireciona para "/inicio" após 3 segundos
+      setTimeout(() => navigate('/inicio'), 3000);
     } catch (error) {
-      console.error('Erro ao criar agendamento:', error);
-      setMessage('Erro ao criar agendamento. Por favor, tente novamente.');
+      console.error('Erro ao criar/atualizar agendamento:', error);
+      setMessage('Erro ao criar/atualizar agendamento. Por favor, tente novamente.');
       setSnackbarOpen(true);
-      setIsSubmitting(false); // Define isSubmitting como false em caso de erro
+      setIsSubmitting(false);
     }
   };
 
@@ -115,30 +161,25 @@ function Schedule() {
               value={selectedBarber}
               onChange={(e) => setSelectedBarber(e.target.value)}
               items={barbers}
-              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
+              disabled={isSubmitting}
             />
             <SelectComponent
               label="Serviço"
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
               items={services}
-              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
+              disabled={isSubmitting}
             />
             <TextField
               label="Data"
               type="date"
               variant="outlined"
               fullWidth
-              InputLabelProps={{
-                shrink: true,
-              }}
-              inputProps={{
-                min: getCurrentDate(),
-                max: getFutureDate(),
-              }}
+              InputLabelProps={{ shrink: true }}
+              inputProps={{ min: getCurrentDate(), max: getFutureDate() }}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
+              disabled={isSubmitting}
             />
             <Select
               label="Hora"
@@ -146,7 +187,7 @@ function Schedule() {
               fullWidth
               value={selectedHour}
               onChange={(e) => setSelectedHour(e.target.value)}
-              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
+              disabled={isSubmitting}
             >
               <MenuItem value="">Selecione uma hora</MenuItem>
               {getDisabledHours(schedule).map((hour) => (
@@ -166,9 +207,9 @@ function Schedule() {
           fullWidth
           style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
           onClick={handleSubmit}
-          disabled={!isFormValid || isSubmitting} // Desativa o botão enquanto estiver enviando ou se o formulário não for válido
+          disabled={!isFormValid || isSubmitting}
         >
-          Agendar
+          {location.search ? 'Atualizar' : 'Agendar'}
         </Button>
       </Grid>
       <Snackbar
