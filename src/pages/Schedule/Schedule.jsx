@@ -1,13 +1,14 @@
-/* eslint-disable no-plusplus */
-import ArticleIcon from '@mui/icons-material/Article'
-import { Button, Container, Grid, MenuItem, Select, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
-import Header from '../../components/Header/Header'
-import SelectComponent from '../../components/SelectComponent/SelectComponent'
-import { useAuth } from '../../context/AuthContext'
-import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api'
-import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions'
+import ArticleIcon from '@mui/icons-material/Article';
+import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importa o hook useNavigate
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import Header from '../../components/Header/Header';
+import SelectComponent from '../../components/SelectComponent/SelectComponent';
+import { useAuth } from '../../context/AuthContext';
+import { createSchedule, getBarbers, getSchedule, getServices } from '../../service/api';
+import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
 
 function Schedule() {
   const [barbers, setBarbers] = useState([]);
@@ -17,8 +18,12 @@ function Schedule() {
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedHour, setSelectedHour] = useState('');
-  const { userInfo } = useAuth();
   const [isFormValid, setIsFormValid] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false); // Variável de estado para controlar o estado de envio
+  const navigate = useNavigate(); // Hook useNavigate para redirecionamento
+  const { userInfo } = useAuth();
 
   useEffect(() => {
     async function fetchBarbers() {
@@ -68,27 +73,44 @@ function Schedule() {
   });
 
   const handleSubmit = async () => {
-    if (!isFormValid) {
+    if (!isFormValid || isSubmitting) {
+      // Verifica se o formulário é válido e se não está sendo enviado
       return;
     }
 
+    setIsSubmitting(true); // Define isSubmitting como true para indicar que o formulário está sendo enviado
     const scheduleData = createScheduleObject();
     try {
-      createSchedule(scheduleData).then(() => {
-        setSelectedBarber('');
-        setSelectedService('');
-        setSelectedDate('');
-        setSelectedHour('');
-        setSchedule([]);
-      });
+      await createSchedule(scheduleData);
+      setMessage(
+        'Agendamento realizado com sucesso! Você será redirecionado para tela inicial em 3 segundos...'
+      );
+      setSnackbarOpen(true);
+      setIsSubmitting(false); // Define isSubmitting como false após o envio bem-sucedido
+      setSelectedBarber('');
+      setSelectedService('');
+      setSelectedDate('');
+      setSelectedHour('');
+      setSchedule([]);
+      setTimeout(() => navigate('/inicio'), 3000); // Redireciona para "/inicio" após 3 segundos
     } catch (error) {
       console.error('Erro ao criar agendamento:', error);
+      setMessage('Erro ao criar agendamento. Por favor, tente novamente.');
+      setSnackbarOpen(true);
+      setIsSubmitting(false); // Define isSubmitting como false em caso de erro
     }
+  };
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   return (
     <>
-      <Header icon={<ArticleIcon/>} title='Novo Agendamento' />
+      <Header icon={<ArticleIcon />} title="Novo Agendamento" />
       <Grid item style={{ marginBottom: '2rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -97,12 +119,14 @@ function Schedule() {
               value={selectedBarber}
               onChange={(e) => setSelectedBarber(e.target.value)}
               items={barbers}
+              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
             />
             <SelectComponent
               label="Serviço"
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
               items={services}
+              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
             />
             <TextField
               label="Data"
@@ -118,6 +142,7 @@ function Schedule() {
               }}
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
+              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
             />
             <Select
               label="Hora"
@@ -125,6 +150,7 @@ function Schedule() {
               fullWidth
               value={selectedHour}
               onChange={(e) => setSelectedHour(e.target.value)}
+              disabled={isSubmitting} // Desativa o campo enquanto estiver enviando
             >
               <MenuItem value="">Selecione uma hora</MenuItem>
               {getDisabledHours(schedule).map((hour) => (
@@ -144,11 +170,21 @@ function Schedule() {
           fullWidth
           style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
           onClick={handleSubmit}
-          disabled={!isFormValid}
+          disabled={!isFormValid || isSubmitting} // Desativa o botão enquanto estiver enviando ou se o formulário não for válido
         >
           Agendar
         </Button>
       </Grid>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert elevation={6} variant="filled" onClose={handleSnackbarClose} severity="success">
+          {message}
+        </MuiAlert>
+      </Snackbar>
       <FooterNavigation />
     </>
   );
