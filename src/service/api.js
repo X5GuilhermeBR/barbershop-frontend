@@ -210,3 +210,27 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
     throw error;
   }
 };
+
+export const getAccount = async (userId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/account/${userId}`;
+
+  return api
+    .get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
