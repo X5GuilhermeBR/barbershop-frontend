@@ -17,7 +17,7 @@ function HomePage() {
       if (userInfo && userInfo.id) {
         const today = new Date(); // Obter a data de hoje
         const formattedDate = today.toISOString().split('T')[0]; // Formatar como "ano-mes-dia"
-        const { data } = await checkScheduleById(userInfo.id, formattedDate); // Passar a data formatada para a requisição
+        const { data } = await checkScheduleById(formattedDate, '', userInfo.id); // Passar a data formatada para a requisição
         setSchedule(data);
         // Verificar se há um agendamento para hoje com o status "Agendado"
         const hasAppointmentToday = data.some(appointment => {

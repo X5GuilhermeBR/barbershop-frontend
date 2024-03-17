@@ -1,3 +1,4 @@
+/* eslint-disable no-lonely-if */
 /* eslint-disable import/no-extraneous-dependencies */
 import axios from 'axios';
 
@@ -72,37 +73,46 @@ export const login = async (email, password) =>
       throw error;
     });
 
-export const checkScheduleById = async (userId, startDate) => {
+export const checkScheduleById = async (startDate, endDate, userId) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
     throw new Error('Token não encontrado na sessionStorage');
   }
 
-  const params = {};
+  let queryString = '';
 
-  if (userId) {
-    params.userId = userId;
+  // Verifica se startDate e endDate foram fornecidos
+  if (startDate && endDate) {
+    queryString += `startDate=${startDate}&endDate=${endDate}&userId=${userId}`;
+  } else {
+    // Verifica se apenas userId foi fornecido
+
+if (endDate) {
+      queryString += `endDate=${endDate}&userId=${userId}`;
+    }
+    // Verifica se apenas startDate foi fornecido
+    else if (startDate) {
+      queryString += `startDate=${startDate}&userId=${userId}`;
+    }
+    else if (userId) {
+      queryString += `userId=${userId}`;
+    }
   }
 
-  if (startDate) {
-    params.startDate = startDate;
-  }
+  const url = `/schedule?${queryString}`;
 
-  return api
-    .get(`/schedule`, {
-      params,
+  try {
+    const response = await api.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    })
-    .then((response) => {
-      console.log(response.data);
-      return response;
-    })
-    .catch((error) => {
-      console.error('Erro ao fazer a requisição:', error);
-      throw error;
     });
+    console.log(response.data);
+    return response;
+  } catch (error) {
+    console.error('Erro ao fazer a requisição:', error);
+    throw error;
+  }
 };
 
 export const getServices = async () => {
