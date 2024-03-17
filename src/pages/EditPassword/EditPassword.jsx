@@ -1,5 +1,6 @@
 import PasswordIcon from '@mui/icons-material/Password';
 import { Button, Container, Grid, Snackbar, TextField } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import React, { useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -42,7 +43,6 @@ function EditPassword() {
     if (reason === 'clickaway') {
       return;
     }
-
     setAlertOpen(false);
   };
 
@@ -92,9 +92,17 @@ function EditPassword() {
         open={alertOpen}
         autoHideDuration={6000}
         onClose={handleAlertClose}
-        message={message}
-        setSeverity={severity}
-      />
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleAlertClose}
+          severity={severity} // Define a gravidade do alerta
+        >
+          {message}
+        </MuiAlert>
+      </Snackbar>
       <FooterNavigation />
     </>
   );
