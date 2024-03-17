@@ -15,19 +15,26 @@ import background from '../../assets/background.jpg';
 import { createAccount } from '../../service/api';
 
 function Register() {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [birthday, setBirthday] = useState('');
-  const [cellphone, setCellphone] = useState('');
-  const [password, setPassword] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [nameError, setNameError] = useState('');
-  const [birthdayError, setBirthdayError] = useState('');
-  const [cellphoneError, setCellphoneError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  // States para os campos do formulário e erros
+  const [formData, setFormData] = useState({
+    email: '',
+    name: '',
+    birthday: '',
+    cellphone: '',
+    password: '',
+  });
+  const [formErrors, setFormErrors] = useState({
+    email: '',
+    name: '',
+    birthday: '',
+    cellphone: '',
+    password: '',
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Schema de validação com yup
   const registerSchema = yup.object().shape({
     name: yup.string().required('Nome é obrigatório'),
     birthday: yup.string().required('Data de nascimento é obrigatória'),
@@ -42,52 +49,46 @@ function Register() {
       .min(6, 'Senha deve ter no mínimo 6 caracteres'),
   });
 
-  const handleInputChange = (event, setError) => {
-    const { value } = event.target;
-    setError(value ? '' : null);
+  // Função para lidar com a mudança nos campos do formulário
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+    setFormErrors({
+      ...formErrors,
+      [name]: '',
+    });
   };
 
+  // Função para lidar com a submissão do formulário
   const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
-      await registerSchema.validate(
-        { email, name, birthday, cellphone, password },
-        { abortEarly: false }
-      );
-      await createAccount({ profile: 'Clients', email, name, birthday, cellphone, password });
+      await registerSchema.validate(formData, { abortEarly: false });
+      await createAccount({ profile: 'Clients', ...formData });
       setIsLoading(false);
       navigate('/conta-criada');
     } catch (error) {
       if (error.name === 'ValidationError') {
         error.inner.forEach((err) => {
-          switch (err.path) {
-            case 'name':
-              setNameError(err.message);
-              break;
-            case 'email':
-              setEmailError(err.message);
-              break;
-            case 'birthday':
-              setBirthdayError(err.message);
-              break;
-            case 'cellphone':
-              setCellphoneError(err.message);
-              break;
-            case 'password':
-              setPasswordError(err.message);
-              break;
-            default:
-              break;
-          }
+          setFormErrors((prevErrors) => ({
+            ...prevErrors,
+            [err.path]: err.message,
+          }));
         });
       }
       setIsLoading(false);
     }
   };
 
-  const isFormValid =
-    !nameError && !emailError && !birthdayError && !cellphoneError && !passwordError;
+  // Verifica se todos os campos do formulário são válidos
+  const isFormValid = !Object.values(formErrors).some((error) => !!error);
+
+  // Obtém a data atual
+  const currentDate = new Date().toISOString().split('T')[0];
 
   return (
     <Box
@@ -103,76 +104,74 @@ function Register() {
       }}
     >
       <Card sx={{ maxWidth: 400 }}>
-        <CardContent />
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 2,
-            width: '300px',
-            padding: 2,
-          }}
-        >
+        <CardContent>
           <Typography variant="h5" align="center">
             Cadastre-se
           </Typography>
-
-          <TextField
-            fullWidth
-            label="Nome Completo"
-            type="text"
-            error={!!nameError}
-            helperText={nameError}
-            onChange={(e) => {
-              setName(e.target.value);
-              handleInputChange(e, setNameError);
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 2,
+              width: '300px',
+              padding: 2,
             }}
-          />
-          <TextField
-            fullWidth
-            label="Data de Nascimento"
-            type="date"
-            error={!!birthdayError}
-            helperText={birthdayError}
-            onChange={(e) => {
-              setBirthday(e.target.value);
-              handleInputChange(e, setBirthdayError);
-            }}
-          />
-          <TextField
-            fullWidth
-            label="WhatsApp"
-            type="number"
-            error={!!cellphoneError}
-            helperText={cellphoneError}
-            onChange={(e) => {
-              setCellphone(e.target.value);
-              handleInputChange(e, setCellphoneError);
-            }}
-          />
-          <TextField
-            fullWidth
-            label="Email"
-            type="email"
-            error={!!emailError}
-            helperText={emailError}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              handleInputChange(e, setEmailError);
-            }}
-          />
-          <TextField
-            fullWidth
-            label="Senha"
-            type="password"
-            error={!!passwordError}
-            helperText={passwordError}
-            onChange={(e) => {
-              setPassword(e.target.value);
-              handleInputChange(e, setPasswordError);
-            }}
-          />
-        </Box>
+          >
+            <TextField
+              fullWidth
+              label="Nome Completo"
+              type="text"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              error={!!formErrors.name}
+              helperText={formErrors.name}
+            />
+            <TextField
+              fullWidth
+              label="Data de Nascimento"
+              type="date"
+              name="birthday"
+              value={formData.birthday}
+              onChange={handleInputChange}
+              error={!!formErrors.birthday}
+              helperText={formErrors.birthday}
+              InputProps={{
+                inputProps: { max: currentDate },
+              }}
+            />
+            <TextField
+              fullWidth
+              label="WhatsApp"
+              type="tel"
+              name="cellphone"
+              value={formData.cellphone}
+              onChange={handleInputChange}
+              error={!!formErrors.cellphone}
+              helperText={formErrors.cellphone}
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              error={!!formErrors.email}
+              helperText={formErrors.email}
+            />
+            <TextField
+              fullWidth
+              label="Senha"
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleInputChange}
+              error={!!formErrors.password}
+              helperText={formErrors.password}
+            />
+          </Box>
+        </CardContent>
         <CardActions>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <Button
@@ -180,11 +179,7 @@ function Register() {
               sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }}
               onClick={handleSubmit}
               disabled={!isFormValid || isLoading}
-              endIcon={
-                isLoading ? (
-                  <CircularProgress variant="indeterminate" color="inherit" size={20} />
-                ) : undefined
-              }
+              endIcon={isLoading ? <CircularProgress variant="indeterminate" size={20} /> : null}
             >
               CRIAR CONTA
             </Button>
