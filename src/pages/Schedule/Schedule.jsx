@@ -87,10 +87,6 @@ function Schedule() {
       );
       setSnackbarOpen(true);
       setIsSubmitting(false); // Define isSubmitting como false após o envio bem-sucedido
-      setSelectedBarber('');
-      setSelectedService('');
-      setSelectedDate('');
-      setSelectedHour('');
       setSchedule([]);
       setTimeout(() => navigate('/inicio'), 3000); // Redireciona para "/inicio" após 3 segundos
     } catch (error) {
