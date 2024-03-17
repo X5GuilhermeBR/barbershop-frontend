@@ -1,5 +1,6 @@
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
-import { Button, CircularProgress, Container, Grid, TextField } from '@mui/material';
+import { Button, Container, Grid, Snackbar, TextField } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -12,11 +13,15 @@ function EditProfile() {
   const [profileData, setProfileData] = useState(null);
   const [formData, setFormData] = useState(null);
   const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState('success'); // Define a gravidade padrão como sucesso
 
   useEffect(() => {
     async function fetchProfileData() {
       try {
-        if (userInfo && userInfo.id) {
+        if (userInfo?.id) {
+          // Adicione uma verificação aqui para garantir que userInfo não seja nulo
           const { data } = await getAccount(userInfo.id);
           setProfileData(data);
           setFormData(data);
@@ -28,7 +33,7 @@ function EditProfile() {
       }
     }
     fetchProfileData();
-  }, [userInfo.id]);
+  }, [userInfo?.id]); // Adicione userInfo?.id como uma dependência
 
   const handleUpdateProfile = async () => {
     try {
@@ -40,8 +45,14 @@ function EditProfile() {
 
       const { data } = await getAccount(userInfo.id);
       setProfileData(data);
+      setMessage('Perfil atualizado com sucesso!');
+      setSeverity('success');
+      setAlertOpen(true);
     } catch (error) {
       console.error('Erro ao atualizar o perfil:', error);
+      setMessage('Erro ao atualizar o perfil. Por favor, tente novamente.');
+      setSeverity('error');
+      setAlertOpen(true);
     } finally {
       setLoading(false);
     }
@@ -66,18 +77,12 @@ function EditProfile() {
     }
   }, [formData, profileData]);
 
-  if (loading) {
-    return (
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        style={{ minHeight: 'calc(100vh - 64px)' }}
-      >
-        <CircularProgress />
-      </Grid>
-    );
-  }
+  const handleAlertClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setAlertOpen(false);
+  };
 
   return (
     <>
@@ -128,6 +133,16 @@ function EditProfile() {
           Atualizar
         </Button>
       </Grid>
+      <Snackbar
+        open={alertOpen}
+        autoHideDuration={6000}
+        onClose={handleAlertClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <MuiAlert elevation={6} variant="filled" onClose={handleAlertClose} severity={severity}>
+          {message}
+        </MuiAlert>
+      </Snackbar>
       <FooterNavigation />
     </>
   );
