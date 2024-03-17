@@ -17,7 +17,6 @@ function History() {
   const [maxMonth, setMaxMonth] = useState('');
 
   useEffect(() => {
-    // Define o mês máximo como o mês atual
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
@@ -28,8 +27,10 @@ function History() {
     async function fetchScheduledAppointments() {
       if (userInfo && userInfo.id) {
         const { data } = await checkScheduleById(startDate, endDate, userInfo.id);
-        setScheduledAppointments(data);
-        setNoAppointments(data.length === 0);
+        // Ordena os agendamentos por data antes de setá-los
+        const sortedAppointments = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        setScheduledAppointments(sortedAppointments);
+        setNoAppointments(sortedAppointments.length === 0);
       }
     }
 
@@ -37,7 +38,6 @@ function History() {
   }, [userInfo, startDate, endDate]);
 
   useEffect(() => {
-    // Função para definir a data inicial e final do mês atual
     function setInitialAndEndDate() {
       if (startDate && endDate) {
         return;
@@ -45,7 +45,7 @@ function History() {
 
       const currentDate = new Date();
       const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Adiciona zero à esquerda se o mês for menor que 10
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
       const firstDay = `${year}-${month}-01`;
       const lastDay = new Date(year, month, 0).getDate();
       const lastDayOfMonth = `${year}-${month}-${lastDay}`;
@@ -68,7 +68,6 @@ function History() {
     }
   };
 
-  // Função para formatar o dia da semana, a data, o mês e o ano
   const formatWeekdayDateMonthYear = (dateString) => {
     const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     const months = [
@@ -86,14 +85,13 @@ function History() {
       'Dezembro',
     ];
     const date = new Date(dateString);
+    const day = date.getDate() + 1; // Adiciona um dia ao título
     const weekday = daysOfWeek[date.getDay()];
     const month = months[date.getMonth()];
     const year = date.getFullYear();
-    const formattedDate = date.toLocaleDateString('pt-BR', { day: '2-digit' });
-    return `${weekday} - ${formattedDate} de ${month} de ${year}`;
+    return `${weekday} - ${day} de ${month} de ${year}`;
   };
 
-  // Agrupa os agendamentos por dia da semana
   const groupedAppointments = scheduledAppointments.reduce((grouped, appointment) => {
     const date = new Date(appointment.date);
     const dayOfWeek = date.getDay();
@@ -103,6 +101,13 @@ function History() {
     grouped[dayOfWeek].push(appointment);
     return grouped;
   }, {});
+
+  // Ordenar os grupos de agendamentos por data
+  const sortedGroupedAppointments = Object.entries(groupedAppointments).sort((a, b) => {
+    const dateA = new Date(a[1][0].date);
+    const dateB = new Date(b[1][0].date);
+    return dateA - dateB;
+  });
 
   return (
     <>
@@ -127,20 +132,21 @@ function History() {
                 InputLabelProps={{
                   shrink: true,
                 }}
-                fullWidth // Ocupa todo o tamanho disponível horizontalmente
-                value={startDate.slice(0, 7)} // Ajusta para exibir apenas o ano e o mês
+                fullWidth
+                value={startDate.slice(0, 7)}
                 inputProps={{
-                  max: maxMonth, // Define o mês máximo
+                  max: maxMonth,
                 }}
               />
             </Grid>
-            {Object.keys(groupedAppointments).map((dayOfWeek) => (
+            {sortedGroupedAppointments.map(([dayOfWeek, appointments]) => (
               <Grid item xs={12} key={dayOfWeek}>
-                <Typography variant="h6" style={{ marginBottom: '1rem' }}>
-                  {formatWeekdayDateMonthYear(groupedAppointments[dayOfWeek][0].date)}
+                <Typography variant="h6" style={{ marginTop: '1rem' }}>
+                  {/* Ajuste na formatação da data */}
+                  {formatWeekdayDateMonthYear(appointments[0].date)}
                 </Typography>
                 <Grid container spacing={2}>
-                  {groupedAppointments[dayOfWeek].map((appointment) => (
+                  {appointments.map((appointment) => (
                     <Grid item key={appointment.id} xs={12}>
                       <SchedulingCard appointment={appointment} />
                     </Grid>
@@ -149,7 +155,7 @@ function History() {
               </Grid>
             ))}
             {noAppointments && (
-              <Grid container justifyContent="center">
+              <Grid container justifyContent="center" style={{ marginTop: '1rem' }}>
                 <Typography variant="h6">
                   Você não possui histórico de atendimento neste mês.
                 </Typography>
