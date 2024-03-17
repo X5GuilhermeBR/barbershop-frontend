@@ -4,7 +4,7 @@ import React from 'react'
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
 import Header from '../../components/Header/Header'
 
-function Profile() {
+function EditProfile() {
   return (
     <>
       <Header  title="Editar Perfil" />
@@ -14,8 +14,7 @@ function Profile() {
             <TextField label="Nome" variant="outlined" />
             <TextField label="Data de Nascimento" type="date" outlined />
             <TextField label="E-mail" variant="outlined" />
-            <TextField label="Senha" variant="outlined" type="password" />
-            <TextField label="Confirmar Senha" variant="outlined" type="password" />
+            <TextField label="Celular" variant="outlined" type="text" />
           </div>
         </Container>
       </Grid>
@@ -35,4 +34,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default EditProfile;

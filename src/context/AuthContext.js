@@ -49,6 +49,7 @@ export function AuthProvider({ children }) {
     try {
       const response = await loginApi(email, password);
       const { token } = response.data;
+      console.log("stat", status)
   
       if (response.status === 401) {
         setStatus(401); // Define o erro no estado
@@ -74,7 +75,11 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    setToken(null);
+    setStatus('')
+    setToken()
+    setUserInfo()
+    sessionStorage.removeItem('token'); // Limpa o token
+    return true; // Indica que o logout foi realizado com sucesso
   };
 
   return (
@@ -85,4 +90,3 @@ export function AuthProvider({ children }) {
 }
 
 export const useAuth = () => useContext(AuthContext);
-

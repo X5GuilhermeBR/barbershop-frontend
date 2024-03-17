@@ -1,6 +1,9 @@
-import { Card, CardContent, Grid, Typography } from '@mui/material';
-import React from 'react';
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import HistoryIcon from '@mui/icons-material/History'
+import { Container, Grid } from '@mui/material'
+import React from 'react'
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
+import Header from '../../components/Header/Header'
+import SchedulingCard from '../../components/SchedulingCard/SchedulingCard'
 
 // Função para gerar dados de exemplo para o histórico de atendimentos
 function getAppointmentHistory() {
@@ -18,11 +21,13 @@ function getAppointmentHistory() {
 }
 
 function History() {
-  // Obtém o histórico de atendimentos
   const appointmentHistory = getAppointmentHistory();
 
-  return (
-    <div style={{ position: 'relative', minHeight: '100vh' }}>
+  return(
+     <>
+    <Header icon={<HistoryIcon />} title="Meu Histórico" />
+      <Grid item style={{ marginBottom: '4rem', marginTop: '1rem', flex: '1 0 auto', zIndex: 1 }}>
+        <Container>
       <Grid
         container
         direction="column"
@@ -30,24 +35,14 @@ function History() {
       >
         <Grid container spacing={2} justifyContent="center">
           {appointmentHistory.map((appointment) => (
-            <Grid item xs={12} md={6} lg={4}>
-              <Card style={{ height: '100%' }}>
-                <CardContent>
-                  <Typography
-                    variant="h6"
-                    gutterBottom
-                  >{`Barbeiro: ${appointment.barber}`}</Typography>
-                  <Typography variant="body1">{`Data: ${appointment.date}`}</Typography>
-                  <Typography variant="body1">{`Hora: ${appointment.time}`}</Typography>
-                  <Typography variant="body1">{`Valor do serviço: ${appointment.servicePrice}`}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
+            <SchedulingCard key={appointment.id} appointment={appointment} />
           ))}
         </Grid>
       </Grid>
+      </Container>
+      </Grid>
       <FooterNavigation style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 2 }} />
-    </div>
+      </>
   );
 }
 

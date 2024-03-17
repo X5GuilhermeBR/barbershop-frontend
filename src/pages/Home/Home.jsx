@@ -1,8 +1,9 @@
 import ContentCutIcon from '@mui/icons-material/ContentCut'
-import { Alert, AlertTitle, Card, CardContent, Container, Grid, Typography } from '@mui/material'
+import { Alert, AlertTitle, Container, Grid, Typography } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
 import Header from '../../components/Header/Header'
+import SchedulingCard from '../../components/SchedulingCard/SchedulingCard'
 import { useAuth } from '../../context/AuthContext'
 import { checkScheduleById } from '../../service/api'
 
@@ -54,24 +55,7 @@ function HomePage() {
           <Grid container spacing={1}>
             {Array.isArray(schedule) &&
               schedule.map((appointment) => (
-                <Grid item xs={12} sm={6} md={4} key={appointment.id}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Typography variant="h6" component="h2" gutterBottom>
-                        Agendamento N#{appointment.id}:
-                      </Typography>
-                      <Typography variant="body1" component="p">
-                        <strong>Data:</strong> {appointment.date}
-                        <br />
-                        <strong>Hora:</strong> {appointment.time}
-                        <br />
-                        <strong>Serviço:</strong> {appointment.service_name}
-                        <br />
-                        <strong>Barbeiro:</strong> {appointment.barber_name}
-                      </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
+                <SchedulingCard key={appointment.id} appointment={appointment} />
               ))}
           </Grid>
         </Container>

@@ -2,11 +2,11 @@ import React from 'react'
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import CreatedAccount from './pages/CreatedAccount/CreatedAccount'
+import EditProfile from './pages/EditProfile/EditProfile'
 import History from './pages/History/History'
 import Home from './pages/Home/Home'
 import Login from './pages/Login/Login'
 import Options from './pages/Options/Options'
-import Profile from './pages/Profile/Profile'
 import Register from './pages/Register/Register'
 import Schedule from './pages/Schedule/Schedule'
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail'
@@ -43,7 +43,7 @@ function App() {
             path="/configuracoes/editar-perfil"
             element={
               <PrivateRoute>
-                <Profile />
+                <EditProfile />
               </PrivateRoute>
             }
           />

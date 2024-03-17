@@ -1,9 +1,9 @@
-import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import * as yup from 'yup';
-import background from '../../assets/background.jpg';
-import { useAuth } from '../../context/AuthContext';
+import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import * as yup from 'yup'
+import background from '../../assets/background.jpg'
+import { useAuth } from '../../context/AuthContext'
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -15,7 +15,7 @@ function Login() {
   const [message, setMessage] = useState();
   const navigate = useNavigate();
 
-  const { login, status } = useAuth();
+  const { login, status, isAuthenticated } = useAuth();
 
   const registerSchema = yup.object().shape({
     email: yup.string().email().required(),
@@ -23,7 +23,7 @@ function Login() {
   });
 
   useEffect(() => {
-    if (status === 201) {
+    if (status === 201 && isAuthenticated()) {
       navigate('/inicio');
     } else if (status === 401) {
       setAlertOpen(true);
@@ -32,7 +32,8 @@ function Login() {
       setAlertOpen(true);
       setMessage('Por favor, verifique seu email para concluir o registro.');
     }
-  }, [status]);
+  }, [status, isAuthenticated]);
+  
 
   const handleSubmit = () => {
     setIsLoading(true);
