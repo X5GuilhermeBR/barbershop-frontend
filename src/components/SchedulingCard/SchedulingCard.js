@@ -27,6 +27,8 @@ function SchedulingCard({ appointment }) {
             <strong>Barbeiro:</strong> {appointment.barber_name}
             <br />
             <strong>Status:</strong> {appointment.status}
+            <br />
+            <strong>Valor:</strong> R${appointment.service_price}
             
           </Typography>
         </CardContent>
