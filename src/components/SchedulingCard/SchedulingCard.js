@@ -7,9 +7,7 @@ function SchedulingCard({ appointment }) {
   const navigate = useNavigate();
 
   const handleEditClick = () => {
-    // Redirecionar para a página de agendamento com o ID do usuário
     navigate(`/agendar?scheduleId=${appointment.id}`);
-    console.log(appointment, "aqio")
   };
 
   return (
@@ -27,13 +25,18 @@ function SchedulingCard({ appointment }) {
             <strong>Serviço:</strong> {appointment.service_name}
             <br />
             <strong>Barbeiro:</strong> {appointment.barber_name}
+            <br />
+            <strong>Status:</strong> {appointment.status}
+            
           </Typography>
         </CardContent>
+        {appointment.status === 'Agendado' && (
         <CardActions>
           <Button size="small" color="primary" onClick={handleEditClick}>
             Editar
           </Button>
         </CardActions>
+        )}
       </Card>
     </Grid>
   );

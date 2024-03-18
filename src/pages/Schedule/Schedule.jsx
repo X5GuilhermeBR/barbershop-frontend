@@ -13,7 +13,7 @@ import {
   getSchedule,
   getScheduleById,
   getServices,
-  updateSchedule, // Importa a função para atualizar a agenda
+  updateSchedule,
 } from '../../service/api';
 import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
 
@@ -32,6 +32,7 @@ function Schedule() {
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     async function fetchBarbers() {
@@ -68,7 +69,6 @@ function Schedule() {
   }, [selectedBarber, selectedService, selectedDate, selectedHour]);
 
   useEffect(() => {
-    // Verifica se existe um parâmetro 'scheduleId' na query string
     const params = new URLSearchParams(location.search);
     const scheduleId = params.get('scheduleId');
 
@@ -78,16 +78,13 @@ function Schedule() {
           const { data } = await getScheduleById(scheduleId);
           setSelectedDate(data.date);
           setSelectedHour(data.time);
-
-          // Encontra o barbeiro correspondente com base no ID recebido do response
           const selectedBarberData = barbers.find(
             (barber) => barber.user_id === data.id_user_barber
           );
           setSelectedBarber(selectedBarberData);
-
-          // Encontra o serviço correspondente com base no ID recebido do response
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
+          setIsEditing(true);
         } catch (error) {
           console.error('Erro ao carregar agendamento:', error);
         }
@@ -118,14 +115,12 @@ function Schedule() {
     setIsSubmitting(true);
     const scheduleData = createScheduleObject();
     try {
-      if (location.search) {
-        // Se houver uma query string, atualiza a agenda
+      if (isEditing) {
         await updateSchedule(scheduleId, scheduleData);
         setMessage(
           'Agendamento atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
         );
       } else {
-        // Se não houver query string, cria uma nova agenda
         await createSchedule(scheduleData);
         setMessage(
           'Agendamento realizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
@@ -140,6 +135,24 @@ function Schedule() {
       setMessage('Erro ao criar/atualizar agendamento. Por favor, tente novamente.');
       setSnackbarOpen(true);
       setIsSubmitting(false);
+    }
+  };
+
+  const handleCancelAppointment = async () => {
+    const params = new URLSearchParams(location.search);
+    const scheduleId = params.get('scheduleId');
+
+    try {
+      await updateSchedule(scheduleId, { status: 'Cancelado' });
+      setMessage(
+        'Agendamento cancelado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+      );
+      setSnackbarOpen(true);
+      setTimeout(() => navigate('/inicio'), 3000);
+    } catch (error) {
+      console.error('Erro ao cancelar agendamento:', error);
+      setMessage('Erro ao cancelar agendamento. Por favor, tente novamente.');
+      setSnackbarOpen(true);
     }
   };
 
@@ -197,21 +210,41 @@ function Schedule() {
               ))}
             </Select>
           </div>
+          <Grid
+            container
+            direction="column"
+            justifyContent="center"
+            alignItems="center"
+            style={{ marginBottom: '2rem', marginTop: '1rem', zIndex: 2 }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              fullWidth
+              style={{ width: '100%', marginBottom: '1rem' }}
+              onClick={handleSubmit}
+              disabled={!isFormValid || isSubmitting}
+            >
+              {isEditing ? 'Atualizar' : 'Agendar'}
+            </Button>
+            {location.search && (
+              <Button
+                variant="outlined"
+                color="primary"
+                size="large"
+                fullWidth
+                style={{ width: '100%' }}
+                onClick={handleCancelAppointment}
+                disabled={!location.search || isSubmitting}
+              >
+                Cancelar Atendimento
+              </Button>
+            )}
+          </Grid>
         </Container>
       </Grid>
-      <Grid item style={{ position: 'sticky', bottom: '5rem', zIndex: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          fullWidth
-          style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
-          onClick={handleSubmit}
-          disabled={!isFormValid || isSubmitting}
-        >
-          {location.search ? 'Atualizar' : 'Agendar'}
-        </Button>
-      </Grid>
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
