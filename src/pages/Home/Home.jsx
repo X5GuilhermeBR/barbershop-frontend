@@ -1,28 +1,35 @@
-import ContentCutIcon from '@mui/icons-material/ContentCut'
-import { Alert, AlertTitle, Container, Grid, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import FooterNavigation from '../../components/FooterNavigation/FooterNavigation'
-import Header from '../../components/Header/Header'
-import SchedulingCard from '../../components/SchedulingCard/SchedulingCard'
-import { useAuth } from '../../context/AuthContext'
-import { checkScheduleById } from '../../service/api'
+import ContentCutIcon from '@mui/icons-material/ContentCut';
+import { Alert, AlertTitle, Container, Grid, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
+import Header from '../../components/Header/Header';
+import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
+import { useAuth } from '../../context/AuthContext';
+import { checkScheduleById } from '../../service/api';
 
 function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
-  
+
   useEffect(() => {
     async function fetchCheckScheduleById() {
       if (userInfo && userInfo.id) {
         const today = new Date(); // Obter a data de hoje
         const formattedDate = today.toISOString().split('T')[0]; // Formatar como "ano-mes-dia"
         const { data } = await checkScheduleById(formattedDate, '', userInfo.id); // Passar a data formatada para a requisição
-        setSchedule(data);
+        // Filtrar os agendamentos cancelados e ordenar da data mais próxima para a mais distante
+        const sortedSchedule = data
+          .filter((appointment) => appointment.status !== 'Cancelado')
+          .sort((a, b) => new Date(a.date) - new Date(b.date));
+        setSchedule(sortedSchedule);
         // Verificar se há um agendamento para hoje com o status "Agendado"
-        const hasAppointmentToday = data.some(appointment => {
+        const hasAppointmentToday = sortedSchedule.some((appointment) => {
           const appointmentDate = new Date(appointment.date);
-          return appointmentDate.toISOString().split('T')[0] === formattedDate && appointment.status === 'Agendado';
+          return (
+            appointmentDate.toISOString().split('T')[0] === formattedDate &&
+            appointment.status === 'Agendado'
+          );
         });
         setHasScheduledAppointment(hasAppointmentToday);
       }
@@ -54,9 +61,13 @@ function HomePage() {
           </Typography>
           <Grid container spacing={1}>
             {Array.isArray(schedule) &&
-              schedule.map((appointment) => (
-                <SchedulingCard key={appointment.id} appointment={appointment} />
-              ))}
+              schedule.map(
+                (appointment) =>
+                  // Verifica se o agendamento não foi cancelado antes de criar o componente SchedulingCard
+                  appointment.status !== 'Cancelado' && (
+                    <SchedulingCard key={appointment.id} appointment={appointment} />
+                  )
+              )}
           </Grid>
         </Container>
       </Grid>
