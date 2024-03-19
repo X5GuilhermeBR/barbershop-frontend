@@ -9,7 +9,7 @@ import SelectComponent from '../../components/SelectComponent/SelectComponent';
 import { useAuth } from '../../context/AuthContext';
 import {
   createSchedule,
-  getBarbers,
+  getByProfile,
   getSchedule,
   getScheduleById,
   getServices,
@@ -36,7 +36,7 @@ function Schedule() {
 
   useEffect(() => {
     async function fetchBarbers() {
-      const { data } = await getBarbers();
+      const { data } = await getByProfile();
       setBarbers(data);
     }
 

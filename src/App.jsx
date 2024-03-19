@@ -1,17 +1,18 @@
-import React from 'react'
-import { Route, BrowserRouter as Router, Routes } from 'react-router-dom'
-import { AuthProvider } from './context/AuthContext'
-import CreatedAccount from './pages/CreatedAccount/CreatedAccount'
-import EditPassword from './pages/EditPassword/EditPassword'
-import EditProfile from './pages/EditProfile/EditProfile'
-import History from './pages/History/History'
-import Home from './pages/Home/Home'
-import Login from './pages/Login/Login'
-import Options from './pages/Options/Options'
-import Register from './pages/Register/Register'
-import Schedule from './pages/Schedule/Schedule'
-import VerifyEmail from './pages/VerifyEmail/VerifyEmail'
-import PrivateRoute from './privateRoute'
+import React from 'react';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import Clients from './pages/Clients/Clients';
+import CreatedAccount from './pages/CreatedAccount/CreatedAccount';
+import EditPassword from './pages/EditPassword/EditPassword';
+import EditProfile from './pages/EditProfile/EditProfile';
+import History from './pages/History/History';
+import Home from './pages/Home/Home';
+import Login from './pages/Login/Login';
+import Options from './pages/Options/Options';
+import Register from './pages/Register/Register';
+import Schedule from './pages/Schedule/Schedule';
+import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
+import PrivateRoute from './privateRoute';
 
 function App() {
   return (
@@ -57,7 +58,7 @@ function App() {
             }
           />
           <Route
-            path="/agendar"
+            path="/novo-agendamento"
             element={
               <PrivateRoute>
                 <Schedule />
@@ -69,6 +70,14 @@ function App() {
             element={
               <PrivateRoute>
                 <History />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/clientes"
+            element={
+              <PrivateRoute>
+                <Clients />
               </PrivateRoute>
             }
           />

@@ -40,14 +40,14 @@ export const verifyToken = async (token) =>
       throw error; // Lança o erro para ser tratado no componente que chama a função
     });
 
-export const getBarbers = async () => {
+export const getByProfile = async (profile) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
     throw new Error('Token não encontrado na sessionStorage');
   }
 
   return api
-    .get(`/accounts/barbers`, {
+    .get(`/accounts/${profile}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

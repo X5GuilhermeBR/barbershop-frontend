@@ -4,8 +4,12 @@ import { Link } from 'react-router-dom';
 import HomeIcon from '@mui/icons-material/Home';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import { useAuth } from '../../context/AuthContext'
 
 function FooterNavigation() {
+  const { userInfo } = useAuth()
+
   return (
     <BottomNavigation
       sx={{
@@ -17,7 +21,10 @@ function FooterNavigation() {
       }}
     >
       <BottomNavigationAction component={Link} to="/inicio" label="Início" icon={<HomeIcon />} showLabel />
-      <BottomNavigationAction component={Link} to="/agendar" label="Agendar" icon={<AddCircleIcon />} showLabel />
+      <BottomNavigationAction component={Link} to="/novo-agendamento" label="Agendar" icon={<AddCircleIcon />} showLabel />
+      {userInfo?.profile !== 'client' && (
+      <BottomNavigationAction component={Link} to="/agenda" label="Agenda" icon={<CalendarMonthIcon />} showLabel />
+      )}
       <BottomNavigationAction component={Link} to="/configuracoes" label="Perfil" icon={<ManageAccountsIcon />} showLabel />
     </BottomNavigation>
   );

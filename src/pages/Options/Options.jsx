@@ -1,5 +1,6 @@
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import GroupsIcon from '@mui/icons-material/Groups';
 import HistoryIcon from '@mui/icons-material/History';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import PasswordIcon from '@mui/icons-material/Password';
@@ -65,9 +66,9 @@ export default function Options() {
         )}
         {userInfo.profile === 'barber' && (
           <>
-            <ListItemButton component={Link} to="/configuracoes/historico" disabled>
+            <ListItemButton component={Link} to="/configuracoes/clientes">
               <ListItemIcon>
-                <HistoryIcon />
+                <GroupsIcon />
               </ListItemIcon>
               <ListItemText primary="Clientes" />
             </ListItemButton>
