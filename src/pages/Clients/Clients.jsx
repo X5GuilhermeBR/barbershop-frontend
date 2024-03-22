@@ -1,4 +1,4 @@
-import { Delete, Lock, LockOpen, Search } from '@mui/icons-material';
+import { Delete, Lock, LockOpen, Search, WhatsApp } from '@mui/icons-material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import {
   Button,
@@ -18,8 +18,16 @@ import FooterNavigation from '../../components/FooterNavigation/FooterNavigation
 import Header from '../../components/Header/Header';
 import { getByProfile } from '../../service/api';
 
+function formatPhoneNumber(phoneNumber) {
+  const cleaned = `${phoneNumber}`.replace(/\D/g, '');
+  const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
+  if (match) {
+    return `+55 (${match[1]}) ${match[2]} ${match[3]}-${match[4]}`;
+  }
+  return null;
+}
+
 function Clients() {
-  // Estados
   const [users, setUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
@@ -27,13 +35,11 @@ function Clients() {
   const [confirmationDialogUserId, setConfirmationDialogUserId] = useState(null);
   const [selectedProfile] = useState('clients');
 
-  // Efeito para carregar usuários com base no perfil selecionado
   useEffect(() => {
     async function fetchClients() {
       try {
-        const { data } = await getByProfile('clients'); // Assumindo que 'Clients' seja o perfil dos clientes
+        const { data } = await getByProfile('clients');
         if (Array.isArray(data)) {
-          // Ordenar os usuários em ordem alfabética pelo nome
           data.sort((a, b) => (a.client_name > b.client_name ? 1 : -1));
           setUsers(data);
         } else {
@@ -47,28 +53,24 @@ function Clients() {
     fetchClients();
   }, [selectedProfile]);
 
-  // Função para abrir a modal de confirmação
   const handleOpenConfirmationDialog = (action, userId) => {
     setConfirmationDialogAction(action);
     setConfirmationDialogUserId(userId);
     setConfirmationDialogOpen(true);
   };
 
-  // Função para fechar a modal de confirmação
   const handleCloseConfirmationDialog = () => {
     setConfirmationDialogOpen(false);
     setConfirmationDialogAction(null);
     setConfirmationDialogUserId(null);
   };
 
-  // Função para deletar um usuário
   const handleDeleteUser = () => {
     const updatedUsers = users.filter((user) => user.user_id !== confirmationDialogUserId);
     setUsers(updatedUsers);
     handleCloseConfirmationDialog();
   };
 
-  // Função para habilitar ou desabilitar um usuário
   const handleToggleUser = () => {
     const updatedUsers = users.map((user) => {
       if (user.user_id === confirmationDialogUserId) {
@@ -80,7 +82,6 @@ function Clients() {
     handleCloseConfirmationDialog();
   };
 
-  // Função para filtrar os usuários com base no termo de busca
   const filteredUsers =
     Array.isArray(users) &&
     users.filter(
@@ -126,10 +127,12 @@ function Clients() {
                 >
                   <div>
                     <Typography variant="h6">
-                      {user.client_name.split(' ')[0]} {/* Exibe apenas o primeiro nome */}{' '}
-                      {user.client_name.split(' ').slice(-1)} {/* Exibe apenas o último nome */}
+                      {user.client_name.split(' ')[0]} {user.client_name.split(' ').slice(-1)}
                     </Typography>
                     <Typography variant="body1">{user.email}</Typography>
+                    <Typography variant="body1">
+                      {formatPhoneNumber(user.client_cellphone)}
+                    </Typography>
                   </div>
                   <div>
                     <IconButton
@@ -142,6 +145,13 @@ function Clients() {
                     >
                       {user.enabled ? <LockOpen /> : <Lock />}
                     </IconButton>
+                    <IconButton
+                      href={`https://wa.me/55${user.client_cellphone}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <WhatsApp />
+                    </IconButton>
                   </div>
                 </div>
               </Grid>
@@ -150,7 +160,6 @@ function Clients() {
       </Container>
       <FooterNavigation />
 
-      {/* Modal de confirmação de ação */}
       <Dialog
         open={confirmationDialogOpen}
         onClose={handleCloseConfirmationDialog}

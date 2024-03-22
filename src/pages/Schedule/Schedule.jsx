@@ -36,7 +36,7 @@ function Schedule() {
 
   useEffect(() => {
     async function fetchBarbers() {
-      const { data } = await getByProfile();
+      const { data } = await getByProfile('barbers');
       setBarbers(data);
     }
 
