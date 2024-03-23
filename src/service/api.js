@@ -291,6 +291,56 @@ export const updateAccount = async (userId, name, birthday, cellphone) => {
     });
 };
 
+export const updateStatusUser = async (userId, status) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/user/${userId}`;
+
+  const requestData = {"disable": status};
+
+  return api
+    .put(url, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
+export const deleteUser = async (userId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/user/${userId}`;
+
+  return api
+    .delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
 export const getScheduleById = async (scheduleId) => {
   const token = sessionStorage.getItem('token');
   if (!token) {

@@ -1,4 +1,4 @@
-import { Delete, Lock, LockOpen, Search, WhatsApp } from '@mui/icons-material';
+import { Lock, LockOpen, Search, WhatsApp } from '@mui/icons-material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import {
   Button,
@@ -16,7 +16,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { getByProfile } from '../../service/api';
+import { getByProfile, updateStatusUser } from '../../service/api'; // Importe a função deleteUser
 
 function formatPhoneNumber(phoneNumber) {
   const cleaned = `${phoneNumber}`.replace(/\D/g, '');
@@ -65,16 +65,12 @@ function Clients() {
     setConfirmationDialogUserId(null);
   };
 
-  const handleDeleteUser = () => {
-    const updatedUsers = users.filter((user) => user.user_id !== confirmationDialogUserId);
-    setUsers(updatedUsers);
-    handleCloseConfirmationDialog();
-  };
-
-  const handleToggleUser = () => {
+  const handleToggleUser = async () => {
     const updatedUsers = users.map((user) => {
       if (user.user_id === confirmationDialogUserId) {
-        return { ...user, enabled: !user.enabled };
+        const newStatus = !user.disable; // Alternar o status
+        updateStatusUser(user.user_id, !user.disable); // Chamar a função updateStatusAccount com o ID do usuário e o novo status
+        return { ...user, disable: newStatus };
       }
       return user;
     });
@@ -136,14 +132,9 @@ function Clients() {
                   </div>
                   <div>
                     <IconButton
-                      onClick={() => handleOpenConfirmationDialog('delete', user.user_id)}
-                    >
-                      <Delete />
-                    </IconButton>
-                    <IconButton
                       onClick={() => handleOpenConfirmationDialog('toggle', user.user_id)}
                     >
-                      {user.enabled ? <LockOpen /> : <Lock />}
+                      {user.disable ? <LockOpen /> : <Lock />}
                     </IconButton>
                     <IconButton
                       href={`https://wa.me/55${user.client_cellphone}`}
@@ -178,10 +169,7 @@ function Clients() {
           <Button onClick={handleCloseConfirmationDialog} color="secondary">
             Cancelar
           </Button>
-          <Button
-            onClick={confirmationDialogAction === 'delete' ? handleDeleteUser : handleToggleUser}
-            color="primary"
-          >
+          <Button onClick={handleToggleUser} color="primary">
             Confirmar
           </Button>
         </DialogActions>
