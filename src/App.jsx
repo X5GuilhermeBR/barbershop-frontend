@@ -4,6 +4,7 @@ import { AuthProvider } from './context/AuthContext';
 import Clients from './pages/Clients/Clients';
 import CreatedAccount from './pages/CreatedAccount/CreatedAccount';
 import EditPassword from './pages/EditPassword/EditPassword';
+import EditProduct from './pages/EditProducts/EditProducts';
 import EditProfile from './pages/EditProfile/EditProfile';
 import History from './pages/History/History';
 import Home from './pages/Home/Home';
@@ -94,7 +95,7 @@ function App() {
             path="/configuracoes/produtos/novo-produto"
             element={
               <PrivateRoute>
-                <ListProducts />
+                <EditProduct />
               </PrivateRoute>
             }
           />

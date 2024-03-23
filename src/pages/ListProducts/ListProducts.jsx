@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'; // Importe o componente Link para criar o botão "Criar Novo Produto"
+import { Link, useNavigate } from 'react-router-dom'; // Importe o componente Link para criar o botão "Criar Novo Produto"
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { getProducts, updateProductStatus } from '../../service/api'; // Importe as funções necessárias para produtos
@@ -23,6 +23,7 @@ function ListProducts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProducts() {
@@ -37,9 +38,8 @@ function ListProducts() {
     fetchProducts();
   }, []);
 
-  const handleEditProduct = (productId) => {
-    // Lógica para editar o produto
-    console.log('Editar produto com ID:', productId);
+  const handleEditClick = (productId) => {
+    navigate(`/configuracoes/produtos/novo-produto?productId=${productId}`);
   };
 
   const handleToggleProductStatus = (productId) => {
@@ -128,11 +128,11 @@ function ListProducts() {
                   <Typography variant="body1">{product.description}</Typography>
                   <Typography variant="body1">{`Preço: R$${product.price}`}</Typography>
                   <div style={{ marginTop: 'auto' }}>
+                    <IconButton onClick={() => handleEditClick(product.id)}>
+                      <Edit />
+                    </IconButton>
                     <IconButton onClick={() => handleToggleProductStatus(product.id)}>
                       {product.disable ? <LockOpen /> : <Lock />}
-                    </IconButton>
-                    <IconButton onClick={() => handleEditProduct(product.id)}>
-                      <Edit />
                     </IconButton>
                   </div>
                 </div>

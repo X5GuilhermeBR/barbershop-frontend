@@ -389,6 +389,54 @@ export const getProducts = async () => {
     });
 };
 
+export const getProductById = async (productId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/product/${productId}`;
+
+  return api
+    .get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
+export const deleteProduct = async (productId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/product/${productId}`;
+
+  return api
+    .delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
 export const updateProductStatus = async (userId, status) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
@@ -413,4 +461,45 @@ export const updateProductStatus = async (userId, status) => {
       console.error('Erro ao fazer a requisição:', error);
       throw error;
     });
+};
+
+export const updateProduct = async (productId, productData) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  try {
+    const response = await api.put(`/product/${productId}`, productData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao alterar a senha:', error);
+    throw error;
+  }
+};
+
+export const createProduct = async (productInfo) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await api.post('/product', productInfo, config);
+    console.log(response.data);
+    return response.data; // Retorna os dados da resposta para quem chamar esta função
+  } catch (error) {
+    console.error('Erro ao fazer a requisição:', error);
+    throw error; // Lança o erro para quem chamar esta função
+  }
 };
