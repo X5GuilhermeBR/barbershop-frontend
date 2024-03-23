@@ -72,7 +72,7 @@ export default function Options() {
               </ListItemIcon>
               <ListItemText primary="Clientes" />
             </ListItemButton>
-            <ListItemButton component={Link} to="/configuracoes/historico" disabled>
+            <ListItemButton component={Link} to="/configuracoes/produtos">
               <ListItemIcon>
                 <HistoryIcon />
               </ListItemIcon>

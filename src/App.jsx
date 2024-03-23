@@ -7,6 +7,7 @@ import EditPassword from './pages/EditPassword/EditPassword';
 import EditProfile from './pages/EditProfile/EditProfile';
 import History from './pages/History/History';
 import Home from './pages/Home/Home';
+import ListProducts from './pages/ListProducts/ListProducts';
 import Login from './pages/Login/Login';
 import Options from './pages/Options/Options';
 import Register from './pages/Register/Register';
@@ -78,6 +79,22 @@ function App() {
             element={
               <PrivateRoute>
                 <Clients />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/produtos"
+            element={
+              <PrivateRoute>
+                <ListProducts />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/produtos/novo-produto"
+            element={
+              <PrivateRoute>
+                <ListProducts />
               </PrivateRoute>
             }
           />
