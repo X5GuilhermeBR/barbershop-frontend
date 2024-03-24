@@ -99,6 +99,8 @@ function Schedule() {
                       <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
                       <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
                       <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
+                      <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
+                      <Typography variant="body2">{`Tipo: ${appointment.type}`}</Typography>
                     </div>
                   </div>
                 </Grid>
