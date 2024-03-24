@@ -534,7 +534,7 @@ export const getServiceById = async (serviceId) => {
     throw new Error('Token não encontrado na sessionStorage');
   }
 
-  const url = `/product/${serviceId}`;
+  const url = `/service/${serviceId}`;
 
   return api
     .get(url, {

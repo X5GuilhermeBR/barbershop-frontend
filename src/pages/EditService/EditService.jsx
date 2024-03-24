@@ -7,7 +7,6 @@ import Header from '../../components/Header/Header';
 import { createService, deleteService, getServiceById, updateService } from '../../service/api';
 
 function EditService() {
-  // ajuste no nome da função
   const location = useLocation();
   const navigate = useNavigate();
   const serviceId = new URLSearchParams(location.search).get('serviceId');
@@ -15,18 +14,19 @@ function EditService() {
   const [serviceName, setServiceName] = useState('');
   const [serviceDescription, setServiceDescription] = useState('');
   const [servicePrice, setServicePrice] = useState('');
+  const [serviceTime, setServiceTime] = useState(''); // Novo estado para o tempo estimado
   const [loading, setLoading] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('success');
 
   const fetchServiceDetails = async () => {
-    // ajuste no nome da função
     try {
       const { data } = await getServiceById(serviceId);
       setServiceName(data.name);
       setServiceDescription(data.description);
       setServicePrice(data.price);
+      setServiceTime(data.average_duration); // Define o tempo estimado recuperado do serviço
     } catch (error) {
       console.error('Erro ao obter detalhes do serviço:', error);
     }
@@ -39,15 +39,14 @@ function EditService() {
   }, [serviceId]);
 
   const handleSaveService = async () => {
-    // ajuste no nome da função
     try {
       setLoading(true);
       if (!serviceId) {
         await createService({
-          // ajuste na chamada da função
-          name: serviceName, // ajuste no nome do estado
-          description: serviceDescription, // ajuste no nome do estado
-          price: servicePrice, // ajuste no nome do estado
+          name: serviceName,
+          description: serviceDescription,
+          price: servicePrice,
+          average_duration: serviceTime, // Inclui o tempo estimado ao criar um serviço
           disable: false,
         });
         setMessage(
@@ -55,10 +54,10 @@ function EditService() {
         );
       } else {
         await updateService(serviceId, {
-          // ajuste na chamada da função
-          name: serviceName, // ajuste no nome do estado
-          description: serviceDescription, // ajuste no nome do estado
-          price: servicePrice, // ajuste no nome do estado
+          name: serviceName,
+          description: serviceDescription,
+          price: servicePrice,
+          average_duration: serviceTime, // Inclui o tempo estimado ao atualizar um serviço
           disable: false,
         });
         setMessage(
@@ -68,7 +67,7 @@ function EditService() {
       setSeverity('success');
       setAlertOpen(true);
       setTimeout(() => {
-        navigate('/configuracoes/servicos'); // ajuste no redirecionamento
+        navigate('/configuracoes/servicos');
       }, 3000);
     } catch (error) {
       console.error('Erro ao salvar o serviço:', error.message);
@@ -81,17 +80,16 @@ function EditService() {
   };
 
   const handleDeleteService = async () => {
-    // ajuste no nome da função
     try {
       setLoading(true);
-      await deleteService(serviceId); // ajuste na chamada da função
+      await deleteService(serviceId);
       setMessage(
         'Serviço excluído com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
       );
       setSeverity('success');
       setAlertOpen(true);
       setTimeout(() => {
-        navigate('/configuracoes/servicos'); // ajuste no redirecionamento
+        navigate('/configuracoes/servicos');
       }, 3000);
     } catch (error) {
       console.error('Erro ao excluir o serviço:', error.message);
@@ -119,7 +117,7 @@ function EditService() {
             <TextField
               label="Nome"
               value={serviceName}
-              onChange={(e) => setServiceName(e.target.value)} // ajuste no nome do estado
+              onChange={(e) => setServiceName(e.target.value)}
               fullWidth
               margin="normal"
             />
@@ -128,7 +126,7 @@ function EditService() {
             <TextField
               label="Descrição"
               value={serviceDescription}
-              onChange={(e) => setServiceDescription(e.target.value)} // ajuste no nome do estado
+              onChange={(e) => setServiceDescription(e.target.value)}
               fullWidth
               margin="normal"
             />
@@ -137,7 +135,16 @@ function EditService() {
             <TextField
               label="Preço"
               value={servicePrice}
-              onChange={(e) => setServicePrice(e.target.value)} // ajuste no nome do estado
+              onChange={(e) => setServicePrice(e.target.value)}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              label="Tempo Estimado"
+              value={serviceTime}
+              onChange={(e) => setServiceTime(e.target.value)}
               fullWidth
               margin="normal"
             />
@@ -150,7 +157,7 @@ function EditService() {
               color="primary"
               size="large"
               fullWidth
-              onClick={handleSaveService} // ajuste no nome da função
+              onClick={handleSaveService}
               disabled={loading}
             >
               {serviceId ? 'Salvar' : 'Criar'}
@@ -164,7 +171,7 @@ function EditService() {
                 color="error"
                 size="large"
                 fullWidth
-                onClick={handleDeleteService} // ajuste no nome da função
+                onClick={handleDeleteService}
                 disabled={loading}
               >
                 Excluir
