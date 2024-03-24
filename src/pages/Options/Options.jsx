@@ -6,6 +6,7 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import HistoryIcon from '@mui/icons-material/History';
 import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import PasswordIcon from '@mui/icons-material/Password';
+import RoomServiceIcon from '@mui/icons-material/RoomService';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Grid } from '@mui/material';
@@ -80,9 +81,9 @@ export default function Options() {
               </ListItemIcon>
               <ListItemText primary="Produtos" />
             </ListItemButton>
-            <ListItemButton component={Link} to="/configuracoes/historico" disabled>
+            <ListItemButton component={Link} to="/configuracoes/servicos">
               <ListItemIcon>
-                <HistoryIcon />
+                <RoomServiceIcon />
               </ListItemIcon>
               <ListItemText primary="Serviços" />
             </ListItemButton>

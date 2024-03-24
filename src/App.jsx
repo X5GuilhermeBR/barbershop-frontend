@@ -9,6 +9,7 @@ import EditProfile from './pages/EditProfile/EditProfile';
 import History from './pages/History/History';
 import Home from './pages/Home/Home';
 import ListProducts from './pages/ListProducts/ListProducts';
+import ListServices from './pages/ListServices/ListServices';
 import Login from './pages/Login/Login';
 import Options from './pages/Options/Options';
 import Register from './pages/Register/Register';
@@ -96,6 +97,14 @@ function App() {
             element={
               <PrivateRoute>
                 <EditProduct />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/servicos"
+            element={
+              <PrivateRoute>
+                <ListServices />
               </PrivateRoute>
             }
           />

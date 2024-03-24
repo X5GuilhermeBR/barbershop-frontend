@@ -437,13 +437,13 @@ export const deleteProduct = async (productId) => {
     });
 };
 
-export const updateProductStatus = async (userId, status) => {
+export const updateProductStatus = async (productId, status) => {
   const token = sessionStorage.getItem('token');
   if (!token) {
     throw new Error('Token não encontrado na sessionStorage');
   }
 
-  const url = `/product/${userId}`;
+  const url = `/product/${productId}`;
 
   const requestData = {"disable": status};
 
@@ -502,4 +502,31 @@ export const createProduct = async (productInfo) => {
     console.error('Erro ao fazer a requisição:', error);
     throw error; // Lança o erro para quem chamar esta função
   }
+};
+
+
+export const updateServiceStatus = async (serviceId, status) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/service/${serviceId}`;
+
+  const requestData = {"disable": status};
+
+  return api
+    .put(url, requestData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
 };
