@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import HistoryIcon from '@mui/icons-material/History';
-import { Container, Grid, TextField, Typography } from '@mui/material';
+import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -49,6 +49,8 @@ function Schedule() {
     return `${dayOfWeek}, ${day}/${month}/${year}`;
   };
 
+  const formatHour = (hour) => (hour < 10 ? `0${hour}:00` : `${hour}:00`);
+
   return (
     <>
       <Header icon={<HistoryIcon />} title="Minha agenda" />
@@ -86,28 +88,31 @@ function Schedule() {
               scheduledAppointments.map((appointment, index) => (
                 <Grid item xs={12} key={appointment.id}>
                   {index === 0 || appointment.date !== scheduledAppointments[index - 1].date ? (
-                    <Typography variant="h6" style={{ marginBottom: '1rem' }}>
+                    <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
                       {formatWeekdayDateMonthYear(appointment.date)}
                     </Typography>
                   ) : null}
-                  <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <Typography
-                      variant="body1"
-                      style={{ marginRight: '1rem' }}
-                    >{`${appointment.time}`}</Typography>
-                    <div style={{ borderLeft: '1px solid #ccc', paddingLeft: '1rem' }}>
-                      <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
-                      <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
-                      <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
-                      <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
-                      <Typography variant="body2">{`Tipo: ${appointment.type}`}</Typography>
+                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography
+                        variant="body1"
+                        style={{ marginRight: '1rem' }}
+                      >{`${formatHour(appointment.time)}`}</Typography>
+                      <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
+                      <div>
+                        <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
+                        <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
+                        <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
+                        <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
+                        <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
+                      </div>
                     </div>
-                  </div>
+                  </Paper>
                 </Grid>
               ))
             ) : (
               <Grid item xs={12}>
-                <Typography variant="h6" style={{ marginTop: '1rem' }}>
+                <Typography variant="h6" style={{ marginTop: '1rem', textAlign: 'center' }}>
                   Você não possui agendamentos nesta data.
                 </Typography>
               </Grid>
