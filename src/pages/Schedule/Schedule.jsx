@@ -1,9 +1,9 @@
+/* eslint-disable no-unused-vars */
 import HistoryIcon from '@mui/icons-material/History';
 import { Container, Grid, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
 
@@ -82,17 +82,35 @@ function Schedule() {
                 }}
               />
             </Grid>
-            {scheduledAppointments.map((appointment) => (
-              <Grid item xs={12} key={appointment.id}>
+            {scheduledAppointments.length > 0 ? (
+              scheduledAppointments.map((appointment) => (
+                <Grid item xs={12} key={appointment.id}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <Typography variant="h6">
+                      {formatWeekdayDateMonthYear(appointment.date)}
+                    </Typography>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography variant="body1">{`${appointment.time}`}</Typography>
+                      <div
+                        style={{
+                          borderLeft: '1px solid #ccc',
+                          marginLeft: '0.5rem',
+                          paddingLeft: '0.5rem',
+                        }}
+                      >
+                        <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
+                        <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
+                        <Typography variant="body2">{`Valor: R$ ${appointment.service_price}`}</Typography>
+                      </div>
+                    </div>
+                  </div>
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
                 <Typography variant="h6" style={{ marginTop: '1rem' }}>
-                  {formatWeekdayDateMonthYear(appointment.date)}
+                  Você não possui agendamentos nesta data.
                 </Typography>
-                <SchedulingCard appointment={appointment} />
-              </Grid>
-            ))}
-            {noAppointments && (
-              <Grid container justifyContent="center" style={{ marginTop: '1rem' }}>
-                <Typography variant="h6">Você não possui agendamentos nesta data.</Typography>
               </Grid>
             )}
           </Grid>
