@@ -1,7 +1,6 @@
-/* eslint-disable no-restricted-globals */
-/* eslint-disable react/jsx-no-duplicate-props */
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History';
 import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -36,18 +35,7 @@ function Schedule() {
 
   const handleDateChange = (event) => {
     const selectedDateValue = event.target.value;
-    const selectedDateObject = new Date(selectedDateValue);
-
-    // Verifica se a data selecionada é inválida
-    if (isNaN(selectedDateObject.getTime())) {
-      // Se for inválida, define a data atual como a data selecionada
-      const currentDate = new Date();
-      const formattedCurrentDate = currentDate.toISOString().split('T')[0];
-      setSelectedDate(formattedCurrentDate);
-    } else {
-      // Caso contrário, define a data selecionada pelo usuário
-      setSelectedDate(selectedDateValue);
-    }
+    setSelectedDate(selectedDateValue);
   };
 
   const formatWeekdayDateMonthYear = (dateString) => {
@@ -96,6 +84,16 @@ function Schedule() {
     );
   };
 
+  const handleAddAppointment = (hour) => {
+    // Implemente a lógica para adicionar um novo agendamento para a hora selecionada
+    console.log(`Adicionar novo agendamento para as ${formatHour(hour)}`);
+  };
+
+  const handleEditAppointment = (hour, appointment) => {
+    // Implemente a lógica para editar o agendamento para a hora selecionada
+    console.log(`Editar agendamento para as ${formatHour(hour)}:`, appointment);
+  };
+
   return (
     <>
       <Header icon={<HistoryIcon />} title="Minha agenda" />
@@ -127,9 +125,6 @@ function Schedule() {
                     .toISOString()
                     .split('T')[0],
                 }}
-                InputProps={{
-                  disableOpenPicker: true, // Define o padding direito para 0 para remover o espaço reservado para o botão "Limpar"
-                }}
               />
             </Grid>
             {Object.entries(groupedAppointmentsByDate).map(([date, appointments]) => (
@@ -145,6 +140,28 @@ function Schedule() {
                       </Typography>
                       <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
                       <div>{renderAppointmentOrVago(hour, appointments)}</div>
+                      {appointments.find(
+                        (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                      ) ? (
+                        <EditIcon
+                          fontSize="small"
+                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                          onClick={() =>
+                            handleEditAppointment(
+                              hour,
+                              appointments.find(
+                                (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                              )
+                            )
+                          }
+                        />
+                      ) : (
+                        <AddIcon
+                          fontSize="small"
+                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                          onClick={() => handleAddAppointment(hour)}
+                        />
+                      )}
                     </div>
                   </Paper>
                 ))}
@@ -166,6 +183,11 @@ function Schedule() {
                         <Typography variant="body1" style={{ textAlign: 'center' }}>
                           Horário vago
                         </Typography>
+                        <AddIcon
+                          fontSize="small"
+                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                          onClick={() => handleAddAppointment(hour)}
+                        />
                       </div>
                     </div>
                   </Paper>
