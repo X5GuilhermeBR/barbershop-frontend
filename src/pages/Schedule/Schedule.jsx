@@ -16,9 +16,8 @@ function Schedule() {
 
   useEffect(() => {
     const currentDate = new Date();
-    const maxDate = new Date(currentDate.getTime() + 45 * 24 * 60 * 60 * 1000); // 45 dias à frente
-    const formattedMaxDate = maxDate.toISOString().split('T')[0]; // Formata a data para o formato 'YYYY-MM-DD'
-    setSelectedDate(formattedMaxDate);
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0]; // Formata a data para o formato 'YYYY-MM-DD'
+    setSelectedDate(formattedCurrentDate);
   }, []);
 
   useEffect(() => {
