@@ -504,6 +504,53 @@ export const createProduct = async (productInfo) => {
   }
 };
 
+export const deleteService = async (serviceId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/service/${serviceId}`;
+
+  return api
+    .delete(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
+export const getServiceById = async (serviceId) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/product/${serviceId}`;
+
+  return api
+    .get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
 
 export const updateServiceStatus = async (serviceId, status) => {
   const token = sessionStorage.getItem('token');
@@ -529,4 +576,46 @@ export const updateServiceStatus = async (serviceId, status) => {
       console.error('Erro ao fazer a requisição:', error);
       throw error;
     });
+};
+
+
+export const updateService = async (serviceId, serviceData) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  try {
+    const response = await api.put(`/service/${serviceId}`, serviceData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao alterar a senha:', error);
+    throw error;
+  }
+};
+
+export const createService = async (serviceInfo) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await api.post('/service', serviceInfo, config);
+    console.log(response.data);
+    return response.data; // Retorna os dados da resposta para quem chamar esta função
+  } catch (error) {
+    console.error('Erro ao fazer a requisição:', error);
+    throw error; // Lança o erro para quem chamar esta função
+  }
 };

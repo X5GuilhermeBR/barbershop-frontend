@@ -6,6 +6,7 @@ import CreatedAccount from './pages/CreatedAccount/CreatedAccount';
 import EditPassword from './pages/EditPassword/EditPassword';
 import EditProduct from './pages/EditProducts/EditProducts';
 import EditProfile from './pages/EditProfile/EditProfile';
+import EditService from './pages/EditService/EditService';
 import History from './pages/History/History';
 import Home from './pages/Home/Home';
 import ListProducts from './pages/ListProducts/ListProducts';
@@ -105,6 +106,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ListServices />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/servicos/novo-servico"
+            element={
+              <PrivateRoute>
+                <EditService />
               </PrivateRoute>
             }
           />
