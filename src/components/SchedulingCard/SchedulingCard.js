@@ -15,7 +15,7 @@ function SchedulingCard({ appointment }) {
 
   const handleEditClick = () => {
     if (appointment.status === 'Agendado') {
-      navigate(`/agendar?scheduleId=${appointment.id}`);
+      navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
     }
   };
 

@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import ArticleIcon from '@mui/icons-material/Article';
 import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
@@ -19,9 +20,11 @@ import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/gen
 
 function NewSchedule() {
   const [barbers, setBarbers] = useState([]);
+  const [clients, setClients] = useState([]);
   const [services, setServices] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [selectedBarber, setSelectedBarber] = useState('');
+  const [selectedClient, setSelectedClient] = useState('');
   const [selectedService, setSelectedService] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedHour, setSelectedHour] = useState('');
@@ -29,31 +32,49 @@ function NewSchedule() {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    async function fetchBarbers() {
-      const { data } = await getByProfile('barbers');
-      setBarbers(data);
+    if (userInfo && userInfo.profile === 'client') {
+      setSelectedClient(userInfo.id);
+    } else if (userInfo && userInfo.profile === 'barber') {
+      setSelectedBarber(userInfo.id);
+    }
+  }, [userInfo?.profile]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data: barbersData } = await getByProfile('barbers');
+        setBarbers(barbersData);
+
+        const { data: clientsData } = await getByProfile('clients');
+        setClients(clientsData);
+
+        const { data: servicesData } = await getServices();
+        setServices(servicesData);
+      } catch (error) {
+        console.error('Erro ao buscar dados:', error);
+      }
     }
 
-    async function fetchServices() {
-      const { data } = await getServices();
-      setServices(data);
-    }
-
-    fetchBarbers();
-    fetchServices();
-  }, []);
+    fetchData();
+  }, [userInfo?.profile]);
 
   useEffect(() => {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
+          let userId;
+          if (userInfo?.profile === 'barber') {
+            userId = selectedBarber;
+          } else {
+            userId = selectedClient;
+          }
+          const { data } = await getSchedule(selectedDate, selectedDate, userId);
           setSchedule(data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
@@ -62,11 +83,23 @@ function NewSchedule() {
     };
 
     fetchScheduleData();
-  }, [selectedBarber, selectedService, selectedDate]);
+  }, [selectedBarber, selectedClient, selectedService, selectedDate, userInfo?.profile]);
 
   useEffect(() => {
-    setIsFormValid(selectedBarber && selectedService && selectedDate && selectedHour);
-  }, [selectedBarber, selectedService, selectedDate, selectedHour]);
+    setIsFormValid(
+      selectedDate &&
+        selectedHour &&
+        ((userInfo?.profile === 'barber' && selectedClient) ||
+          (userInfo?.profile === 'client' && selectedBarber))
+    );
+  }, [
+    selectedBarber,
+    selectedClient,
+    selectedService,
+    selectedDate,
+    selectedHour,
+    userInfo?.profile,
+  ]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -94,26 +127,23 @@ function NewSchedule() {
     }
   }, [barbers, services, location.search]);
 
-  const createScheduleObject = () => ({
-    id_user_client: userInfo.id,
-    id_user_barber: selectedBarber.user_id,
-    type: 'Agendado',
-    date: selectedDate,
-    time: selectedHour,
-    id_service: selectedService.id,
-    status: 'Agendado',
-  });
-
   const handleSubmit = async () => {
     if (!isFormValid || isSubmitting) {
       return;
     }
 
-    const params = new URLSearchParams(location.search);
-    const scheduleId = params.get('scheduleId');
-
     setIsSubmitting(true);
-    const scheduleData = createScheduleObject();
+
+    const scheduleData = {
+      id_user_client: userInfo?.profile === 'client' ? selectedClient : selectedClient.user_id,
+      id_user_barber: userInfo?.profile === 'barber' ? selectedBarber : selectedBarber.user_id,
+      type: 'Marcado',
+      date: selectedDate,
+      time: selectedHour,
+      id_service: selectedService.id,
+      status: 'Agendado',
+    };
+
     try {
       if (isEditing) {
         await updateSchedule(scheduleId, scheduleData);
@@ -169,13 +199,23 @@ function NewSchedule() {
       <Grid item style={{ marginBottom: '2rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <SelectComponent
-              label="Barbeiro"
-              value={selectedBarber}
-              onChange={(e) => setSelectedBarber(e.target.value)}
-              items={barbers}
-              disabled={isSubmitting}
-            />
+            {userInfo?.profile === 'barber' ? (
+              <SelectComponent
+                label="Cliente"
+                value={selectedClient}
+                onChange={(e) => setSelectedClient(e.target.value)}
+                items={clients}
+                disabled={isSubmitting}
+              />
+            ) : (
+              <SelectComponent
+                label="Barbeiro"
+                value={selectedBarber}
+                onChange={(e) => setSelectedBarber(e.target.value)}
+                items={barbers}
+                disabled={isSubmitting}
+              />
+            )}
             <SelectComponent
               label="Serviço"
               value={selectedService}

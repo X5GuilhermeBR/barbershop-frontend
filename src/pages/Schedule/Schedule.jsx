@@ -5,6 +5,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importe useHistory
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
@@ -15,10 +16,11 @@ function Schedule() {
   const [scheduledAppointments, setScheduledAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [noAppointments, setNoAppointments] = useState(false);
+  const navigate = useNavigate(); // Obtenha a instância de useHistory
 
   useEffect(() => {
     const currentDate = new Date();
-    const formattedCurrentDate = currentDate.toISOString().split('T')[0]; // Formata a data atual para o formato 'YYYY-MM-DD'
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0];
     setSelectedDate(formattedCurrentDate);
   }, []);
 
@@ -42,7 +44,7 @@ function Schedule() {
   const formatWeekdayDateMonthYear = (dateString) => {
     const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     const date = new Date(dateString);
-    date.setDate(date.getDate() + 1); // Adiciona um dia à data
+    date.setDate(date.getDate() + 1);
     const dayOfWeek = daysOfWeek[date.getDay()];
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -85,13 +87,11 @@ function Schedule() {
     );
   };
 
-  const handleAddAppointment = (hour) => {
-    // Implemente a lógica para adicionar um novo agendamento para a hora selecionada
-    console.log(`Adicionar novo agendamento para as ${formatHour(hour)}`);
+  const handleAddAppointment = () => {
+    navigate('/novo-agendamento'); // Navegue para a rota '/novo-agendamento' quando o ícone de adição for clicado
   };
 
   const handleEditAppointment = (hour, appointment) => {
-    // Implemente a lógica para editar o agendamento para a hora selecionada
     console.log(`Editar agendamento para as ${formatHour(hour)}:`, appointment);
   };
 
