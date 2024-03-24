@@ -24,6 +24,8 @@ function Schedule() {
     async function fetchScheduledAppointments() {
       if (userInfo && userInfo.id) {
         const { data } = await checkScheduleById(selectedDate, selectedDate, userInfo.id);
+        // Ordena os agendamentos pela data em ordem crescente (da mais antiga para a mais recente)
+        data.sort((a, b) => new Date(a.date) - new Date(b.date));
         setScheduledAppointments(data);
         setNoAppointments(data.length === 0);
       }
