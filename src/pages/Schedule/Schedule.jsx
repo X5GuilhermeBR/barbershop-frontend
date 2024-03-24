@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-globals */
+/* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 import HistoryIcon from '@mui/icons-material/History';
@@ -16,7 +18,7 @@ function Schedule() {
 
   useEffect(() => {
     const currentDate = new Date();
-    const formattedCurrentDate = currentDate.toISOString().split('T')[0]; // Formata a data para o formato 'YYYY-MM-DD'
+    const formattedCurrentDate = currentDate.toISOString().split('T')[0]; // Formata a data atual para o formato 'YYYY-MM-DD'
     setSelectedDate(formattedCurrentDate);
   }, []);
 
@@ -34,7 +36,18 @@ function Schedule() {
 
   const handleDateChange = (event) => {
     const selectedDateValue = event.target.value;
-    setSelectedDate(selectedDateValue);
+    const selectedDateObject = new Date(selectedDateValue);
+
+    // Verifica se a data selecionada é inválida
+    if (isNaN(selectedDateObject.getTime())) {
+      // Se for inválida, define a data atual como a data selecionada
+      const currentDate = new Date();
+      const formattedCurrentDate = currentDate.toISOString().split('T')[0];
+      setSelectedDate(formattedCurrentDate);
+    } else {
+      // Caso contrário, define a data selecionada pelo usuário
+      setSelectedDate(selectedDateValue);
+    }
   };
 
   const formatWeekdayDateMonthYear = (dateString) => {
@@ -113,6 +126,9 @@ function Schedule() {
                   max: new Date(new Date().getTime() + 45 * 24 * 60 * 60 * 1000) // 45 dias à frente
                     .toISOString()
                     .split('T')[0],
+                }}
+                InputProps={{
+                  disableOpenPicker: true, // Define o padding direito para 0 para remover o espaço reservado para o botão "Limpar"
                 }}
               />
             </Grid>
