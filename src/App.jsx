@@ -12,6 +12,7 @@ import Home from './pages/Home/Home';
 import ListProducts from './pages/ListProducts/ListProducts';
 import ListServices from './pages/ListServices/ListServices';
 import Login from './pages/Login/Login';
+import NewSchedule from './pages/NewSchedule/NewSchedule';
 import Options from './pages/Options/Options';
 import Register from './pages/Register/Register';
 import Schedule from './pages/Schedule/Schedule';
@@ -63,6 +64,14 @@ function App() {
           />
           <Route
             path="/novo-agendamento"
+            element={
+              <PrivateRoute>
+                <NewSchedule />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/agenda"
             element={
               <PrivateRoute>
                 <Schedule />
