@@ -1,10 +1,10 @@
-import { Button, Container, Grid, Snackbar, TextField } from '@mui/material';
+import { Button, CircularProgress, Container, Grid, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { createProduct, deleteProduct, getProductById, updateProduct } from '../../service/api'; // Importe as funções necessárias para produtos
+import { createProduct, deleteProduct, getProductById, updateProduct } from '../../service/api';
 
 function EditProduct() {
   const location = useLocation();
@@ -14,9 +14,10 @@ function EditProduct() {
   const [productName, setProductName] = useState('');
   const [productDescription, setProductDescription] = useState('');
   const [productPrice, setProductPrice] = useState('');
+  const [loading, setLoading] = useState(false);
   const [alertOpen, setAlertOpen] = useState(false);
   const [message, setMessage] = useState('');
-  const [severity, setSeverity] = useState('success'); // Define a gravidade padrão como sucesso
+  const [severity, setSeverity] = useState('success');
 
   const fetchProductDetails = async () => {
     try {
@@ -26,12 +27,10 @@ function EditProduct() {
       setProductPrice(data.price);
     } catch (error) {
       console.error('Erro ao obter detalhes do produto:', error);
-      // Redirecionar para uma página de erro ou lidar com isso de alguma outra maneira
     }
   };
 
   useEffect(() => {
-    // Se houver um productId na query string, carregue os detalhes do produto
     if (productId) {
       fetchProductDetails();
     }
@@ -39,6 +38,7 @@ function EditProduct() {
 
   const handleSaveProduct = async () => {
     try {
+      setLoading(true);
       if (!productId) {
         await createProduct({
           name: productName,
@@ -46,7 +46,9 @@ function EditProduct() {
           price: productPrice,
           disable: false,
         });
-        setMessage('Produto criado com sucesso!');
+        setMessage(
+          'Produto criado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+        );
       } else {
         await updateProduct(productId, {
           name: productName,
@@ -54,30 +56,39 @@ function EditProduct() {
           price: productPrice,
           disable: false,
         });
-        setMessage('Produto atualizado com sucesso!');
+        setMessage(
+          'Produto atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+        );
       }
-      setSeverity('success'); // Define a gravidade como sucesso
+      setSeverity('success');
       setAlertOpen(true);
+      setTimeout(() => {
+        navigate('/configuracoes/produtos');
+      }, 3000);
     } catch (error) {
       console.error('Erro ao salvar o produto:', error.message);
       setMessage('Erro ao salvar o produto. Por favor, tente novamente.');
-      setSeverity('error'); // Define a gravidade como erro
+      setSeverity('error');
       setAlertOpen(true);
     }
   };
 
   const handleDeleteProduct = async () => {
     try {
+      setLoading(true);
       await deleteProduct(productId);
-      setMessage('Produto excluído com sucesso!');
-      setSeverity('success'); // Define a gravidade como sucesso
+      setMessage(
+        'Produto excluído com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+      );
+      setSeverity('success');
       setAlertOpen(true);
-      // Redirecionar para a lista de produtos após a exclusão
-      navigate('/configuracoes/produtos');
+      setTimeout(() => {
+        navigate('/configuracoes/produtos');
+      }, 3000);
     } catch (error) {
       console.error('Erro ao excluir o produto:', error.message);
       setMessage('Erro ao excluir o produto. Por favor, tente novamente.');
-      setSeverity('error'); // Define a gravidade como erro
+      setSeverity('error');
       setAlertOpen(true);
     }
   };
@@ -130,8 +141,10 @@ function EditProduct() {
               size="large"
               fullWidth
               onClick={handleSaveProduct}
+              disabled={loading}
             >
               {productId ? 'Salvar' : 'Criar'}
+              {loading && <CircularProgress size={24} />}
             </Button>
           </Grid>
           {productId && (
@@ -142,8 +155,10 @@ function EditProduct() {
                 size="large"
                 fullWidth
                 onClick={handleDeleteProduct}
+                disabled={loading}
               >
                 Excluir
+                {loading && <CircularProgress size={24} />}
               </Button>
             </Grid>
           )}
@@ -155,12 +170,7 @@ function EditProduct() {
         onClose={handleAlertClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
-          onClose={handleAlertClose}
-          severity={severity} // Define a gravidade do alerta
-        >
+        <MuiAlert elevation={6} variant="filled" onClose={handleAlertClose} severity={severity}>
           {message}
         </MuiAlert>
       </Snackbar>
