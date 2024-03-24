@@ -1,3 +1,4 @@
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import React from 'react';
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -18,90 +19,92 @@ import PrivateRoute from './privateRoute';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/registre-se" element={<Register />} />
-          <Route path="/conta-criada" element={<CreatedAccount />} />
-          <Route path="/validar-email" element={<VerifyEmail />} />
+    <GoogleOAuthProvider clientId="421790633045-himc2lvtonqlgk7667f4irqe4jjv9fqg.apps.googleusercontent.com">
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/registre-se" element={<Register />} />
+            <Route path="/conta-criada" element={<CreatedAccount />} />
+            <Route path="/validar-email" element={<VerifyEmail />} />
 
-          {/* Rotas Privadas */}
-          <Route
-            path="/inicio"
-            element={
-              <PrivateRoute>
-                <Home />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes"
-            element={
-              <PrivateRoute>
-                <Options />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/editar-perfil"
-            element={
-              <PrivateRoute>
-                <EditProfile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/alterar-senha"
-            element={
-              <PrivateRoute>
-                <EditPassword />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/novo-agendamento"
-            element={
-              <PrivateRoute>
-                <Schedule />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/historico"
-            element={
-              <PrivateRoute>
-                <History />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/clientes"
-            element={
-              <PrivateRoute>
-                <Clients />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/produtos"
-            element={
-              <PrivateRoute>
-                <ListProducts />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/configuracoes/produtos/novo-produto"
-            element={
-              <PrivateRoute>
-                <EditProduct />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-      </Router>
-    </AuthProvider>
+            {/* Rotas Privadas */}
+            <Route
+              path="/inicio"
+              element={
+                <PrivateRoute>
+                  <Home />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes"
+              element={
+                <PrivateRoute>
+                  <Options />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/editar-perfil"
+              element={
+                <PrivateRoute>
+                  <EditProfile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/alterar-senha"
+              element={
+                <PrivateRoute>
+                  <EditPassword />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/novo-agendamento"
+              element={
+                <PrivateRoute>
+                  <Schedule />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/historico"
+              element={
+                <PrivateRoute>
+                  <History />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/clientes"
+              element={
+                <PrivateRoute>
+                  <Clients />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/produtos"
+              element={
+                <PrivateRoute>
+                  <ListProducts />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/configuracoes/produtos/novo-produto"
+              element={
+                <PrivateRoute>
+                  <EditProduct />
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 

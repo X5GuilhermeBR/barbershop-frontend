@@ -30,7 +30,7 @@ export function AuthProvider({ children }) {
 
     if (storedToken) {
       setToken(storedToken);
-      setUserDataFromToken(storedToken)
+      setUserDataFromToken(storedToken);
     }
   }, []);
 
@@ -49,8 +49,8 @@ export function AuthProvider({ children }) {
     try {
       const response = await loginApi(email, password);
       const { token } = response.data;
-      console.log("stat", status)
-  
+      console.log('stat', status);
+
       if (response.status === 401) {
         setStatus(401); // Define o erro no estado
         return; // Retorna para interromper o fluxo do código
@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
         setStatus(203); // Define o erro no estado
         return; // Retorna para interromper o fluxo do código
       }
-  
+
       sessionStorage.setItem('token', token);
       setToken(token);
       setUserDataFromToken(token);
@@ -69,21 +69,32 @@ export function AuthProvider({ children }) {
       setStatus(401); // Define o erro no estado
       if (error.status === 403) {
         setStatus(403); // Define o erro no estado
-         // Retorna para interromper o fluxo do código
+        // Retorna para interromper o fluxo do código
       }
     }
   };
 
   const logout = () => {
-    setStatus('')
-    setToken()
-    setUserInfo()
+    setStatus('');
+    setToken();
+    setUserInfo();
     sessionStorage.removeItem('token'); // Limpa o token
     return true; // Indica que o logout foi realizado com sucesso
   };
 
   return (
-    <AuthContext.Provider value={{ token, isAuthenticated, userInfo, setUserDataFromToken, login, logout, status }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        isAuthenticated,
+        userInfo,
+        setUserInfo,
+        setUserDataFromToken,
+        login,
+        logout,
+        status,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

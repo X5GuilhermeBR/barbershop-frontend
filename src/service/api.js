@@ -1,5 +1,4 @@
 /* eslint-disable no-lonely-if */
-/* eslint-disable import/no-extraneous-dependencies */
 import axios from 'axios';
 
 export const api = axios.create({
@@ -87,14 +86,13 @@ export const checkScheduleById = async (startDate, endDate, userId) => {
   } else {
     // Verifica se apenas userId foi fornecido
 
-if (endDate) {
+    if (endDate) {
       queryString += `endDate=${endDate}&userId=${userId}`;
     }
     // Verifica se apenas startDate foi fornecido
     else if (startDate) {
       queryString += `startDate=${startDate}&userId=${userId}`;
-    }
-    else if (userId) {
+    } else if (userId) {
       queryString += `userId=${userId}`;
     }
   }
@@ -196,14 +194,18 @@ export const changePassword = async (userId, currentPassword, newPassword) => {
   }
 
   try {
-    const response = await api.put(`/user/${userId}/update-password`, {
-      currentPassword,
-      newPassword,
-    }, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    const response = await api.put(
+      `/user/${userId}/update-password`,
+      {
+        currentPassword,
+        newPassword,
       },
-    });
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     return response.data;
   } catch (error) {
     console.error('Erro ao alterar a senha:', error);
@@ -299,7 +301,7 @@ export const updateStatusUser = async (userId, status) => {
 
   const url = `/user/${userId}`;
 
-  const requestData = {"disable": status};
+  const requestData = { disable: status };
 
   return api
     .put(url, requestData, {
@@ -355,6 +357,37 @@ export const getScheduleById = async (scheduleId) => {
         Authorization: `Bearer ${token}`,
       },
     })
+    .then((response) => {
+      console.log(response.data);
+      return response;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
+
+export const addScheduleToCalendar = async (scheduleId) => {
+  const token = sessionStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const url = `/schedule/add-to-calendar`;
+
+  return api
+    .post(
+      url,
+      {
+        id: scheduleId,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
     .then((response) => {
       console.log(response.data);
       return response;
@@ -445,7 +478,7 @@ export const updateProductStatus = async (userId, status) => {
 
   const url = `/product/${userId}`;
 
-  const requestData = {"disable": status};
+  const requestData = { disable: status };
 
   return api
     .put(url, requestData, {

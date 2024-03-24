@@ -1,5 +1,6 @@
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import { Alert, AlertTitle, Container, Grid, Typography } from '@mui/material';
+import { GoogleLogin } from '@react-oauth/google';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -8,7 +9,7 @@ import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
 
 function HomePage() {
-  const { userInfo } = useAuth();
+  const { userInfo, setUserInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
 
@@ -23,6 +24,7 @@ function HomePage() {
           .filter((appointment) => appointment.status !== 'Cancelado')
           .sort((a, b) => new Date(a.date) - new Date(b.date));
         setSchedule(sortedSchedule);
+
         // Verificar se há um agendamento para hoje com o status "Agendado"
         const hasAppointmentToday = sortedSchedule.some((appointment) => {
           const appointmentDate = new Date(appointment.date);
@@ -45,6 +47,15 @@ function HomePage() {
     return firstName;
   };
 
+  // Google login
+  const responseMessage = (response) => {
+    setUserInfo({ ...userInfo, ...response });
+  };
+
+  const errorMessage = (error) => {
+    console.log(error);
+  };
+
   return (
     <>
       <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
@@ -56,6 +67,12 @@ function HomePage() {
               {/* <strong>Com previsão de início ás 16:12h</strong> */}
             </Alert>
           )}
+
+          {/* Se não tiver credencial eu exibo o botão */}
+          {!userInfo?.credential && (
+            <GoogleLogin onSuccess={responseMessage} onError={errorMessage} />
+          )}
+
           <Typography variant="h6" sx={{ mt: 2 }}>
             Próximos agendamentos:
           </Typography>
