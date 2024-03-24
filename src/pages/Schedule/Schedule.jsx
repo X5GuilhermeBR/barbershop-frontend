@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-param-reassign */
 import HistoryIcon from '@mui/icons-material/History';
 import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -24,8 +25,6 @@ function Schedule() {
     async function fetchScheduledAppointments() {
       if (userInfo && userInfo.id) {
         const { data } = await checkScheduleById(selectedDate, selectedDate, userInfo.id);
-        // Ordena os agendamentos pela data em ordem crescente (da mais antiga para a mais recente)
-        data.sort((a, b) => new Date(a.date) - new Date(b.date));
         setScheduledAppointments(data);
         setNoAppointments(data.length === 0);
       }
@@ -50,6 +49,17 @@ function Schedule() {
   };
 
   const formatHour = (hour) => (hour < 10 ? `0${hour}:00` : `${hour}:00`);
+
+  const availableHours = Array.from({ length: 11 }, (_, index) => index + 9);
+
+  const groupedAppointmentsByDate = scheduledAppointments.reduce((grouped, appointment) => {
+    const { date } = appointment;
+    if (!grouped[date]) {
+      grouped[date] = [];
+    }
+    grouped[date].push(appointment);
+    return grouped;
+  }, {});
 
   return (
     <>
@@ -84,39 +94,46 @@ function Schedule() {
                 }}
               />
             </Grid>
-            {scheduledAppointments.length > 0 ? (
-              scheduledAppointments.map((appointment, index) => (
-                <Grid item xs={12} key={appointment.id}>
-                  {index === 0 || appointment.date !== scheduledAppointments[index - 1].date ? (
-                    <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
-                      {formatWeekdayDateMonthYear(appointment.date)}
-                    </Typography>
-                  ) : null}
-                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }}>
+            {Object.entries(groupedAppointmentsByDate).map(([date, appointments]) => (
+              <Grid item xs={12} key={date}>
+                <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                  {formatWeekdayDateMonthYear(date)}
+                </Typography>
+                {availableHours.map((hour) => (
+                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }} key={hour}>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography
-                        variant="body1"
-                        style={{ marginRight: '1rem' }}
-                      >{`${formatHour(appointment.time)}`}</Typography>
+                      <Typography variant="body1" style={{ marginRight: '1rem' }}>
+                        {`${formatHour(hour)}`}
+                      </Typography>
                       <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
                       <div>
-                        <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
-                        <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
-                        <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
-                        <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
-                        <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
+                        {appointments.find(
+                          (appointment) => parseInt(appointment.time.split(':')[0], 10) === hour
+                        ) ? (
+                          appointments
+                            .filter(
+                              (appointment) => parseInt(appointment.time.split(':')[0], 10) === hour
+                            )
+                            .map((appointment) => (
+                              <React.Fragment key={appointment.id}>
+                                <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
+                                <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
+                                <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
+                                <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
+                                <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
+                              </React.Fragment>
+                            ))
+                        ) : (
+                          <Typography variant="body1" style={{ textAlign: 'center' }}>
+                            {hour === 12 ? 'Hora do Almoço - agenda fechada' : 'Horário vago'}
+                          </Typography>
+                        )}
                       </div>
                     </div>
                   </Paper>
-                </Grid>
-              ))
-            ) : (
-              <Grid item xs={12}>
-                <Typography variant="h6" style={{ marginTop: '1rem', textAlign: 'center' }}>
-                  Você não possui agendamentos nesta data.
-                </Typography>
+                ))}
               </Grid>
-            )}
+            ))}
           </Grid>
         </Container>
       </Grid>
