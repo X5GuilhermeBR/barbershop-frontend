@@ -1,4 +1,6 @@
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
+import CategoryIcon from '@mui/icons-material/Category';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import GroupsIcon from '@mui/icons-material/Groups';
 import HistoryIcon from '@mui/icons-material/History';
@@ -74,7 +76,7 @@ export default function Options() {
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/produtos">
               <ListItemIcon>
-                <HistoryIcon />
+                <CategoryIcon />
               </ListItemIcon>
               <ListItemText primary="Produtos" />
             </ListItemButton>
@@ -86,9 +88,9 @@ export default function Options() {
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/historico" disabled>
               <ListItemIcon>
-                <HistoryIcon />
+                <AccountBalanceWalletIcon />
               </ListItemIcon>
-              <ListItemText primary="Extrato" />
+              <ListItemText primary="Carteira" />
             </ListItemButton>
           </>
         )}
