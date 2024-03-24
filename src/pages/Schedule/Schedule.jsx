@@ -83,25 +83,22 @@ function Schedule() {
               />
             </Grid>
             {scheduledAppointments.length > 0 ? (
-              scheduledAppointments.map((appointment) => (
+              scheduledAppointments.map((appointment, index) => (
                 <Grid item xs={12} key={appointment.id}>
-                  <div style={{ marginBottom: '1rem' }}>
-                    <Typography variant="h6">
+                  {index === 0 || appointment.date !== scheduledAppointments[index - 1].date ? (
+                    <Typography variant="h6" style={{ marginBottom: '1rem' }}>
                       {formatWeekdayDateMonthYear(appointment.date)}
                     </Typography>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="body1">{`${appointment.time}`}</Typography>
-                      <div
-                        style={{
-                          borderLeft: '1px solid #ccc',
-                          marginLeft: '0.5rem',
-                          paddingLeft: '0.5rem',
-                        }}
-                      >
-                        <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
-                        <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
-                        <Typography variant="body2">{`Valor: R$ ${appointment.service_price}`}</Typography>
-                      </div>
+                  ) : null}
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <Typography
+                      variant="body1"
+                      style={{ marginRight: '1rem' }}
+                    >{`${appointment.time}`}</Typography>
+                    <div style={{ borderLeft: '1px solid #ccc', paddingLeft: '1rem' }}>
+                      <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
+                      <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
+                      <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
                     </div>
                   </div>
                 </Grid>
