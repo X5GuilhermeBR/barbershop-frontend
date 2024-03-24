@@ -41,6 +41,7 @@ function Schedule() {
   const formatWeekdayDateMonthYear = (dateString) => {
     const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
     const date = new Date(dateString);
+    date.setDate(date.getDate() + 1); // Adiciona um dia à data
     const dayOfWeek = daysOfWeek[date.getDay()];
     const day = date.getDate();
     const month = date.getMonth() + 1;
@@ -60,6 +61,28 @@ function Schedule() {
     grouped[date].push(appointment);
     return grouped;
   }, {});
+
+  const renderAppointmentOrVago = (hour, appointments) => {
+    const appointment = appointments.find(
+      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+    );
+    if (appointment) {
+      return (
+        <>
+          <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
+          <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
+          <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
+          <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
+          <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
+        </>
+      );
+    }
+    return (
+      <Typography variant="body1" style={{ textAlign: 'center' }}>
+        Horário vago
+      </Typography>
+    );
+  };
 
   return (
     <>
@@ -106,34 +129,34 @@ function Schedule() {
                         {`${formatHour(hour)}`}
                       </Typography>
                       <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
-                      <div>
-                        {appointments.find(
-                          (appointment) => parseInt(appointment.time.split(':')[0], 10) === hour
-                        ) ? (
-                          appointments
-                            .filter(
-                              (appointment) => parseInt(appointment.time.split(':')[0], 10) === hour
-                            )
-                            .map((appointment) => (
-                              <React.Fragment key={appointment.id}>
-                                <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
-                                <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
-                                <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
-                                <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
-                                <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
-                              </React.Fragment>
-                            ))
-                        ) : (
-                          <Typography variant="body1" style={{ textAlign: 'center' }}>
-                            {hour === 12 ? 'Hora do Almoço - agenda fechada' : 'Horário vago'}
-                          </Typography>
-                        )}
-                      </div>
+                      <div>{renderAppointmentOrVago(hour, appointments)}</div>
                     </div>
                   </Paper>
                 ))}
               </Grid>
             ))}
+            {noAppointments && (
+              <Grid item xs={12}>
+                <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
+                  {formatWeekdayDateMonthYear(selectedDate)}
+                </Typography>
+                {availableHours.map((hour) => (
+                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }} key={hour}>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <Typography variant="body1" style={{ marginRight: '1rem' }}>
+                        {`${formatHour(hour)}`}
+                      </Typography>
+                      <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
+                      <div>
+                        <Typography variant="body1" style={{ textAlign: 'center' }}>
+                          Horário vago
+                        </Typography>
+                      </div>
+                    </div>
+                  </Paper>
+                ))}
+              </Grid>
+            )}
           </Grid>
         </Container>
       </Grid>
