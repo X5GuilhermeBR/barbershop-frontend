@@ -2,6 +2,7 @@
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
@@ -143,18 +144,32 @@ function Schedule() {
                       {appointments.find(
                         (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
                       ) ? (
-                        <EditIcon
-                          fontSize="small"
-                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                          onClick={() =>
-                            handleEditAppointment(
-                              hour,
-                              appointments.find(
-                                (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                        <>
+                          <EditIcon
+                            fontSize="small"
+                            style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                            onClick={() =>
+                              handleEditAppointment(
+                                hour,
+                                appointments.find(
+                                  (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                                )
                               )
-                            )
-                          }
-                        />
+                            }
+                          />
+                          <KeyboardArrowRightIcon
+                            fontSize="small"
+                            style={{ marginLeft: '15px', cursor: 'pointer' }}
+                            onClick={() =>
+                              handleEditAppointment(
+                                hour,
+                                appointments.find(
+                                  (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                                )
+                              )
+                            }
+                          />
+                        </>
                       ) : (
                         <AddIcon
                           fontSize="small"
