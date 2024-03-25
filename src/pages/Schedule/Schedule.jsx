@@ -91,8 +91,10 @@ function Schedule() {
     navigate('/novo-agendamento'); // Navegue para a rota '/novo-agendamento' quando o ícone de adição for clicado
   };
 
-  const handleEditAppointment = (hour, appointment) => {
-    console.log(`Editar agendamento para as ${formatHour(hour)}:`, appointment);
+  const handleEditAppointment = (appointment) => {
+    if (appointment.status === 'Agendado') {
+      navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
+    }
   };
 
   return (
@@ -150,7 +152,6 @@ function Schedule() {
                             style={{ marginLeft: 'auto', cursor: 'pointer' }}
                             onClick={() =>
                               handleEditAppointment(
-                                hour,
                                 appointments.find(
                                   (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
                                 )

@@ -68,13 +68,7 @@ function NewSchedule() {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          let userId;
-          if (userInfo?.profile === 'barber') {
-            userId = selectedBarber;
-          } else {
-            userId = selectedClient;
-          }
-          const { data } = await getSchedule(selectedDate, selectedDate, userId);
+          const { data } = await getSchedule(selectedDate, selectedDate, userInfo.id);
           setSchedule(data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
@@ -134,9 +128,16 @@ function NewSchedule() {
 
     setIsSubmitting(true);
 
+    if (userInfo?.profile === 'barber') {
+      console.log('barbeiro', selectedBarber);
+    } else {
+      console.log('not barber');
+    }
+
     const scheduleData = {
+      // Se scheduleId não estiver disponível, utilize uma lógica alternativa
       id_user_client: userInfo?.profile === 'client' ? selectedClient : selectedClient.user_id,
-      id_user_barber: userInfo?.profile === 'barber' ? selectedBarber : selectedBarber.user_id,
+      id_user_barber: userInfo?.profile === 'barber' ? selectedBarber.user_id : selectedBarber,
       type: 'Marcado',
       date: selectedDate,
       time: selectedHour,
@@ -146,17 +147,26 @@ function NewSchedule() {
 
     try {
       if (isEditing) {
-        await updateSchedule(scheduleId, scheduleData);
-        setMessage(
-          'Agendamento atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
-        );
+        const params = new URLSearchParams(location.search);
+        const scheduleId = params.get('scheduleId');
+        if (scheduleId) {
+          // Aqui está o problema, você não está definindo a variável scheduleId
+          await updateSchedule(scheduleId, scheduleData);
+          setMessage(
+            'Agendamento atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
+          );
+          setSnackbarOpen(true);
+        } else {
+          // Lidere com o caso em que scheduleId não está definido
+          console.error('scheduleId não está definido');
+        }
       } else {
         await createSchedule(scheduleData);
         setMessage(
           'Agendamento realizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
         );
+        setSnackbarOpen(true);
       }
-      setSnackbarOpen(true);
       setIsSubmitting(false);
       setSchedule([]);
       setTimeout(() => navigate('/inicio'), 3000);
