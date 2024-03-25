@@ -3,7 +3,7 @@
 import { MenuItem, Select } from '@mui/material';
 import React from 'react';
 
-function ServiceSelect({ label, value, onChange, items }) {
+function SelectComponent({ label, value, onChange, items }) {
   return (
     <Select
       label={label}
@@ -18,7 +18,6 @@ function ServiceSelect({ label, value, onChange, items }) {
       </MenuItem>
       {items &&
         items.map((item) => {
-          // Normaliza o objeto para ter a propriedade 'name' independentemente do nome original
           const { client_name, barber_name, ...rest } = item;
           const itemName = client_name || barber_name || rest.name;
 
@@ -32,4 +31,4 @@ function ServiceSelect({ label, value, onChange, items }) {
   );
 }
 
-export default ServiceSelect;
+export default SelectComponent;

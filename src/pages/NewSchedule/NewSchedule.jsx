@@ -96,11 +96,11 @@ function NewSchedule() {
   ]);
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const scheduleId = params.get('scheduleId');
-
-    if (scheduleId) {
-      const fetchScheduleById = async () => {
+    // Inicialize o estado selectedClient ao carregar a página de edição
+    const fetchScheduleById = async () => {
+      const params = new URLSearchParams(location.search);
+      const scheduleId = params.get('scheduleId');
+      if (scheduleId) {
         try {
           const { data } = await getScheduleById(scheduleId);
           setSelectedDate(data.date);
@@ -112,13 +112,14 @@ function NewSchedule() {
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
           setIsEditing(true);
+          setSelectedClient(data.id_user_client); // Defina o estado selectedClient com o ID do cliente
         } catch (error) {
           console.error('Erro ao carregar agendamento:', error);
         }
-      };
+      }
+    };
 
-      fetchScheduleById();
-    }
+    fetchScheduleById();
   }, [barbers, services, location.search]);
 
   const handleSubmit = async () => {
