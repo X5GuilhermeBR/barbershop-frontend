@@ -127,17 +127,9 @@ function NewSchedule() {
     }
 
     setIsSubmitting(true);
-
-    if (userInfo?.profile === 'barber') {
-      console.log('barbeiro', selectedBarber);
-    } else {
-      console.log('not barber');
-    }
-
     const scheduleData = {
-      // Se scheduleId não estiver disponível, utilize uma lógica alternativa
-      id_user_client: userInfo?.profile === 'client' ? selectedClient : selectedClient.user_id,
-      id_user_barber: userInfo?.profile === 'barber' ? selectedBarber.user_id : selectedBarber,
+      id_user_client: selectedClient.user_id,
+      id_user_barber: selectedBarber.user_id,
       type: 'Marcado',
       date: selectedDate,
       time: selectedHour,
