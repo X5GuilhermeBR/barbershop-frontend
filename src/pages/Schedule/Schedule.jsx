@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-param-reassign */
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -67,7 +68,8 @@ function Schedule() {
 
   const renderAppointmentOrVago = (hour, appointments) => {
     const appointment = appointments.find(
-      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour && appoint.status
+      (appoint) =>
+        parseInt(appoint.time.split(':')[0], 10) === hour && appoint.status !== 'Cancelado'
     );
     if (appointment) {
       return (
@@ -147,29 +149,43 @@ function Schedule() {
                         (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
                       ) ? (
                         <>
-                          <EditIcon
-                            fontSize="small"
-                            style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                            onClick={() =>
-                              handleEditAppointment(
-                                appointments.find(
-                                  (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
-                                )
-                              )
-                            }
-                          />
-                          <KeyboardArrowRightIcon
-                            fontSize="small"
-                            style={{ marginLeft: '15px', cursor: 'pointer' }}
-                            onClick={() =>
-                              handleEditAppointment(
-                                hour,
-                                appointments.find(
-                                  (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
-                                )
-                              )
-                            }
-                          />
+                          {appointments.find(
+                            (appoint) =>
+                              parseInt(appoint.time.split(':')[0], 10) === hour &&
+                              appoint.status !== 'Cancelado'
+                          ) ? (
+                            <>
+                              <EditIcon
+                                fontSize="small"
+                                style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                                onClick={() =>
+                                  handleEditAppointment(
+                                    appointments.find(
+                                      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                                    )
+                                  )
+                                }
+                              />
+                              <KeyboardArrowRightIcon
+                                fontSize="small"
+                                style={{ marginLeft: '15px', cursor: 'pointer' }}
+                                onClick={() =>
+                                  handleEditAppointment(
+                                    hour,
+                                    appointments.find(
+                                      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                                    )
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <AddIcon
+                              fontSize="small"
+                              style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                              onClick={() => handleAddAppointment(hour)}
+                            />
+                          )}
                         </>
                       ) : (
                         <AddIcon
