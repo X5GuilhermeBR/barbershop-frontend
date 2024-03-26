@@ -105,22 +105,28 @@ function NewSchedule() {
           const { data } = await getScheduleById(scheduleId);
           setSelectedDate(data.date);
           setSelectedHour(data.time);
-          const selectedBarberData = barbers.find(
-            (barber) => barber.user_id === data.id_user_barber
-          );
+          let selectedBarberId = null;
+          if (userInfo?.profile === 'barber') {
+            selectedBarberId = userInfo.id;
+          } else {
+            selectedBarberId = data.id_user_barber;
+          }
+          const selectedBarberData = barbers.find((barber) => barber.user_id === selectedBarberId);
           setSelectedBarber(selectedBarberData);
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
           setIsEditing(true);
-          setSelectedClient(data.id_user_client); // Defina o estado selectedClient com o ID do cliente
+          setSelectedClient(data.id_user_client);
         } catch (error) {
           console.error('Erro ao carregar agendamento:', error);
         }
       }
     };
 
+    console.log(selectedBarber, 'barbeiro selecionado');
+
     fetchScheduleById();
-  }, [barbers, services, location.search]);
+  }, [barbers, services, location.search, userInfo]);
 
   const handleSubmit = async () => {
     if (!isFormValid || isSubmitting) {
@@ -129,8 +135,8 @@ function NewSchedule() {
 
     setIsSubmitting(true);
     const scheduleData = {
-      id_user_client: selectedClient.user_id,
-      id_user_barber: selectedBarber.user_id,
+      id_user_client: userInfo.profile === 'client' ? userInfo.id : selectedClient.user_id,
+      id_user_barber: userInfo.profile === 'barber' ? userInfo.id : selectedBarber.user_id,
       type: 'Marcado',
       date: selectedDate,
       time: selectedHour,

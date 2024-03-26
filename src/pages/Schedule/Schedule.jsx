@@ -67,7 +67,7 @@ function Schedule() {
 
   const renderAppointmentOrVago = (hour, appointments) => {
     const appointment = appointments.find(
-      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour && appoint.status
     );
     if (appointment) {
       return (
