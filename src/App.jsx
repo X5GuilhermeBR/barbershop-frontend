@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import Clients from './pages/Clients/Clients';
 import CreatedAccount from './pages/CreatedAccount/CreatedAccount';
+import CustomerService from './pages/CustomerService/CustomerService';
 import EditPassword from './pages/EditPassword/EditPassword';
 import EditProduct from './pages/EditProducts/EditProducts';
 import EditProfile from './pages/EditProfile/EditProfile';
@@ -75,6 +76,14 @@ function App() {
             element={
               <PrivateRoute>
                 <Schedule />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/agenda/atendimento-ao-cliente"
+            element={
+              <PrivateRoute>
+                <CustomerService />
               </PrivateRoute>
             }
           />
