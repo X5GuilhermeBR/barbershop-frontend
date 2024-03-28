@@ -1,37 +1,17 @@
-/* eslint-disable react/no-array-index-key */
-import {
-  Button,
-  Container,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from '@mui/material';
+import { Button, Container, Grid, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
 import { getScheduleById } from '../../service/api';
 
-const services = ['Corte de Cabelo', 'Barba', 'Corte e Barba', 'Outros'];
-
 function CustomerService() {
-  const [selectedService, setSelectedService] = useState('Corte de Cabelo');
   const [clientName, setClientName] = useState('');
   const [barberName, setBarberName] = useState('');
   const [scheduledTime, setScheduledTime] = useState('');
+  const [scheduledDate, setScheduledDate] = useState('');
+  const [scheduleService, setScheduleService] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
-
-  const handleServiceChange = (event) => {
-    setSelectedService(event.target.value);
-  };
-
-  const handleStartService = () => {
-    // Implement your logic for starting the service here
-    console.log(`Iniciar ${selectedService}`);
-  };
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -40,11 +20,11 @@ function CustomerService() {
       getScheduleById(scheduleId)
         .then((response) => {
           const scheduleData = response.data;
-          console.log('passou aqui', response);
           setClientName(scheduleData.clientName);
           setBarberName(scheduleData.barberName);
           setScheduledTime(scheduleData.time);
-          setSelectedService(scheduleData.service);
+          setScheduledDate(scheduleData.date);
+          setScheduleService(scheduleData.serviceName);
         })
         .catch((error) => {
           console.error('Error fetching schedule:', error);
@@ -57,7 +37,7 @@ function CustomerService() {
 
   return (
     <>
-      <Header icon="" title="Minha agenda" />
+      <Header icon="" title="Atendimento ao Cliente" />
       <Grid
         container
         justifyContent="center"
@@ -78,30 +58,12 @@ function CustomerService() {
             Barbeiro: {barberName}
           </Typography>
           <Typography variant="body1" style={{ marginBottom: '1rem' }}>
-            Hora do Corte: {scheduledTime} - Data do Corte:
+            Hora do Corte: {scheduledTime} - Data do Corte: {scheduledDate}
           </Typography>
-          <FormControl fullWidth style={{ marginBottom: '1rem' }}>
-            <InputLabel id="service-label">Serviço</InputLabel>
-            <Select
-              labelId="service-label"
-              id="service-select"
-              value={selectedService}
-              onChange={handleServiceChange}
-            >
-              {services.map((service, index) => (
-                <MenuItem key={index} value={service}>
-                  {service}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleStartService}
-            fullWidth
-            style={{ marginTop: '1rem' }}
-          >
+          <Typography variant="body1" style={{ marginBottom: '1rem' }}>
+            Serviço: {scheduleService}
+          </Typography>
+          <Button variant="contained" color="primary" fullWidth style={{ marginTop: '1rem' }}>
             Iniciar Atendimento
           </Button>
         </Container>
