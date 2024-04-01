@@ -23,7 +23,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../components/Header/Header';
-import { getScheduleById, updateSchedule } from '../../service/api';
+import { getProducts, getScheduleById, updateSchedule } from '../../service/api'; // Importa a função getProducts
 
 function CustomerService() {
   const [clientName, setClientName] = useState('');
@@ -39,19 +39,22 @@ function CustomerService() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [serviceCost, setServiceCost] = useState(0);
   const [totalConsumption, setTotalConsumption] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [fakeProducts, setFakeProducts] = useState([]); // State para armazenar os produtos
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const scheduleId = params.get('scheduleId');
 
-  // Array de objetos fake para simular os produtos disponíveis
-  const fakeProducts = [
-    { id: 1, name: 'Café', price: 5 },
-    { id: 2, name: 'Água', price: 3 },
-    { id: 3, name: 'Refrigerante', price: 8 },
-    { id: 4, name: 'Salgadinho', price: 7 },
-  ];
+  // Busca os produtos assim que o componente for montado
+  useEffect(() => {
+    getProducts()
+      .then((response) => {
+        setFakeProducts(response.data); // Define os produtos obtidos na state fakeProducts
+      })
+      .catch((error) => {
+        console.error('Erro ao buscar produtos:', error);
+      });
+  }, []); // Esta função só precisa ser chamada uma vez, então passamos um array vazio como dependência
 
   useEffect(() => {
     if (scheduleId) {
@@ -142,14 +145,12 @@ function CustomerService() {
 
   // Calcular o total do consumo
   useEffect(() => {
-    const consumptionTotal = selectedProducts.reduce(
-      (totalI, item) => totalI + item.product.price * item.quantity,
+    const totalConsum = selectedProducts.reduce(
+      (total, item) => total + item.product.price * item.quantity,
       0
     );
-    const totalItem = Number(serviceCost) + Number(consumptionTotal);
-    setTotal(totalItem);
-    setTotalConsumption(consumptionTotal);
-  }, [selectedProducts, serviceCost]);
+    setTotalConsumption(totalConsum);
+  }, [selectedProducts]);
 
   return (
     <>
@@ -249,14 +250,15 @@ function CustomerService() {
               <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
                 Valor do Consumo: R$ {totalConsumption}
               </Typography>
+              <Typography variant="subtitle1">
+                Total: R$ {serviceCost + totalConsumption}
+              </Typography>
             </List>
           ) : (
             <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
               Carrinho vazio
             </Typography>
           )}
-          <Typography variant="subtitle1">Valor do Serviço: R$ {serviceCost}</Typography>
-          <Typography variant="subtitle1">Total: R$ {total}</Typography>
           {scheduleStatus !== 'Agendado' && (
             <>
               <Typography variant="h6" style={{ marginTop: '1rem' }}>
