@@ -39,6 +39,7 @@ function CustomerService() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [serviceCost, setServiceCost] = useState(0);
   const [totalConsumption, setTotalConsumption] = useState(0);
+  const [total, setTotal] = useState(0);
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
@@ -141,12 +142,14 @@ function CustomerService() {
 
   // Calcular o total do consumo
   useEffect(() => {
-    const totalConsum = selectedProducts.reduce(
-      (total, item) => total + item.product.price * item.quantity,
+    const consumptionTotal = selectedProducts.reduce(
+      (totalI, item) => totalI + item.product.price * item.quantity,
       0
     );
-    setTotalConsumption(totalConsum);
-  }, [selectedProducts]);
+    const totalItem = Number(serviceCost) + Number(consumptionTotal);
+    setTotal(totalItem);
+    setTotalConsumption(consumptionTotal);
+  }, [selectedProducts, serviceCost]);
 
   return (
     <>
@@ -246,15 +249,14 @@ function CustomerService() {
               <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
                 Valor do Consumo: R$ {totalConsumption}
               </Typography>
-              <Typography variant="subtitle1">
-                Total: R$ {serviceCost + totalConsumption}
-              </Typography>
             </List>
           ) : (
             <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
               Carrinho vazio
             </Typography>
           )}
+          <Typography variant="subtitle1">Valor do Serviço: R$ {serviceCost}</Typography>
+          <Typography variant="subtitle1">Total: R$ {total}</Typography>
           {scheduleStatus !== 'Agendado' && (
             <>
               <Typography variant="h6" style={{ marginTop: '1rem' }}>
