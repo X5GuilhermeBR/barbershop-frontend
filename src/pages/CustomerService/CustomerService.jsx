@@ -141,11 +141,11 @@ function CustomerService() {
 
   // Calcular o total do consumo
   useEffect(() => {
-    const total = selectedProducts.reduce(
-      (totalItem, item) => totalItem + item.product.price * item.quantity,
+    const totalConsum = selectedProducts.reduce(
+      (total, item) => total + item.product.price * item.quantity,
       0
     );
-    setTotalConsumption(total);
+    setTotalConsumption(totalConsum);
   }, [selectedProducts]);
 
   return (
@@ -222,36 +222,34 @@ function CustomerService() {
               </Button>
             </>
           )}
+          <Typography variant="h6" style={{ marginBottom: '1rem' }}>
+            Carrinho:
+          </Typography>
           {selectedProducts.length > 0 ? (
-            <>
-              <Typography variant="h6" style={{ marginBottom: '1rem' }}>
-                Carrinho:
-              </Typography>
-              <List>
-                {selectedProducts.map((item, index) => (
-                  <ListItem key={index}>
-                    <ListItemText
-                      primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
-                    />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => handleRemoveFromCart(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItem>
-                ))}
-              </List>
+            <List>
+              {selectedProducts.map((item, index) => (
+                <ListItem key={index}>
+                  <ListItemText
+                    primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleRemoveFromCart(index)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
               <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
                 Valor do Consumo: R$ {totalConsumption}
               </Typography>
               <Typography variant="subtitle1">
                 Total: R$ {serviceCost + totalConsumption}
               </Typography>
-            </>
+            </List>
           ) : (
             <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
               Carrinho vazio
