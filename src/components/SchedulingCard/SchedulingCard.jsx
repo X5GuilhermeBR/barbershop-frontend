@@ -1,8 +1,49 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
+import { Alert, Card, CardActions, CardContent, Grid, Snackbar } from '@mui/material';
 import React, { useState } from 'react';
-import { Card, CardContent, CardActions, Grid, Typography, Button, Rating, Snackbar, Alert } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { updateSchedule } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledGridItem = styled(Grid)`
+  margin-bottom: 20px;
+`;
+
+const StyledCard = styled(Card)`
+  border: 1px solid #e0e0e0;
+  background-color: ${colors.primary};
+  border-radius: 15px;
+`;
+
+const StyledCardContent = styled(CardContent)`
+  padding: 16px;
+  color: ${colors.primaryText};
+
+  h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+`;
+
+const RatingContainer = styled.div`
+  background-color: ${colors.secondary};
+  padding: 10px;
+  border-bottom-left-radius: 15px;
+  border-bottom-right-radius: 15px;
+`;
+
+const StyledCardActions = styled(CardActions)`
+  padding: 16px;
+  justify-content: space-between;
+  background-color: ${colors.secundary};
+`;
 
 function SchedulingCard({ appointment }) {
   const navigate = useNavigate();
@@ -53,13 +94,11 @@ function SchedulingCard({ appointment }) {
   };
 
   return (
-    <Grid item xs={12} sm={6} md={4}>
-      <Card variant="outlined">
-        <CardContent>
-          <Typography variant="h6" component="h2" gutterBottom>
-            Agendamento N#{appointment.id}:
-          </Typography>
-          <Typography variant="body1" component="p">
+    <StyledGridItem item xs={12} sm={6} md={4}>
+      <StyledCard variant="outlined">
+        <StyledCardContent>
+          <h2>Agendamento N#{appointment.id}:</h2>
+          <p>
             <strong>Data:</strong> {appointment.date}
             <br />
             <strong>Hora:</strong> {appointment.time}
@@ -68,57 +107,51 @@ function SchedulingCard({ appointment }) {
             <br />
             <strong>Barbeiro:</strong> {appointment.barber_name}
             <br />
-            <strong>Status:</strong> {appointment.status}
-            <br />
-            <strong>Valor:</strong> R${appointment.service_price}
-          </Typography>
-        </CardContent>
-        <CardActions>
-          {isRatingEditable && appointment.status === 'Finalizado' && (
-            <>
+          </p>
+        </StyledCardContent>
+        <StyledCardActions>
+          {/* {isRatingEditable && appointment.status === 'Finalizado' && (
+            <RatingContainer>
               <Rating
                 name={`rating-${appointment.id}`}
                 value={userRating}
                 onChange={handleRatingChange}
-                max={5} // Definindo o número máximo de estrelas como 5
+                max={5}
               />
-              {isRatingSelected && ( // Exibir o botão de avaliação somente quando uma quantidade de estrelas for selecionada
+              {isRatingSelected && (
                 <Button size="small" color="primary" onClick={handleSaveRating}>
                   Avaliar
                 </Button>
               )}
-            </>
-          )}
+            </RatingContainer>
+              )} 
           {!isRatingEditable && appointment.status === 'Finalizado' && (
-            <Rating
-              name={`rating-${appointment.id}`}
-              value={userRating}
-              readOnly
-              max={5}
-            />
+            <RatingContainer>
+              <Rating name={`rating-${appointment.id}`} value={userRating} readOnly max={5} />
+            </RatingContainer>
           )}
           {appointment.status === 'Agendado' && (
             <Button size="small" color="primary" onClick={handleEditClick}>
               Editar
             </Button>
-          )}
-        </CardActions>
-      </Card>
+          )} */}
+          <div>
+            <p>{appointment.type}</p>
+            <p>R${appointment.service_price}</p>
+          </div>
+        </StyledCardActions>
+      </StyledCard>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
       >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity={snackbarSeverity}
-          sx={{ width: '100%' }}
-        >
+        <Alert onClose={handleSnackbarClose} severity={snackbarSeverity} sx={{ width: '100%' }}>
           {snackbarMessage}
         </Alert>
       </Snackbar>
-    </Grid>
+    </StyledGridItem>
   );
 }
 
