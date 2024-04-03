@@ -46,6 +46,69 @@ const Divider = styled.div`
   margin: 20px 0;
 `;
 
+const LocationContainer = styled.div`
+  text-align: center;
+  margin-top: 20px;
+`;
+
+const LocationTitle = styled.h2`
+  margin-bottom: 8px;
+  color: ${colors.third};
+`;
+
+const LocationText = styled.p`
+  margin-bottom: 0;
+  color: white;
+  line-height: 22px;
+`;
+
+const ServiceCardContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
+`;
+
+const ServiceCard = styled.div`
+  width: calc(50% - 10px);
+  background-color: ${colors.lightGrey};
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+
+  &:nth-child(2n) {
+    margin-right: 0;
+  }
+
+  @media (max-width: 768px) {
+    width: calc(50% - 20px);
+    margin-right: 0;
+  }
+`;
+
+const ServiceImage = styled.img`
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+`;
+
+const ServiceName = styled.h3`
+  font-size: 18px;
+  margin-bottom: 8px;
+`;
+
+const ServiceDescription = styled.p`
+  text-align: center;
+`;
+
 function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
@@ -92,7 +155,7 @@ function HomePage() {
           {hasScheduledAppointment && ( // Exibir o Alert somente se houver um agendamento para hoje com o status "Agendado"
             <Alert sx={{ backgroundColor: '#f6a700', color: '#black' }}>
               <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
-              {/* <strong>Com previsão de início ás 16:12h</strong> */}
+              <strong>Chegue com 10 minutos de antecedência</strong>
             </Alert>
           )}
           <CustomButton
@@ -120,6 +183,39 @@ function HomePage() {
               )}
           </Grid>
           <Divider />
+          <LocationContainer>
+            <LocationTitle>Principais Serviços</LocationTitle>
+            <ServiceCardContainer>
+              <ServiceCard>
+                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                <ServiceName>Cabelo</ServiceName>
+                <ServiceDescription>Descrição breve do Serviço 1.</ServiceDescription>
+              </ServiceCard>
+              <ServiceCard>
+                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                <ServiceName>Barba</ServiceName>
+                <ServiceDescription>Descrição breve do Serviço 2.</ServiceDescription>
+              </ServiceCard>
+              <ServiceCard>
+                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                <ServiceName>Pigmentação</ServiceName>
+                <ServiceDescription>Pigmentação</ServiceDescription>
+              </ServiceCard>
+              <ServiceCard>
+                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                <ServiceName>Descoloração</ServiceName>
+                <ServiceDescription>Descrição breve do Serviço 4.</ServiceDescription>
+              </ServiceCard>
+            </ServiceCardContainer>
+          </LocationContainer>
+          <Divider />
+          <LocationContainer>
+            <LocationTitle>Onde Estamos</LocationTitle>
+            <LocationText>
+              R. Carolina Santos, 4 A<br />
+              Lins de Vasconcelos - Rio de Janeiro
+            </LocationText>
+          </LocationContainer>
         </Container>
       </Grid>
       <FooterNavigation />

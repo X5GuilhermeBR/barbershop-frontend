@@ -1,4 +1,4 @@
-import {Card, CardActions, CardContent, Grid, Chip } from '@mui/material';
+import { Card, CardActions, CardContent, Grid, Chip } from '@mui/material';
 import styled from 'styled-components';
 import colors from '../../utils/colors';
 
@@ -7,16 +7,22 @@ export const StyledGridItem = styled(Grid)`
 `;
 
 export const StyledCard = styled(Card)`
-  background-color: ${colors.primary};
-  border-radius: 15px;
-  -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
-  -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
-  box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+  && {
+    background-color: ${colors.primary};
+    border-radius: 15px;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    width: 100%;
+    margin: auto; /* Centralize o card horizontalmente */
+  }
 `;
 
 export const StyledCardContent = styled(CardContent)`
-  padding: 12px;
-  color: ${colors.primaryText};
+  && {
+    padding: 12px;
+    color: ${colors.primaryText};
+  }
 
   h2 {
     font-size: 24px;
@@ -38,10 +44,12 @@ export const RatingContainer = styled.div`
 `;
 
 export const StyledCardActions = styled(CardActions)`
-  padding: 4px 15px 4px 15px !important;
-  justify-content: space-between;
-  background-color: ${colors.secundary};
-  height: 40px;
+  && {
+    padding: 4px 15px 4px 15px;
+    justify-content: space-between;
+    background-color: ${colors.secundary};
+    height: 40px;
+  }
 
   p {
     font-size: 16px;
@@ -54,7 +62,7 @@ export const StyledCardActions = styled(CardActions)`
 export const StyledChip = styled(Chip)`
   && {
     padding-top: 2px;
-    font-size: 12px !important;
+    font-size: 14px;
     background-color: ${({ status }) => {
       switch (status) {
         case 'Agendado':
