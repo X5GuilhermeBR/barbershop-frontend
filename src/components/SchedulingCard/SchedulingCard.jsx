@@ -65,7 +65,7 @@ function SchedulingCard({ appointment }) {
       <StyledCard variant="outlined">
         <StyledCardContent>
           <h2>Agendamento N#{appointment.id}</h2>
-          <StyledChip label={`${appointment.status}`} status={appointment.status} />
+          <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
           <p>
             <strong>Data:</strong> {appointment.date}
             <br />

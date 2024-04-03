@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import colors from '../../utils/colors';
 
 export const StyledGridItem = styled(Grid)`
-  margin-bottom: 20px;
+  margin-top: 30px;
 `;
 
 export const StyledCard = styled(Card)`
@@ -54,6 +54,7 @@ export const StyledCardActions = styled(CardActions)`
 export const StyledChip = styled(Chip)`
   && {
     padding-top: 2px;
+    font-size: 12px !important;
     background-color: ${({ status }) => {
       switch (status) {
         case 'Agendado':
