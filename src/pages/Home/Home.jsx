@@ -1,5 +1,5 @@
 import ContentCutIcon from '@mui/icons-material/ContentCut';
-import { Alert, AlertTitle, Container, Grid, Typography } from '@mui/material';
+import { Alert, AlertTitle, Button, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -56,9 +56,12 @@ function HomePage() {
               {/* <strong>Com previsão de início ás 16:12h</strong> */}
             </Alert>
           )}
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Próximos agendamentos:
-          </Typography>
+          <Button variant="contained" color="primary" style={{ marginBottom: '1rem' }}>
+            QUERO MARCAR UM HORÁRIO
+          </Button>
+          <Button variant="contained" color="primary">
+            QUERO FALAR COM O FLOW
+          </Button>
           <Grid container spacing={1}>
             {Array.isArray(schedule) &&
               schedule.map(
