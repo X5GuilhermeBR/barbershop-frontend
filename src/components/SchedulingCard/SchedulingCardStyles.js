@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import colors from '../../utils/colors';
 
 export const StyledGridItem = styled(Grid)`
-  margin-top: 30px;
+  margin-top: 0px;
 `;
 
 export const StyledCard = styled(Card)`

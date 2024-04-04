@@ -99,6 +99,10 @@ function HomePage() {
           >
             QUERO FALAR COM O FLOW
           </CustomButton>
+          <Divider />
+          <LocationContainer>
+            <LocationTitle>Próximo Atendimento</LocationTitle>
+          </LocationContainer>
           <Grid container spacing={1} marginTop={2}>
             {Array.isArray(schedule) &&
               schedule.map(
