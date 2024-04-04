@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import AddCircleOutlinedIcon from '@mui/icons-material/AddCircleOutlined';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
-import ManageAccountsOutlinedIcon from '@mui/icons-material/ManageAccountsOutlined';
 import HomeIcon from '@mui/icons-material/Home';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddIcon from '@mui/icons-material/Add';
 import { useAuth } from '../../context/AuthContext';
 
 function FooterNavigation() {
@@ -46,7 +44,7 @@ function FooterNavigation() {
           to="/novo-agendamento"
           label="Agendar"
           value="schedule"
-          icon={value === 'schedule' ? <AddCircleIcon sx={{ fill: 'white' }} /> : <AddCircleOutlinedIcon />}
+          icon={value === 'schedule' ? <AddIcon sx={{ fill: 'white' }} /> : <AddIcon />}
           sx={{ color: 'inherit', '&.Mui-selected': { color: 'white' } }}
           showLabel
         />
@@ -67,7 +65,7 @@ function FooterNavigation() {
         to="/configuracoes"
         label="Perfil"
         value="profile"
-        icon={value === 'profile' ? <ManageAccountsIcon sx={{ fill: 'white' }} /> : <ManageAccountsOutlinedIcon />}
+        icon={value === 'profile' ? <AccountCircleIcon sx={{ fill: 'white' }} /> : <AccountCircleIcon />}
         sx={{ color: 'inherit', '&.Mui-selected': { color: 'white' } }}
         showLabel
       />

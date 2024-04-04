@@ -3,6 +3,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Alert, AlertTitle, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importando useNavigate
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
@@ -26,6 +27,7 @@ function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
+  const navigate = useNavigate(); // Obtendo a função navigate
 
   useEffect(() => {
     async function fetchCheckScheduleById() {
@@ -58,6 +60,18 @@ function HomePage() {
     return firstName;
   };
 
+  const handleWhatsAppClick = () => {
+    const phoneNumber = '5521972862906';
+    const message = encodeURIComponent('mensagem');
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+
+    window.location.href = whatsappUrl;
+  };
+
+  const handleAgendarClick = () => {
+    navigate('/novo-agendamento'); // Redirecionar para a rota '/agendar' ao clicar no botão
+  };
+
   return (
     <>
       <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
@@ -73,6 +87,7 @@ function HomePage() {
             variant="contained"
             backgroundColor={colors.secundary}
             startIcon={<AddIcon />}
+            onClick={handleAgendarClick} // Adicionando o evento onClick
           >
             QUERO MARCAR UM HORÁRIO
           </CustomButton>
@@ -80,6 +95,7 @@ function HomePage() {
             variant="contained"
             backgroundColor={colors.fourth}
             startIcon={<WhatsAppIcon />}
+            onClick={handleWhatsAppClick}
           >
             QUERO FALAR COM O FLOW
           </CustomButton>
