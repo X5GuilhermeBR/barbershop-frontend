@@ -5,6 +5,7 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Alert, AlertTitle, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importando useNavigate
+import BarberCard from '../../components/BarberCard/BarberCard';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
@@ -168,6 +169,7 @@ function HomePage() {
             <Divider />
             <LocationContainer>
               <LocationTitle>Minhas Avaliações</LocationTitle>
+              <BarberCard profile={userInfo} />
             </LocationContainer>
           </Container>
         )}
