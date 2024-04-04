@@ -4,13 +4,23 @@ import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import HistoryIcon from '@mui/icons-material/History';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import { Container, Divider, Grid, Paper, TextField, Typography } from '@mui/material';
+import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importe useHistory
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
+import {
+  ActionIcons,
+  AppointmentContent,
+  HourText,
+  SchedulingCard,
+  SchedulingCardContent,
+  StyledChip,
+  StyledDivider,
+  Title,
+} from './ScheduleStyled';
 
 function Schedule() {
   const { userInfo } = useAuth();
@@ -43,14 +53,19 @@ function Schedule() {
   };
 
   const formatWeekdayDateMonthYear = (dateString) => {
-    const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const daysOfWeek = [
+      'Domingo',
+      'Segunda-Feira',
+      'Terça-Feira',
+      'Quarta-Feira',
+      'Quinta-Feira',
+      'Sexta-Feira',
+      'Sábado',
+    ];
     const date = new Date(dateString);
     date.setDate(date.getDate() + 1);
     const dayOfWeek = daysOfWeek[date.getDay()];
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    return `${dayOfWeek}, ${day}/${month}/${year}`;
+    return `${dayOfWeek}`;
   };
 
   const formatHour = (hour) => (hour < 10 ? `0${hour}:00` : `${hour}:00`);
@@ -74,19 +89,18 @@ function Schedule() {
     if (appointment) {
       return (
         <>
-          <Typography variant="body1">{`Cliente: ${appointment.client_name}`}</Typography>
-          <Typography variant="body2">{`Serviço: ${appointment.service_name}`}</Typography>
-          <Typography variant="body2">{`Valor: ${appointment.service_price}`}</Typography>
-          <Typography variant="body2">{`Status: ${appointment.status}`}</Typography>
-          <Typography variant="body2">{`Type: ${appointment.type}`}</Typography>
+          <h2>Agendamento N#{appointment.id}</h2>
+          <p>
+            <strong>Cliente:</strong> {appointment.client_name}
+            <br />
+            <strong>Valor:</strong> {appointment.service_price}
+            <br />
+          </p>
+          <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
         </>
       );
     }
-    return (
-      <Typography variant="body1" style={{ textAlign: 'center' }}>
-        Horário vago
-      </Typography>
-    );
+    return <h2>Horário vago</h2>;
   };
 
   const handleAddAppointment = () => {
@@ -112,7 +126,7 @@ function Schedule() {
         }}
       >
         <Container>
-          <Grid container direction="column" style={{ marginBottom: '5rem', flex: '1 0 auto' }}>
+          <Grid container direction="column" style={{ flex: '1 0 auto' }}>
             <Grid item xs={12}>
               <TextField
                 id="date"
@@ -134,95 +148,93 @@ function Schedule() {
             </Grid>
             {Object.entries(groupedAppointmentsByDate).map(([date, appointments]) => (
               <Grid item xs={12} key={date}>
-                <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
-                  {formatWeekdayDateMonthYear(date)}
-                </Typography>
+                <Title>{formatWeekdayDateMonthYear(date)}</Title>
                 {availableHours.map((hour) => (
-                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }} key={hour}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="body1" style={{ marginRight: '1rem' }}>
-                        {`${formatHour(hour)}`}
-                      </Typography>
-                      <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
-                      <div>{renderAppointmentOrVago(hour, appointments)}</div>
-                      {appointments.find(
-                        (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
-                      ) ? (
-                        <>
-                          {appointments.find(
-                            (appoint) =>
-                              parseInt(appoint.time.split(':')[0], 10) === hour &&
-                              appoint.status !== 'Cancelado'
-                          ) ? (
-                            <>
-                              <EditIcon
-                                fontSize="small"
-                                style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                                onClick={() =>
-                                  handleEditAppointment(
-                                    appointments.find(
-                                      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                  <SchedulingCard elevation={3} key={hour}>
+                    <SchedulingCardContent>
+                      <HourText variant="body1">{`${formatHour(hour)}`}</HourText>
+                      <StyledDivider />
+                      <AppointmentContent>
+                        {renderAppointmentOrVago(hour, appointments)}
+                      </AppointmentContent>
+                      <ActionIcons>
+                        {appointments.find(
+                          (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                        ) ? (
+                          <>
+                            {appointments.find(
+                              (appoint) =>
+                                parseInt(appoint.time.split(':')[0], 10) === hour &&
+                                appoint.status !== 'Cancelado'
+                            ) ? (
+                              <>
+                                <EditIcon
+                                  fontSize="small"
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() =>
+                                    handleEditAppointment(
+                                      appointments.find(
+                                        (appoint) =>
+                                          parseInt(appoint.time.split(':')[0], 10) === hour
+                                      )
                                     )
-                                  )
-                                }
-                              />
-                              <KeyboardArrowRightIcon
-                                fontSize="small"
-                                style={{ marginLeft: '15px', cursor: 'pointer' }}
-                                onClick={() =>
-                                  handleEditAppointment(
-                                    hour,
-                                    appointments.find(
-                                      (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
+                                  }
+                                />
+                                <KeyboardArrowRightIcon
+                                  fontSize="small"
+                                  style={{ cursor: 'pointer' }}
+                                  onClick={() =>
+                                    handleEditAppointment(
+                                      hour,
+                                      appointments.find(
+                                        (appoint) =>
+                                          parseInt(appoint.time.split(':')[0], 10) === hour
+                                      )
                                     )
-                                  )
-                                }
+                                  }
+                                />
+                              </>
+                            ) : (
+                              <AddIcon
+                                fontSize="small"
+                                style={{ cursor: 'pointer' }}
+                                onClick={() => handleAddAppointment(hour)}
                               />
-                            </>
-                          ) : (
-                            <AddIcon
-                              fontSize="small"
-                              style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                              onClick={() => handleAddAppointment(hour)}
-                            />
-                          )}
-                        </>
-                      ) : (
-                        <AddIcon
-                          fontSize="small"
-                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
-                          onClick={() => handleAddAppointment(hour)}
-                        />
-                      )}
-                    </div>
-                  </Paper>
+                            )}
+                          </>
+                        ) : (
+                          <AddIcon
+                            fontSize="small"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => handleAddAppointment(hour)}
+                          />
+                        )}
+                      </ActionIcons>
+                    </SchedulingCardContent>
+                  </SchedulingCard>
                 ))}
               </Grid>
             ))}
             {noAppointments && (
               <Grid item xs={12}>
-                <Typography variant="h6" style={{ marginBottom: '1rem', textAlign: 'center' }}>
-                  {formatWeekdayDateMonthYear(selectedDate)}
-                </Typography>
+                <Title>{formatWeekdayDateMonthYear(selectedDate)}</Title>
                 {availableHours.map((hour) => (
-                  <Paper elevation={3} style={{ padding: '1rem', marginBottom: '1rem' }} key={hour}>
-                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                      <Typography variant="body1" style={{ marginRight: '1rem' }}>
-                        {`${formatHour(hour)}`}
-                      </Typography>
-                      <Divider orientation="vertical" flexItem style={{ marginRight: '1rem' }} />
-                      <div>
-                        <Typography variant="body1" style={{ textAlign: 'center' }}>
-                          Horário vago
-                        </Typography>
+                  <SchedulingCard elevation={3} key={hour}>
+                    <SchedulingCardContent>
+                      <HourText variant="body1">{`${formatHour(hour)}`}</HourText>
+                      <StyledDivider orientation="vertical" flexItem />
+                      <AppointmentContent>
+                        <h2>Horário vago</h2>
+                      </AppointmentContent>
+                      <ActionIcons>
                         <AddIcon
                           fontSize="small"
-                          style={{ marginLeft: 'auto', cursor: 'pointer' }}
+                          style={{ cursor: 'pointer' }}
                           onClick={() => handleAddAppointment(hour)}
                         />
-                      </div>
-                    </div>
-                  </Paper>
+                      </ActionIcons>
+                    </SchedulingCardContent>
+                  </SchedulingCard>
                 ))}
               </Grid>
             )}
