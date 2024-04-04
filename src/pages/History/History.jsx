@@ -1,13 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
+import ErrorIcon from '@mui/icons-material/Error';
 import HistoryIcon from '@mui/icons-material/History';
-import { Container, Grid, TextField, Typography } from '@mui/material';
+import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
-import { Divider, HistoryTitle } from './HistoryStyled';
+import colors from '../../utils/colors';
+import { Divider, HistoryTitle, TitleNotSchedule } from './HistoryStyled';
 
 function History() {
   const { userInfo } = useAuth();
@@ -28,7 +31,6 @@ function History() {
     async function fetchScheduledAppointments() {
       if (userInfo && userInfo.id) {
         const { data } = await checkScheduleById(startDate, endDate, userInfo.id);
-        // Ordena os agendamentos por data antes de setá-los
         const sortedAppointments = data.sort((a, b) => new Date(a.date) - new Date(b.date));
         setScheduledAppointments(sortedAppointments);
         setNoAppointments(sortedAppointments.length === 0);
@@ -86,7 +88,7 @@ function History() {
       'Dezembro',
     ];
     const date = new Date(dateString);
-    const day = date.getDate() + 1; // Adiciona um dia ao título
+    const day = date.getDate() + 1;
     const weekday = daysOfWeek[date.getDay()];
     const month = months[date.getMonth()];
     const year = date.getFullYear();
@@ -103,7 +105,6 @@ function History() {
     return grouped;
   }, {});
 
-  // Ordenar os grupos de agendamentos por data
   const sortedGroupedAppointments = Object.entries(groupedAppointments).sort((a, b) => {
     const dateA = new Date(a[1][0].date);
     const dateB = new Date(b[1][0].date);
@@ -118,7 +119,7 @@ function History() {
         style={{
           marginBottom: '4rem',
           marginTop: '1rem',
-          minHeight: 'calc(100vh - 64px)',
+          minHeight: 'calc(100vh - 200px)',
           flex: '1 0 auto',
         }}
       >
@@ -140,10 +141,13 @@ function History() {
                 }}
               />
             </Grid>
-            {sortedGroupedAppointments.map(([dayOfWeek, appointments]) => (
+
+            {sortedGroupedAppointments.map(([dayOfWeek, appointments], index) => (
               <Grid item xs={12} key={dayOfWeek}>
-                <Divider />
-                <HistoryTitle>{formatWeekdayDateMonthYear(appointments[0].date)}</HistoryTitle>
+                {index !== 0 && <Divider />}
+                <HistoryTitle style={{ marginTop: '1rem' }}>
+                  {formatWeekdayDateMonthYear(appointments[0].date)}
+                </HistoryTitle>
                 <Grid container spacing={2}>
                   {appointments.map((appointment) => (
                     <Grid item key={appointment.id} xs={12}>
@@ -153,11 +157,19 @@ function History() {
                 </Grid>
               </Grid>
             ))}
+
             {noAppointments && (
-              <Grid container justifyContent="center" style={{ marginTop: '1rem' }}>
-                <Typography variant="h6">
+              <Grid
+                container
+                justifyContent="center"
+                alignItems="center"
+                textAlign="center"
+                style={{ marginTop: '4rem', height: '100%' }}
+              >
+                <ErrorIcon style={{ fontSize: 190, color: `${colors.third}` }} />
+                <TitleNotSchedule>
                   Você não possui histórico de atendimento neste mês.
-                </Typography>
+                </TitleNotSchedule>
               </Grid>
             )}
           </Grid>

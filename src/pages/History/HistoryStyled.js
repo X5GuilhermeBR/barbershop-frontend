@@ -13,3 +13,9 @@ height: 1px;
 background-color: ${colors.basic};
 margin: 20px 0;
 `;
+
+export const TitleNotSchedule = styled.h1`
+color: ${colors.third};
+font-size: 24px;
+margin-top: 20px;
+`
