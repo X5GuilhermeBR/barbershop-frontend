@@ -7,6 +7,7 @@ import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
+import { Divider, HistoryTitle } from './HistoryStyled';
 
 function History() {
   const { userInfo } = useAuth();
@@ -141,10 +142,8 @@ function History() {
             </Grid>
             {sortedGroupedAppointments.map(([dayOfWeek, appointments]) => (
               <Grid item xs={12} key={dayOfWeek}>
-                <Typography variant="h6" style={{ marginTop: '1rem' }}>
-                  {/* Ajuste na formatação da data */}
-                  {formatWeekdayDateMonthYear(appointments[0].date)}
-                </Typography>
+                <Divider />
+                <HistoryTitle>{formatWeekdayDateMonthYear(appointments[0].date)}</HistoryTitle>
                 <Grid container spacing={2}>
                   {appointments.map((appointment) => (
                     <Grid item key={appointment.id} xs={12}>
