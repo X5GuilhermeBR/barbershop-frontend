@@ -1,4 +1,5 @@
 import AddIcon from '@mui/icons-material/Add';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Alert, AlertTitle, Container, Grid } from '@mui/material';
@@ -72,82 +73,104 @@ function HomePage() {
     navigate('/novo-agendamento'); // Redirecionar para a rota '/agendar' ao clicar no botão
   };
 
+  const handleSchecule = () => {
+    navigate('/agenda'); // Redirecionar para a rota '/agendar' ao clicar no botão
+  };
+
   return (
     <>
       <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
       <Grid item style={{ marginBottom: '5rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
-        <Container>
-          {hasScheduledAppointment && (
-            <Alert sx={{ backgroundColor: colors.third, color: '#black' }}>
-              <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
-              <strong>Chegue com 10 minutos de antecedência</strong>
-            </Alert>
-          )}
-          <CustomButton
-            variant="contained"
-            backgroundColor={colors.secundary}
-            startIcon={<AddIcon />}
-            onClick={handleAgendarClick} // Adicionando o evento onClick
-          >
-            QUERO MARCAR UM HORÁRIO
-          </CustomButton>
-          <CustomButton
-            variant="contained"
-            backgroundColor={colors.fourth}
-            startIcon={<WhatsAppIcon />}
-            onClick={handleWhatsAppClick}
-          >
-            QUERO FALAR COM O FLOW
-          </CustomButton>
-
-          {Array.isArray(schedule) &&
-            schedule.map(
-              (appointment) =>
-                appointment.status !== 'Cancelado' && (
-                  <>
-                    <Divider />
-                    <LocationContainer>
-                      <LocationTitle>Próximo Atendimento</LocationTitle>
-                    </LocationContainer>
-                    <SchedulingCard key={appointment.id} appointment={appointment} />
-                  </>
-                )
+        {userInfo.profile === 'Client' ? (
+          <Container>
+            {hasScheduledAppointment && (
+              <Alert sx={{ backgroundColor: colors.third, color: '#black' }}>
+                <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
+                <strong>Chegue com 10 minutos de antecedência</strong>
+              </Alert>
             )}
-          <Divider />
-          <LocationContainer>
-            <LocationTitle>Principais Serviços</LocationTitle>
-            <ServiceCardContainer>
-              <ServiceCard>
-                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
-                <ServiceName>CABELO</ServiceName>
-                <ServiceDescription>Descrição breve do Serviço 1.</ServiceDescription>
-              </ServiceCard>
-              <ServiceCard>
-                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
-                <ServiceName>BARBA</ServiceName>
-                <ServiceDescription>Descrição breve do Serviço 2.</ServiceDescription>
-              </ServiceCard>
-              <ServiceCard>
-                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
-                <ServiceName>PIGMENTAÇÃO</ServiceName>
-                <ServiceDescription>Pigmentação</ServiceDescription>
-              </ServiceCard>
-              <ServiceCard>
-                <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
-                <ServiceName>DESCOLORAÇÃO</ServiceName>
-                <ServiceDescription>Descrição breve do Serviço 4.</ServiceDescription>
-              </ServiceCard>
-            </ServiceCardContainer>
-          </LocationContainer>
-          <Divider />
-          <LocationContainer>
-            <LocationTitle>Onde Estamos</LocationTitle>
-            <LocationText>
-              R. Carolina Santos, 4 A<br />
-              Lins de Vasconcelos - Rio de Janeiro
-            </LocationText>
-          </LocationContainer>
-        </Container>
+            <CustomButton
+              variant="contained"
+              backgroundColor={colors.secundary}
+              startIcon={<AddIcon />}
+              onClick={handleAgendarClick} // Adicionando o evento onClick
+            >
+              QUERO MARCAR UM HORÁRIO
+            </CustomButton>
+            <CustomButton
+              variant="contained"
+              backgroundColor={colors.fourth}
+              startIcon={<WhatsAppIcon />}
+              onClick={handleWhatsAppClick}
+            >
+              QUERO FALAR COM O FLOW
+            </CustomButton>
+
+            {Array.isArray(schedule) &&
+              schedule.map(
+                (appointment) =>
+                  appointment.status !== 'Cancelado' && (
+                    <>
+                      <Divider />
+                      <LocationContainer>
+                        <LocationTitle>Próximo Atendimento</LocationTitle>
+                      </LocationContainer>
+                      <SchedulingCard key={appointment.id} appointment={appointment} />
+                    </>
+                  )
+              )}
+            <Divider />
+            <LocationContainer>
+              <LocationTitle>Principais Serviços</LocationTitle>
+              <ServiceCardContainer>
+                <ServiceCard>
+                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceName>CABELO</ServiceName>
+                  <ServiceDescription>Descrição breve do Serviço 1.</ServiceDescription>
+                </ServiceCard>
+                <ServiceCard>
+                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceName>BARBA</ServiceName>
+                  <ServiceDescription>Descrição breve do Serviço 2.</ServiceDescription>
+                </ServiceCard>
+                <ServiceCard>
+                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceName>PIGMENTAÇÃO</ServiceName>
+                  <ServiceDescription>Pigmentação</ServiceDescription>
+                </ServiceCard>
+                <ServiceCard>
+                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceName>DESCOLORAÇÃO</ServiceName>
+                  <ServiceDescription>Descrição breve do Serviço 4.</ServiceDescription>
+                </ServiceCard>
+              </ServiceCardContainer>
+            </LocationContainer>
+            <Divider />
+            <LocationContainer>
+              <LocationTitle>Onde Estamos</LocationTitle>
+              <LocationText>
+                R. Carolina Santos, 4 A<br />
+                Lins de Vasconcelos - Rio de Janeiro
+              </LocationText>
+            </LocationContainer>
+          </Container>
+        ) : (
+          <Container>
+            <CustomButton
+              variant="contained"
+              backgroundColor={colors.secundary}
+              startIcon={<CalendarMonthIcon />}
+              onClick={handleSchecule}
+            >
+              CONFERIR MINHA AGENDA
+            </CustomButton>
+
+            <Divider />
+            <LocationContainer>
+              <LocationTitle>Minhas Avaliações</LocationTitle>
+            </LocationContainer>
+          </Container>
+        )}
       </Grid>
       <FooterNavigation />
     </>
