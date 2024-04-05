@@ -9,6 +9,7 @@ import BarberCard from '../../components/BarberCard/BarberCard';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
+import WalletCard from '../../components/WalletCard/WalletCard';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
 import colors from '../../utils/colors';
@@ -82,7 +83,7 @@ function HomePage() {
     <>
       <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
       <Grid item style={{ marginBottom: '5rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
-        {userInfo.profile === 'Client' ? (
+        {userInfo?.profile === 'Client' ? (
           <Container>
             {hasScheduledAppointment && (
               <Alert sx={{ backgroundColor: colors.third, color: '#black' }}>
@@ -165,11 +166,15 @@ function HomePage() {
             >
               CONFERIR MINHA AGENDA
             </CustomButton>
-
+            <Divider />
+            <LocationContainer>
+              <LocationTitle>Minha Carteira</LocationTitle>
+              {userInfo && <WalletCard profile={userInfo} />}
+            </LocationContainer>
             <Divider />
             <LocationContainer>
               <LocationTitle>Minhas Avaliações</LocationTitle>
-              <BarberCard profile={userInfo} />
+              {userInfo && <BarberCard profile={userInfo} />}
             </LocationContainer>
           </Container>
         )}

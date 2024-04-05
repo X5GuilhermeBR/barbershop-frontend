@@ -619,3 +619,25 @@ export const createService = async (serviceInfo) => {
     throw error; // Lança o erro para quem chamar esta função
   }
 };
+
+export const getRatingByBarber = async (id) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  return api
+    .get(`/barber/${id}/rating`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};

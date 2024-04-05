@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
+/* eslint-disable react/no-array-index-key */
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import StarIcon from '@mui/icons-material/Star';
 import { Avatar } from '@mui/material';
 import Rating from '@mui/material/Rating';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { getRatingByBarber } from '../../service/api';
 import colors from '../../utils/colors';
 
 // Componente styled para o card do barbeiro
 const BarberCardContainer = styled.div`
-  background-color: #fff;
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -24,9 +24,9 @@ const BarberInfoContainer = styled.div`
 `;
 
 const BarberAvatar = styled(Avatar)`
-  margin-right: 10px;
-  width: 86px;
-  height: 86px;
+  margin-right: 20px;
+  width: 86px !important;
+  height: 86px !important;
   border: 2px solid white; /* Adicionando contorno branco */
 `;
 
@@ -39,7 +39,7 @@ const BarberDetails = styled.div`
     text-align: left;
     margin: 0px;
     color: ${colors.third};
-    font-size: 20px;
+    font-size: 18px;
   }
 
   div {
@@ -110,41 +110,44 @@ const ReviewDetails = styled.div`
 `;
 
 function BarberCard({ profile }) {
-  // Dados fictícios do barbeiro e suas avaliações
-  const barber = {
-    name: 'MURILO CALDEIRA',
-    avatar:
-      'https://play-lh.googleusercontent.com/hnWtJllVHkP08SfpHQFI4COBX6oXN26JX6JuiS5nrERD6n-NgOaZ4oZeealVbv9ZAuqxhaG4RAfB_P4E54U=s1280-w1280-h720',
-    rating: 4.98,
-    totalCuts: 120,
-    latestReviews: [
-      { client: 'Maria', date: '04/04', rating: 4 },
-      { client: 'José', date: '04/04', rating: 5 },
-      { client: 'Ana', date: '04/04', rating: 4.5 },
-      { client: 'Pedro', date: '04/04', rating: 3.5 },
-      { client: 'Carla', date: '04/04', rating: 4 },
-    ],
-  };
+  const [barberData, setBarberData] = useState(null);
 
+  useEffect(() => {
+    const fetchBarberRating = async () => {
+      try {
+        if (profile && profile.id) {
+          const response = await getRatingByBarber(profile.id);
+          console.log(response);
+          setBarberData(response || {}); // Se response for null ou undefined, define um objeto vazio
+        }
+      } catch (error) {
+        console.error('Error fetching barber rating:', error);
+      }
+    };
+
+    fetchBarberRating();
+  }, []);
+
+  // Renderiza o componente com base nos dados do barbeiro recebidos da requisição
   return (
     <BarberCardContainer>
       <BarberInfoContainer>
-        <BarberAvatar alt={barber.name} src={barber.avatar} />
+        <BarberAvatar alt={profile.name} src={barberData?.avatar || ''} />
         <BarberDetails>
-          <h2>{profile.name.toUpperCase()}</h2>
+          <h2>{profile.name?.toUpperCase() || '-'}</h2>
           <div>
             <BarberDetailsContent>
               <p>MÉDIA</p>
               <p>
-                {barber.rating}
-                <StarIcon sx={{ marginLeft: '5px' }} />
+                {barberData?.average_rating || '-'}
+                <StarIcon sx={{ marginLeft: '5px', color: `${colors.second}` }} />
               </p>
             </BarberDetailsContent>
             <BarberDetailsContent>
               <p>CORTES</p>
               <p>
-                {barber.totalCuts}
-                <ContentCutIcon sx={{ marginLeft: '5px' }} />
+                {barberData?.total_appointments || '-'}
+                <ContentCutIcon sx={{ marginLeft: '5px', color: `${colors.second}` }} />
               </p>
             </BarberDetailsContent>
           </div>
@@ -152,16 +155,26 @@ function BarberCard({ profile }) {
       </BarberInfoContainer>
       <LatestReviewsContainer>
         <h2>ÚLTIMAS AVALIAÇÕES</h2>
-        {barber.latestReviews.map((review, index) => (
-          <ReviewItem>
-            <ReviewDetails>
-              <p>
-                {review.client} - <span> {review.date}</span>
-              </p>
-            </ReviewDetails>
-            <Rating name={`rating-${index}`} value={review.rating} precision={0.5} readOnly />
-          </ReviewItem>
-        ))}
+        {barberData &&
+          (barberData?.last_appointments?.length > 0 ? (
+            barberData?.last_appointments.map((review, index) => (
+              <ReviewItem key={index}>
+                <ReviewDetails>
+                  <p>
+                    {review.client.split(' ')[0] || '-'} - <span>{review.date || '-'}</span>
+                  </p>
+                </ReviewDetails>
+                <Rating
+                  name={`rating-${index}`}
+                  value={review.rating || 0}
+                  precision={0.5}
+                  readOnly
+                />
+              </ReviewItem>
+            ))
+          ) : (
+            <p>Nenhuma avaliação encontrada</p>
+          ))}
       </LatestReviewsContainer>
     </BarberCardContainer>
   );

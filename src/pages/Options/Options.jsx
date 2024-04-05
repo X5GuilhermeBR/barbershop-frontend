@@ -9,15 +9,20 @@ import PasswordIcon from '@mui/icons-material/Password';
 import RoomServiceIcon from '@mui/icons-material/RoomService';
 import SettingsIcon from '@mui/icons-material/Settings';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import { Grid } from '@mui/material';
+import { Grid, ListItemText } from '@mui/material';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import * as React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components'; // Importa styled-components
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import PageHeader from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
+
+// Define um novo componente ListItemTextStyled usando styled-components
+const ListItemTextStyled = styled(ListItemText)`
+  color: white; // Define a cor do texto como branco
+`;
 
 export default function Options() {
   const { logout, userInfo } = useAuth(); // Obtém a função logout do contexto de autenticação
@@ -45,26 +50,27 @@ export default function Options() {
           <ListItemIcon>
             <InsertEmoticonIcon />
           </ListItemIcon>
-          <ListItemText primary="Editar Perfil" />
+          {/* Usa o novo componente ListItemTextStyled */}
+          <ListItemTextStyled primary="Editar Perfil" />
         </ListItemButton>
         <ListItemButton component={Link} to="/configuracoes/alterar-senha">
           <ListItemIcon>
             <PasswordIcon />
           </ListItemIcon>
-          <ListItemText primary="Alterar Senha" />
+          <ListItemTextStyled primary="Alterar Senha" />
         </ListItemButton>
         <ListItemButton component={Link} to="/configuracoes/historico">
           <ListItemIcon>
             <HistoryIcon />
           </ListItemIcon>
-          <ListItemText primary="Meu Histórico" />
+          <ListItemTextStyled primary="Meu Histórico" />
         </ListItemButton>
         {userInfo.profile === 'client' && (
           <ListItemButton component={Link} to="/loyalty-card" disabled>
             <ListItemIcon>
               <CardGiftcardIcon />
             </ListItemIcon>
-            <ListItemText primary="Cartão Fidelidade" />
+            <ListItemTextStyled primary="Cartão Fidelidade" />
           </ListItemButton>
         )}
         {userInfo.profile === 'barber' && (
@@ -73,25 +79,25 @@ export default function Options() {
               <ListItemIcon>
                 <GroupsIcon />
               </ListItemIcon>
-              <ListItemText primary="Clientes" />
+              <ListItemTextStyled primary="Clientes" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/produtos">
               <ListItemIcon>
                 <CategoryIcon />
               </ListItemIcon>
-              <ListItemText primary="Produtos" />
+              <ListItemTextStyled primary="Produtos" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/servicos">
               <ListItemIcon>
                 <RoomServiceIcon />
               </ListItemIcon>
-              <ListItemText primary="Serviços" />
+              <ListItemTextStyled primary="Serviços" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/historico" disabled>
               <ListItemIcon>
                 <AccountBalanceWalletIcon />
               </ListItemIcon>
-              <ListItemText primary="Carteira" />
+              <ListItemTextStyled primary="Carteira" />
             </ListItemButton>
           </>
         )}
@@ -100,14 +106,14 @@ export default function Options() {
             <ListItemIcon>
               <WhatsAppIcon />
             </ListItemIcon>
-            <ListItemText primary="Fale Conosco" />
+            <ListItemTextStyled primary="Fale Conosco" />
           </ListItemButton>
         )}
         <ListItemButton onClick={handleLogout}>
           <ListItemIcon>
             <ExitToAppIcon />
           </ListItemIcon>
-          <ListItemText primary="Sair" />
+          <ListItemTextStyled primary="Sair" />
         </ListItemButton>
       </Grid>
       <FooterNavigation />
