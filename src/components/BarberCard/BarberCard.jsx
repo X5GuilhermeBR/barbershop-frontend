@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import StarIcon from '@mui/icons-material/Star';
-import { Avatar, Typography } from '@mui/material';
+import { Avatar } from '@mui/material';
 import Rating from '@mui/material/Rating';
 import React from 'react';
 import styled from 'styled-components';
@@ -87,7 +87,7 @@ const ReviewItem = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 `;
 
 const ReviewDetails = styled.div`
@@ -95,6 +95,18 @@ const ReviewDetails = styled.div`
   flex-direction: row;
   align-items: baseline;
   align-content: baseline;
+
+  p {
+    font-size: 16px;
+    margin: 0px;
+    font-weight: bold;
+
+    span {
+      font-weight: lighter;
+      margin: 0px;
+      font-size: 12px;
+    }
+  }
 `;
 
 function BarberCard({ profile }) {
@@ -106,11 +118,11 @@ function BarberCard({ profile }) {
     rating: 4.98,
     totalCuts: 120,
     latestReviews: [
-      { client: 'Maria', date: '2022-03-15', rating: 4 },
-      { client: 'José', date: '2022-03-10', rating: 5 },
-      { client: 'Ana', date: '2022-03-05', rating: 4.5 },
-      { client: 'Pedro', date: '2022-03-01', rating: 3.5 },
-      { client: 'Carla', date: '2022-02-25', rating: 4 },
+      { client: 'Maria', date: '04/04', rating: 4 },
+      { client: 'José', date: '04/04', rating: 5 },
+      { client: 'Ana', date: '04/04', rating: 4.5 },
+      { client: 'Pedro', date: '04/04', rating: 3.5 },
+      { client: 'Carla', date: '04/04', rating: 4 },
     ],
   };
 
@@ -143,8 +155,9 @@ function BarberCard({ profile }) {
         {barber.latestReviews.map((review, index) => (
           <ReviewItem>
             <ReviewDetails>
-              <Typography variant="body1">{review.client} -</Typography>
-              <Typography variant="body2"> {review.date}</Typography>
+              <p>
+                {review.client} - <span> {review.date}</span>
+              </p>
             </ReviewDetails>
             <Rating name={`rating-${index}`} value={review.rating} precision={0.5} readOnly />
           </ReviewItem>
