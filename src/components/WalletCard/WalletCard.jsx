@@ -1,138 +1,21 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { IconButton, LinearProgress, Tooltip } from '@mui/material';
+import { CheckCircleOutline, Visibility, VisibilityOff } from '@mui/icons-material';
+import { Tooltip } from '@mui/material';
 import React, { useState } from 'react';
-import styled from 'styled-components';
-import colors from '../../utils/colors';
-
-const WalletCardContainer = styled.div`
-  padding: 20px 30px 20px 30px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: ${colors.primary};
-`;
-
-const StyledCardBackground = styled.div`
-  background-color: ${colors.secondary};
-  border-radius: 10px;
-`;
-
-const WalletBoxContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-`;
-
-const WalletCardContent = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const WalletBalance = styled.div`
-  margin: 5px 0;
-  text-align: left;
-  color: white;
-
-  span {
-    font-size: 25px;
-    color: white;
-  }
-
-  p {
-    color: ${colors.third};
-    margin: 0px;
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-
-  p + p {
-    margin: 0px;
-    display: flex;
-
-    align-items: flex-start;
-
-    span {
-      font-size: 25px;
-      padding-top: 8px;
-    }
-
-    p {
-      margin-left: 6px;
-      font-size: 50px;
-      color: white;
-    }
-  }
-`;
-
-const WalletBalancePredicted = styled.div`
-  margin: 5px 0;
-  text-align: left;
-  color: white;
-
-  span {
-    font-size: 25px;
-    color: white;
-  }
-
-  p {
-    color: ${colors.third};
-    margin: 0px;
-    font-size: 14px;
-    margin-bottom: 5px;
-  }
-
-  p + p {
-    margin: 0px;
-    display: flex;
-    align-items: center;
-
-    span {
-      font-size: 25px;
-    }
-
-    p {
-      margin-left: 6px;
-      font-size: 25px;
-      color: white;
-    }
-  }
-`;
-
-const WalletBalanceBox = styled.div`
-  display: grid;
-`;
-
-const StyledLinearProgress = styled(LinearProgress)`
-  && {
-    height: 20px;
-    border-radius: 10px;
-    background-color: white;
-    .MuiLinearProgress-barColorPrimary {
-      background-color: ${colors.second};
-    }
-    .MuiLinearProgress-bar1Determinate {
-      background-color: ${colors.second};
-    }
-    .MuiLinearProgress-bar2Determinate {
-      background-color: ${colors.second};
-    }
-  }
-`;
-
-const StyledLinearSubTitle = styled.p`
-  margin: 0px;
-  margin-top: 4px;
-  font-size: 10px;
-  text-align: center;
-`;
-
-// Ícone do olho personalizado
-const StyledIconButton = styled(IconButton)`
-  && {
-    color: white;
-  }
-`;
+import {
+  StyledCardBackground,
+  StyledIconButton,
+  StyledLinearProgress,
+  StyledLinearSubTitle,
+  StyledLinearTitle,
+  WalletBalance,
+  WalletBalanceBox,
+  WalletBalancePredicted,
+  WalletBoxContainer,
+  WalletCardContainer,
+  WalletCardContent,
+} from './WalletCardStyled';
 
 function WalletCard({ currentBalance = 400.99, predictedBalance = 999.99 }) {
   const [showValues, setShowValues] = useState(true);
@@ -182,12 +65,19 @@ function WalletCard({ currentBalance = 400.99, predictedBalance = 999.99 }) {
               </WalletBalancePredicted>
             </WalletBalanceBox>
             <Tooltip title={showValues ? 'Esconder valores' : 'Mostrar valores'}>
-              {/* Utilizando o ícone personalizado */}
               <StyledIconButton onClick={toggleValues} size="small">
                 {showValues ? <VisibilityOff /> : <Visibility />}
               </StyledIconButton>
             </Tooltip>
           </WalletBoxContainer>
+          <StyledLinearTitle>
+            <p>ATENDIMENTO(S) FINALIZADO(S)</p>
+            <div>
+              <p>2/10</p>
+              <CheckCircleOutline sx={{ color: 'green', fontSize: '18px' }} />
+              {/* Adicionando o ícone de check e ajustando cor e tamanho */}
+            </div>
+          </StyledLinearTitle>
           <StyledLinearProgress
             variant="determinate"
             value={progressPercentage}
