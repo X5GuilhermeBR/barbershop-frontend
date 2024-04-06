@@ -13,6 +13,11 @@ const WalletCardContainer = styled.div`
   background-color: ${colors.primary};
 `;
 
+const StyledCardBackground = styled.div`
+  background-color: ${colors.secondary};
+  border-radius: 10px;
+`;
+
 const WalletBoxContainer = styled.div`
   display: flex;
   justify-content: space-between;
@@ -98,7 +103,38 @@ const WalletBalanceBox = styled.div`
   display: grid;
 `;
 
-function WalletCard({ currentBalance = 999.99, predictedBalance = 999.99 }) {
+const StyledLinearProgress = styled(LinearProgress)`
+  && {
+    height: 20px;
+    border-radius: 10px;
+    background-color: white;
+    .MuiLinearProgress-barColorPrimary {
+      background-color: ${colors.second};
+    }
+    .MuiLinearProgress-bar1Determinate {
+      background-color: ${colors.second};
+    }
+    .MuiLinearProgress-bar2Determinate {
+      background-color: ${colors.second};
+    }
+  }
+`;
+
+const StyledLinearSubTitle = styled.p`
+  margin: 0px;
+  margin-top: 4px;
+  font-size: 10px;
+  text-align: center;
+`;
+
+// Ícone do olho personalizado
+const StyledIconButton = styled(IconButton)`
+  && {
+    color: white;
+  }
+`;
+
+function WalletCard({ currentBalance = 400.99, predictedBalance = 999.99 }) {
   const [showValues, setShowValues] = useState(true);
 
   const toggleValues = () => {
@@ -132,27 +168,37 @@ function WalletCard({ currentBalance = 999.99, predictedBalance = 999.99 }) {
 
   return (
     <WalletCardContainer>
-      <WalletCardContent>
-        <WalletBoxContainer>
-          <WalletBalanceBox>
-            <WalletBalance>
-              <p>SALDO ATUAL - 05/04</p>
-              <p>{formattedCurrentBalance}</p>
-            </WalletBalance>
-            <WalletBalancePredicted>
-              <p>SALDO PREVISTO - 05/04</p>
-              <p>{formattedPredictedBalance}</p>
-            </WalletBalancePredicted>
-          </WalletBalanceBox>
-          <Tooltip title={showValues ? 'Esconder valores' : 'Mostrar valores'}>
-            <IconButton onClick={toggleValues} size="small">
-              {showValues ? <VisibilityOff /> : <Visibility />}
-            </IconButton>
-          </Tooltip>
-        </WalletBoxContainer>
-        <LinearProgress variant="determinate" value={progressPercentage} color="secondary" />
-        <p>{`${progressPercentage.toFixed(2)}% Concluído`}</p>
-      </WalletCardContent>
+      <StyledCardBackground>
+        <WalletCardContent>
+          <WalletBoxContainer>
+            <WalletBalanceBox>
+              <WalletBalance>
+                <p>SALDO ATUAL - 05/04</p>
+                <p>{formattedCurrentBalance}</p>
+              </WalletBalance>
+              <WalletBalancePredicted>
+                <p>SALDO PREVISTO - 05/04</p>
+                <p>{formattedPredictedBalance}</p>
+              </WalletBalancePredicted>
+            </WalletBalanceBox>
+            <Tooltip title={showValues ? 'Esconder valores' : 'Mostrar valores'}>
+              {/* Utilizando o ícone personalizado */}
+              <StyledIconButton onClick={toggleValues} size="small">
+                {showValues ? <VisibilityOff /> : <Visibility />}
+              </StyledIconButton>
+            </Tooltip>
+          </WalletBoxContainer>
+          <StyledLinearProgress
+            variant="determinate"
+            value={progressPercentage}
+            color="secondary"
+            valueLabelDisplay="on"
+          />
+          <StyledLinearSubTitle>{`Você já completou ${progressPercentage.toFixed(
+            2
+          )}% dos seus atendimentos`}</StyledLinearSubTitle>
+        </WalletCardContent>
+      </StyledCardBackground>
     </WalletCardContainer>
   );
 }
