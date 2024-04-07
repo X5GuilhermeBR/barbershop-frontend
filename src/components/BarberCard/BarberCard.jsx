@@ -1,5 +1,4 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable react/no-array-index-key */
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import StarIcon from '@mui/icons-material/Star';
 import Rating from '@mui/material/Rating';
@@ -25,7 +24,6 @@ function BarberCard({ profile }) {
       try {
         if (profile && profile.id) {
           const response = await getRatingByBarber(profile.id);
-          console.log(response);
           setBarberData(response || {});
         }
       } catch (error) {
@@ -35,6 +33,13 @@ function BarberCard({ profile }) {
 
     fetchBarberRating();
   }, []);
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}`;
+  };
 
   return (
     <BarberCardContainer>
@@ -65,10 +70,11 @@ function BarberCard({ profile }) {
         {barberData &&
           (barberData?.last_appointments?.length > 0 ? (
             barberData?.last_appointments.map((review, index) => (
-              <ReviewItem key={index}>
+              <ReviewItem>
                 <ReviewDetails>
                   <p>
-                    {review.client.split(' ')[0] || '-'} - <span>{review.date || '-'}</span>
+                    {review.client.split(' ')[0] || '-'} -{' '}
+                    <span>{formatDate(review.date) || '-'}</span>
                   </p>
                 </ReviewDetails>
                 <Rating
