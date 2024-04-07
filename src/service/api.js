@@ -641,3 +641,25 @@ export const getRatingByBarber = async (id) => {
       throw error;
     });
 };
+
+export const createSale = async (saleInfo) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  try {
+    const response = await api.post('/sale', saleInfo, config);
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Erro ao fazer a requisição:', error);
+    throw error;
+  }
+};

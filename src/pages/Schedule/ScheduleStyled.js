@@ -10,7 +10,7 @@ export const Title = styled.h2`
 
 
 export const SchedulingCard = styled(Paper)`
-  background-color: ${colors.primary};
+  background-color: ${colors.primary} !important;
   border-radius: 8px;
   box-shadow: 0px 4px 16px rgba(0, 0, 0, 0.1);
   padding: 1rem;

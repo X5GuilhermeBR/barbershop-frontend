@@ -22,8 +22,9 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { getProducts, getScheduleById, updateSchedule } from '../../service/api'; // Importa a função getProducts
+import { createSale, getProducts, getScheduleById, updateSchedule } from '../../service/api'; // Importa a função getProducts
 
 function CustomerService() {
   const [clientName, setClientName] = useState('');
@@ -116,15 +117,36 @@ function CustomerService() {
     }
   };
 
-  // Função para finalizar o atendimento
   const handleFinishService = async () => {
     setIsProcessing(true);
     try {
+      // Atualiza o status do atendimento para 'Finalizado'
       const updatedSchedule = await updateSchedule(scheduleId, {
         status: 'Finalizado',
         finished_service: new Date(),
+        payment_method: paymentMethod,
       });
       console.log('Atendimento finalizado:', updatedSchedule);
+
+      // Cria as vendas para cada produto no carrinho
+      await Promise.all(
+        selectedProducts.map(async (item) => {
+          try {
+            const saleData = {
+              id_schedule: scheduleId,
+              id_product: item.product.id,
+              quantity: item.quantity,
+            };
+
+            // Chama o serviço createSales para criar uma venda
+            await createSale(saleData);
+            console.log('Venda criada para o produto:', item.product.id);
+          } catch (error) {
+            console.error('Erro ao criar venda para o produto:', item.product.id, error);
+          }
+        })
+      );
+
       setIsProcessing(false);
     } catch (error) {
       console.error('Erro ao finalizar o atendimento:', error);
@@ -316,6 +338,7 @@ function CustomerService() {
           )}
         </Container>
       </Grid>
+      <FooterNavigation />
     </>
   );
 }
