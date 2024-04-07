@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { CheckCircleOutline, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyledCardBackground,
   StyledIconButton,
@@ -17,37 +16,64 @@ import {
   WalletCardContent,
 } from './WalletCardStyled';
 
-function WalletCard({ currentBalance = 400.99, predictedBalance = 999.99 }) {
+function WalletCard({ schedule }) {
   const [showValues, setShowValues] = useState(true);
+  const [currentBalance, setCurrentBalance] = useState(0);
+  const [predictedBalance, setPredictedBalance] = useState(0);
+  const [completedAppointments, setCompletedAppointments] = useState(0);
 
   const toggleValues = () => {
     setShowValues(!showValues);
   };
 
-  const renderHiddenValue = (value) => (
+  useEffect(() => {
+    const currentBalanceAmount = schedule.reduce((accumulator, appointment) => {
+      if (appointment.status === 'Finalizado') {
+        return accumulator + parseFloat(appointment.service_price);
+      }
+      return accumulator;
+    }, 0);
+    setCurrentBalance(currentBalanceAmount);
+
+    const predictedBalanceAmount = schedule.reduce(
+      (accumulator, appointment) => accumulator + parseFloat(appointment.service_price),
+      0
+    );
+    setPredictedBalance(predictedBalanceAmount);
+
+    const completedCount = schedule.filter(
+      (appointment) => appointment.status === 'Finalizado'
+    ).length;
+    setCompletedAppointments(completedCount);
+  }, [schedule]);
+
+  const renderHiddenValue = () => (
     <>
       {' '}
       <span>R$</span> <p>--,--</p>
     </>
   );
-  const progressPercentage = (currentBalance / predictedBalance) * 100;
 
   const formattedCurrentBalance = showValues ? (
     <>
       {' '}
-      <span>R$</span> <p>{currentBalance.toFixed(2)}</p>
+      <span>R$</span> <p>{currentBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
     </>
   ) : (
-    renderHiddenValue(currentBalance.toFixed(2))
+    renderHiddenValue()
   );
+
   const formattedPredictedBalance = showValues ? (
     <>
       {' '}
-      <span>R$</span> <p>{predictedBalance.toFixed(2)}</p>
+      <span>R$</span>{' '}
+      <p>{predictedBalance.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p>
     </>
   ) : (
-    renderHiddenValue(predictedBalance.toFixed(2))
+    renderHiddenValue()
   );
+
+  const progressPercentage = (currentBalance / predictedBalance) * 100 || 0;
 
   return (
     <WalletCardContainer>
@@ -73,9 +99,8 @@ function WalletCard({ currentBalance = 400.99, predictedBalance = 999.99 }) {
           <StyledLinearTitle>
             <p>ATENDIMENTO(S) FINALIZADO(S)</p>
             <div>
-              <p>2/10</p>
+              <p>{`${completedAppointments}/${schedule.length}`}</p>
               <CheckCircleOutline sx={{ color: 'green', fontSize: '18px' }} />
-              {/* Adicionando o ícone de check e ajustando cor e tamanho */}
             </div>
           </StyledLinearTitle>
           <StyledLinearProgress

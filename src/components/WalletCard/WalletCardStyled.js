@@ -117,12 +117,13 @@ export const StyledLinearProgress = styled(LinearProgress)`
 
 export const StyledLinearSubTitle = styled.p`
   margin: 0px;
-  margin-top: 4px;
+  margin-top: 8px;
   font-size: 10px;
   text-align: center;
 `;
 
 export const StyledLinearTitle = styled.div`
+margin-top: 20px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
