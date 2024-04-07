@@ -30,7 +30,21 @@ function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
-  const navigate = useNavigate(); // Obtendo a função navigate
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchScheduledAppointments() {
+      if (userInfo && userInfo.id && userInfo.profile === 'barber') {
+        const today = new Date();
+        const formattedDate = today.toISOString().split('T')[0];
+        const { data } = await checkScheduleById(formattedDate, formattedDate, userInfo.id);
+        setSchedule(data);
+        setHasScheduledAppointment(data.length > 0);
+      }
+    }
+
+    fetchScheduledAppointments();
+  }, [userInfo]);
 
   useEffect(() => {
     async function fetchCheckScheduleById() {
@@ -169,7 +183,7 @@ function HomePage() {
             <Divider />
             <LocationContainer>
               <LocationTitle>Minha Carteira</LocationTitle>
-              {userInfo && <WalletCard profile={userInfo} />}
+              {userInfo && <WalletCard schedule={schedule} />}
             </LocationContainer>
             <Divider />
             <LocationContainer>
