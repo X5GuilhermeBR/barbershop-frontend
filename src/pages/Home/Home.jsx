@@ -83,7 +83,7 @@ function HomePage() {
     <>
       <Header icon={<ContentCutIcon />} title={`Bem-vindo, ${userInfo ? getFirstName() : ''}!`} />
       <Grid item style={{ marginBottom: '5rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
-        {userInfo?.profile === 'Client' ? (
+        {userInfo?.profile === 'client' ? (
           <Container>
             {hasScheduledAppointment && (
               <Alert sx={{ backgroundColor: colors.third, color: '#black' }}>
