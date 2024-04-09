@@ -44,7 +44,7 @@ function BarberCard({ profile }) {
   return (
     <BarberCardContainer>
       <BarberInfoContainer>
-        <BarberAvatar alt={profile.name} src={barberData?.avatar || ''} />
+        <BarberAvatar alt={profile.name} src={'https://i.postimg.cc/vTJ2Gm78/1.jpg' || ''} />
         <BarberDetails>
           <h2>{profile.name?.toUpperCase() || '-'}</h2>
           <div>
