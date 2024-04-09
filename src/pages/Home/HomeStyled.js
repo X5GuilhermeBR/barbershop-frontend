@@ -43,7 +43,7 @@ export const LocationContainer = styled.div`
 `;
 
 export const LocationTitle = styled.h2`
-  margin-bottom: 30px;
+  margin-bottom: 16px;
   color: ${colors.third};
 `;
 
@@ -89,10 +89,12 @@ export const ServiceImage = styled.img`
   height: 100px;
   border-radius: 50%;
   margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 export const ServiceName = styled.h3`
   font-size: 18px;
+  margin-top: 2px;
   margin-bottom: 0px;
   color: ${colors.third};
   font-size: 16px;

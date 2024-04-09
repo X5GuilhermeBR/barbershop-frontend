@@ -140,23 +140,26 @@ function HomePage() {
               <LocationTitle>Principais Serviços</LocationTitle>
               <ServiceCardContainer>
                 <ServiceCard>
-                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceImage src="https://i.postimg.cc/nLqDWhrY/cabelo.jpg" alt="Cabelo" />
                   <ServiceName>CABELO</ServiceName>
                   <ServiceDescription>Descrição breve do Serviço 1.</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
-                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceImage src="https://i.postimg.cc/P5RyHJdg/barba.jpg" alt="Barba" />
                   <ServiceName>BARBA</ServiceName>
                   <ServiceDescription>Descrição breve do Serviço 2.</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
-                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
+                  <ServiceImage
+                    src="https://i.postimg.cc/y8cx1rK7/pigmentacao.jpg"
+                    alt="Pigmentação"
+                  />
                   <ServiceName>PIGMENTAÇÃO</ServiceName>
                   <ServiceDescription>Pigmentação</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
-                  <ServiceImage src="caminho_para_a_imagem" alt="Nome do Serviço" />
-                  <ServiceName>DESCOLORAÇÃO</ServiceName>
+                  <ServiceImage src="https://i.postimg.cc/sXNs9pzn/platinado.jpg" alt="Platinado" />
+                  <ServiceName>Platinado</ServiceName>
                   <ServiceDescription>Descrição breve do Serviço 4.</ServiceDescription>
                 </ServiceCard>
               </ServiceCardContainer>
