@@ -16,6 +16,11 @@ import {
   WalletCardContent,
 } from './WalletCardStyled';
 
+function formatDate(date) {
+  const options = { day: '2-digit', month: '2-digit' };
+  return date.toLocaleDateString('pt-BR', options);
+}
+
 function WalletCard({ schedule }) {
   const [showValues, setShowValues] = useState(true);
   const [currentBalance, setCurrentBalance] = useState(0);
@@ -82,11 +87,11 @@ function WalletCard({ schedule }) {
           <WalletBoxContainer>
             <WalletBalanceBox>
               <WalletBalance>
-                <p>SALDO ATUAL - 05/04</p>
+                <p>{`SALDO ATUAL - ${formatDate(new Date())}`}</p>
                 <p>{formattedCurrentBalance}</p>
               </WalletBalance>
               <WalletBalancePredicted>
-                <p>SALDO PREVISTO - 05/04</p>
+                <p>{`SALDO PREVISTO - ${formatDate(new Date())}`}</p>
                 <p>{formattedPredictedBalance}</p>
               </WalletBalancePredicted>
             </WalletBalanceBox>
