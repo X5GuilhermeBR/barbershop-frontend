@@ -43,7 +43,9 @@ export default function Options() {
   };
 
   const ListItemIconStyled = styled(ListItemIcon)`
-    color: white; // Define a cor do ícone como branco
+    & .MuiSvgIcon-root {
+      color: white;
+    }
   `;
 
   return (

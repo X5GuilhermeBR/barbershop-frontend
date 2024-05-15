@@ -4,6 +4,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 import HistoryIcon from '@mui/icons-material/History';
 import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SchedulingCard from '../../components/SchedulingCard/SchedulingCard';
@@ -11,6 +12,19 @@ import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
 import colors from '../../utils/colors';
 import { Divider, HistoryTitle, TitleNotSchedule } from './HistoryStyled';
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 20px;
+  padding-bottom: 8px;
+`;
+
+const StyledTextField = styled(TextField)`
+  && {
+    background-color: white;
+    color: black;
+  }
+`;
 
 function History() {
   const { userInfo } = useAuth();
@@ -126,9 +140,9 @@ function History() {
         <Container>
           <Grid container direction="column" style={{ marginBottom: '5rem', flex: '1 0 auto' }}>
             <Grid item xs={12}>
-              <TextField
+              <InfoText>Selecionar período: </InfoText>
+              <StyledTextField
                 id="date"
-                label="Filtrar por Mês e Ano"
                 type="month"
                 onChange={handleDateChange}
                 InputLabelProps={{
