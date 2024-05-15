@@ -42,77 +42,81 @@ export default function Options() {
     window.location.href = whatsappUrl;
   };
 
+  const ListItemIconStyled = styled(ListItemIcon)`
+    color: white; // Define a cor do ícone como branco
+  `;
+
   return (
     <>
       <PageHeader icon={<SettingsIcon />} title="Configurações" />
       <Grid item style={{ marginBottom: '4rem', marginTop: '1rem', flex: '1 0 auto', zIndex: 1 }}>
         <ListItemButton component={Link} to="/configuracoes/editar-perfil">
-          <ListItemIcon>
+          <ListItemIconStyled>
             <InsertEmoticonIcon />
-          </ListItemIcon>
+          </ListItemIconStyled>
           {/* Usa o novo componente ListItemTextStyled */}
           <ListItemTextStyled primary="Editar Perfil" />
         </ListItemButton>
         <ListItemButton component={Link} to="/configuracoes/alterar-senha">
-          <ListItemIcon>
+          <ListItemIconStyled>
             <PasswordIcon />
-          </ListItemIcon>
+          </ListItemIconStyled>
           <ListItemTextStyled primary="Alterar Senha" />
         </ListItemButton>
         <ListItemButton component={Link} to="/configuracoes/historico">
-          <ListItemIcon>
+          <ListItemIconStyled>
             <HistoryIcon />
-          </ListItemIcon>
+          </ListItemIconStyled>
           <ListItemTextStyled primary="Meu Histórico" />
         </ListItemButton>
         {userInfo.profile === 'client' && (
           <ListItemButton component={Link} to="/loyalty-card" disabled>
-            <ListItemIcon>
+            <ListItemIconStyled>
               <CardGiftcardIcon />
-            </ListItemIcon>
+            </ListItemIconStyled>
             <ListItemTextStyled primary="Cartão Fidelidade" />
           </ListItemButton>
         )}
         {userInfo.profile === 'barber' && (
           <>
             <ListItemButton component={Link} to="/configuracoes/clientes">
-              <ListItemIcon>
+              <ListItemIconStyled>
                 <GroupsIcon />
-              </ListItemIcon>
+              </ListItemIconStyled>
               <ListItemTextStyled primary="Clientes" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/produtos">
-              <ListItemIcon>
+              <ListItemIconStyled>
                 <CategoryIcon />
-              </ListItemIcon>
+              </ListItemIconStyled>
               <ListItemTextStyled primary="Produtos" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/servicos">
-              <ListItemIcon>
+              <ListItemIconStyled>
                 <RoomServiceIcon />
-              </ListItemIcon>
+              </ListItemIconStyled>
               <ListItemTextStyled primary="Serviços" />
             </ListItemButton>
             <ListItemButton component={Link} to="/configuracoes/historico" disabled>
-              <ListItemIcon>
+              <ListItemIconStyled>
                 <AccountBalanceWalletIcon />
-              </ListItemIcon>
+              </ListItemIconStyled>
               <ListItemTextStyled primary="Carteira" />
             </ListItemButton>
           </>
         )}
         {userInfo.profile === 'client' && (
           <ListItemButton onClick={handleWhatsAppClick}>
-            <ListItemIcon>
+            <ListItemIconStyled>
               <WhatsAppIcon />
-            </ListItemIcon>
+            </ListItemIconStyled>
             <ListItemTextStyled primary="Fale Conosco" />
           </ListItemButton>
         )}
         <ListItemButton onClick={handleLogout}>
-          <ListItemIcon>
+          <ListItemIconStyled>
             <ExitToAppIcon />
-          </ListItemIcon>
+          </ListItemIconStyled>
           <ListItemTextStyled primary="Sair" />
         </ListItemButton>
       </Grid>

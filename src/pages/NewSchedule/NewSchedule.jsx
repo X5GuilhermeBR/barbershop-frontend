@@ -1,9 +1,11 @@
+/* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-undef */
 import ArticleIcon from '@mui/icons-material/Article';
 import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import SelectComponent from '../../components/SelectComponent/SelectComponent';
@@ -16,7 +18,30 @@ import {
   getServices,
   updateSchedule,
 } from '../../service/api';
+import colors from '../../utils/colors';
 import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
+
+// Estiliza o componente Select com styled-components
+const StyledSelect = styled(Select)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+// Estiliza o componente MenuItem com styled-components
+const StyledMenuItem = styled(MenuItem)`
+  color: black; // Define a cor do texto como preto
+`;
+
+// Estiliza o componente TextField com styled-components
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 20px;
+`;
 
 function NewSchedule() {
   const [barbers, setBarbers] = useState([]);
@@ -232,8 +257,8 @@ function NewSchedule() {
               items={services}
               disabled={isSubmitting}
             />
-            <TextField
-              label="Data"
+            <InfoText>Data: </InfoText>
+            <StyledTextField
               type="date"
               variant="outlined"
               fullWidth
@@ -243,8 +268,9 @@ function NewSchedule() {
               onChange={(e) => setSelectedDate(e.target.value)}
               disabled={isSubmitting}
             />
-            <Select
-              label="Hora"
+
+            <InfoText>Hora: </InfoText>
+            <StyledSelect
               variant="outlined"
               fullWidth
               value={selectedHour}
@@ -253,11 +279,11 @@ function NewSchedule() {
             >
               <MenuItem value="">Selecione uma hora</MenuItem>
               {getDisabledHours(schedule).map((hour) => (
-                <MenuItem key={hour.time} value={hour.time} disabled={hour.disabled}>
+                <StyledMenuItem key={hour.time} value={hour.time} disabled={hour.disabled}>
                   {hour.time}
-                </MenuItem>
+                </StyledMenuItem>
               ))}
-            </Select>
+            </StyledSelect>
           </div>
           <Grid
             container
