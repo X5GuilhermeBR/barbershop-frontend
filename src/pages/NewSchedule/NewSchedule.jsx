@@ -43,6 +43,13 @@ const InfoText = styled.div`
   font-size: 20px;
 `;
 
+const InfoContainer = styled.div`
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: ${colors.fourth};
+  border-radius: 8px;
+`;
+
 function NewSchedule() {
   const [barbers, setBarbers] = useState([]);
   const [clients, setClients] = useState([]);
@@ -55,6 +62,7 @@ function NewSchedule() {
   const [selectedHour, setSelectedHour] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [appointmentInfo, setAppointmentInfo] = useState('');
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -119,6 +127,23 @@ function NewSchedule() {
     selectedHour,
     userInfo?.profile,
   ]);
+
+  useEffect(() => {
+    const generateAppointmentInfo = () => {
+      const serviceName = selectedService ? selectedService.name : '';
+      const formattedDate = new Date(selectedDate).toLocaleDateString('pt-BR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      const appointmentValue = selectedService ? selectedService.price : '';
+      const appointmentTime = selectedHour || '';
+      return `O serviço "${serviceName}" está agendado para ${formattedDate}, às ${appointmentTime}, com valor previsto de R$ ${appointmentValue}`;
+    };
+
+    setAppointmentInfo(generateAppointmentInfo());
+  }, [selectedBarber, selectedService, selectedDate, selectedHour]);
 
   useEffect(() => {
     // Inicialize o estado selectedClient ao carregar a página de edição
@@ -285,6 +310,9 @@ function NewSchedule() {
               ))}
             </StyledSelect>
           </div>
+          {selectedBarber && selectedService && selectedDate && selectedHour && (
+            <InfoContainer>{appointmentInfo && appointmentInfo}</InfoContainer>
+          )}
           <Grid
             container
             direction="column"
@@ -294,10 +322,15 @@ function NewSchedule() {
           >
             <Button
               variant="contained"
-              color="primary"
+              color={isFormValid || isEditing ? 'primary' : 'inherit'}
               size="large"
               fullWidth
-              style={{ width: '100%', marginBottom: '1rem' }}
+              style={{
+                width: '100%',
+                marginBottom: '1rem',
+                backgroundColor: isFormValid || isEditing ? colors.third : '#f0f0f0',
+                color: 'black',
+              }}
               onClick={handleSubmit}
               disabled={!isFormValid || isSubmitting}
             >

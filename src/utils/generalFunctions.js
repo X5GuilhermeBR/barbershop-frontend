@@ -18,8 +18,10 @@ export const getFutureDate = () => {
 
   const generateAvailableHours = () => {
     const availableHours = [];
-    for (let hour = 9; hour <= 18; hour++) {
-      availableHours.push(`${hour}:00`);
+    for (let hour = 9; hour <= 19; hour++) {
+      if (hour !== 12) {
+        availableHours.push(`${hour}:00`);
+      }
     }
     return availableHours;
   };
