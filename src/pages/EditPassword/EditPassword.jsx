@@ -2,10 +2,12 @@ import PasswordIcon from '@mui/icons-material/Password';
 import { Button, Container, Grid, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useState } from 'react';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
 import { changePassword } from '../../service/api';
+import colors from '../../utils/colors';
 
 function EditPassword() {
   const [currentPassword, setCurrentPassword] = useState('');
@@ -15,6 +17,17 @@ function EditPassword() {
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('success'); // Define a gravidade padrão como sucesso
   const { userInfo } = useAuth();
+
+  // Estiliza o componente TextField com styled-components
+  const StyledTextField = styled(TextField)`
+    background-color: white; // Define o fundo como branco
+    color: black; // Define a cor do texto como preto
+  `;
+
+  const InfoText = styled.div`
+    color: ${colors.third};
+    font-size: 20px;
+  `;
 
   const handleUpdatePassword = async () => {
     try {
@@ -52,41 +65,45 @@ function EditPassword() {
       <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <TextField
-              label="Senha Atual"
+            <InfoText>Senha Atual: </InfoText>
+            <StyledTextField
               variant="outlined"
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
             />
-            <TextField
-              label="Nova Senha"
+            <InfoText>Nova Senha: </InfoText>
+            <StyledTextField
               variant="outlined"
               type="password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
             />
-            <TextField
-              label="Confirmar Senha"
+            <InfoText>Confirmar Senha: </InfoText>
+            <StyledTextField
               variant="outlined"
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </div>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            fullWidth
+            style={{
+              width: '100%',
+              marginTop: '2rem',
+              marginBottom: '1rem',
+              backgroundColor: colors.third,
+              color: 'black',
+            }}
+            onClick={handleUpdatePassword}
+          >
+            Atualizar
+          </Button>
         </Container>
-      </Grid>
-      <Grid item style={{ position: 'sticky', bottom: '5rem', zIndex: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          fullWidth
-          style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
-          onClick={handleUpdatePassword}
-        >
-          Atualizar
-        </Button>
       </Grid>
       <Snackbar
         open={alertOpen}

@@ -7,10 +7,12 @@ import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Importe useHistory
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
 import { checkScheduleById } from '../../service/api';
+import colors from '../../utils/colors';
 import {
   ActionIcons,
   AppointmentContent,
@@ -23,6 +25,17 @@ import {
 } from './ScheduleStyled';
 
 function Schedule() {
+  const StyledTextField = styled(TextField)`
+    background-color: white; // Define o fundo como branco
+    color: black; // Define a cor do texto como preto
+  `;
+
+  const InfoText = styled.div`
+    color: ${colors.third};
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+  `;
+
   const { userInfo } = useAuth();
   const [scheduledAppointments, setScheduledAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
@@ -86,20 +99,33 @@ function Schedule() {
       (appoint) =>
         parseInt(appoint.time.split(':')[0], 10) === hour && appoint.status !== 'Cancelado'
     );
+
+    if (hour === 12) {
+      return <h2>Intervalo para Almoço</h2>;
+    }
+
     if (appointment) {
+      const formattedPrice = `R$${appointment.service_price},00`;
+
+      const fullName = appointment.client_name.split(' ');
+      const firstName = fullName[0];
+      const lastName = fullName[fullName.length - 1];
+      const truncatedName = `${firstName} ${lastName}`;
+
       return (
         <>
           <h2>Agendamento N#{appointment.id}</h2>
           <p>
-            <strong>Cliente:</strong> {appointment.client_name}
+            <strong>Cliente:</strong> {truncatedName}
             <br />
-            <strong>Valor:</strong> {appointment.service_price}
+            <strong>Valor:</strong> {formattedPrice}
             <br />
           </p>
           <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
         </>
       );
     }
+
     return <h2>Horário vago</h2>;
   };
 
@@ -128,9 +154,9 @@ function Schedule() {
         <Container>
           <Grid container direction="column" style={{ flex: '1 0 auto' }}>
             <Grid item xs={12}>
-              <TextField
+              <InfoText>Selecione a Data: </InfoText>
+              <StyledTextField
                 id="date"
-                label="Selecione uma data"
                 type="date"
                 onChange={handleDateChange}
                 InputLabelProps={{
@@ -153,7 +179,7 @@ function Schedule() {
                   <SchedulingCard elevation={3} key={hour}>
                     <SchedulingCardContent>
                       <HourText variant="body1">{`${formatHour(hour)}`}</HourText>
-                      <StyledDivider />
+                      <StyledDivider orientation="vertical" flexItem />
                       <AppointmentContent>
                         {renderAppointmentOrVago(hour, appointments)}
                       </AppointmentContent>
