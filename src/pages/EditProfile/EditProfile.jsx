@@ -2,10 +2,12 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import { Button, Container, Grid, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { useAuth } from '../../context/AuthContext';
 import { getAccount, updateAccount } from '../../service/api';
+import colors from '../../utils/colors';
 
 function EditProfile() {
   const { userInfo } = useAuth();
@@ -16,6 +18,17 @@ function EditProfile() {
   const [alertOpen, setAlertOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [severity, setSeverity] = useState('success'); // Define a gravidade padrão como sucesso
+
+  // Estiliza o componente TextField com styled-components
+  const StyledTextField = styled(TextField)`
+    background-color: white; // Define o fundo como branco
+    color: black; // Define a cor do texto como preto
+  `;
+
+  const InfoText = styled.div`
+    color: ${colors.third};
+    font-size: 20px;
+  `;
 
   useEffect(() => {
     async function fetchProfileData() {
@@ -90,23 +103,23 @@ function EditProfile() {
       <Grid item style={{ marginBottom: '4rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <TextField
-              label="Nome"
+            <InfoText>Nome: </InfoText>
+            <StyledTextField
               variant="outlined"
               value={formData?.name || ''}
               name="name"
               onChange={handleFormChange}
             />
-            <TextField
-              label="Data de Nascimento"
+            <InfoText>Data de Nascimento: </InfoText>
+            <StyledTextField
               type="date"
               variant="outlined"
               value={formData?.birthday || ''}
               name="birthday"
               onChange={handleFormChange}
             />
-            <TextField
-              label="Celular"
+            <InfoText>Celular: </InfoText>
+            <StyledTextField
               variant="outlined"
               type="number"
               value={formData?.cellphone || ''}
@@ -118,20 +131,24 @@ function EditProfile() {
               }}
             />
           </div>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            fullWidth
+            onClick={handleUpdateProfile}
+            disabled={buttonDisabled || loading}
+            style={{
+              width: '100%',
+              marginTop: '2rem',
+              marginBottom: '1rem',
+              backgroundColor: colors.third,
+              color: 'black',
+            }}
+          >
+            Atualizar
+          </Button>
         </Container>
-      </Grid>
-      <Grid item style={{ position: 'sticky', bottom: '5rem', zIndex: 2 }}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          fullWidth
-          style={{ width: 'calc(100% - 2rem)', margin: '0 1rem' }}
-          onClick={handleUpdateProfile}
-          disabled={buttonDisabled || loading}
-        >
-          Atualizar
-        </Button>
       </Grid>
       <Snackbar
         open={alertOpen}

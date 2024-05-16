@@ -313,43 +313,37 @@ function NewSchedule() {
           {selectedBarber && selectedService && selectedDate && selectedHour && (
             <InfoContainer>{appointmentInfo && appointmentInfo}</InfoContainer>
           )}
-          <Grid
-            container
-            direction="column"
-            justifyContent="center"
-            alignItems="center"
-            style={{ marginBottom: '2rem', marginTop: '1rem', zIndex: 2 }}
+
+          <Button
+            variant="contained"
+            color={isFormValid || isEditing ? 'primary' : 'inherit'}
+            size="large"
+            fullWidth
+            style={{
+              width: '100%',
+              marginBottom: '1rem',
+              marginTop: '2rem',
+              backgroundColor: isFormValid || isEditing ? colors.third : '#f0f0f0',
+              color: 'black',
+            }}
+            onClick={handleSubmit}
+            disabled={!isFormValid || isSubmitting}
           >
+            {isEditing ? 'Atualizar' : 'Agendar'}
+          </Button>
+          {location.search && (
             <Button
-              variant="contained"
-              color={isFormValid || isEditing ? 'primary' : 'inherit'}
+              variant="outlined"
+              color="primary"
               size="large"
               fullWidth
-              style={{
-                width: '100%',
-                marginBottom: '1rem',
-                backgroundColor: isFormValid || isEditing ? colors.third : '#f0f0f0',
-                color: 'black',
-              }}
-              onClick={handleSubmit}
-              disabled={!isFormValid || isSubmitting}
+              style={{ width: '100%', marginBottom: '1rem', marginTop: '2rem' }}
+              onClick={handleCancelAppointment}
+              disabled={!location.search || isSubmitting}
             >
-              {isEditing ? 'Atualizar' : 'Agendar'}
+              Cancelar Atendimento
             </Button>
-            {location.search && (
-              <Button
-                variant="outlined"
-                color="primary"
-                size="large"
-                fullWidth
-                style={{ width: '100%' }}
-                onClick={handleCancelAppointment}
-                disabled={!location.search || isSubmitting}
-              >
-                Cancelar Atendimento
-              </Button>
-            )}
-          </Grid>
+          )}
         </Container>
       </Grid>
 
