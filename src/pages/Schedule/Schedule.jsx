@@ -78,7 +78,7 @@ function Schedule() {
     const date = new Date(dateString);
     date.setDate(date.getDate() + 1);
     const dayOfWeek = daysOfWeek[date.getDay()];
-    return `${dayOfWeek}`;
+    return `Atendimentos Previstos para ${dayOfWeek}`;
   };
 
   const formatHour = (hour) => (hour < 10 ? `0${hour}:00` : `${hour}:00`);
@@ -243,7 +243,7 @@ function Schedule() {
             ))}
             {noAppointments && (
               <Grid item xs={12}>
-                <Title>{formatWeekdayDateMonthYear(selectedDate)}</Title>
+                <Title>Atendimentos previstos de {formatWeekdayDateMonthYear(selectedDate)}</Title>
                 {availableHours.map((hour) => (
                   <SchedulingCard elevation={3} key={hour}>
                     <SchedulingCardContent>
