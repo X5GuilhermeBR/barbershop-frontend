@@ -9,7 +9,6 @@ import colors from '../../utils/colors';
 
 const TitleText = styled.h2`
   color: ${colors.third};
-  padding-bottom: 8px;
   text-align: center;
 `;
 
@@ -36,14 +35,18 @@ const StyledTextField = styled(TextField)`
 const StyledCard = styled(Card)`
   && {
     padding: 10px;
-    margin-bottom: 0px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    margin-bottom: 20px; /* Adicionando espaçamento entre o card e o botão */
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     background-color: ${colors.primary};
     color: white;
+  }
+`;
+
+const ExportButton = styled(Button)`
+  && {
+    width: 100%; /* Definindo o botão para ocupar toda a largura */
+    background-color: ${colors.red}; /* Alterando a cor do botão para vermelho */
   }
 `;
 
@@ -123,9 +126,9 @@ function Financial() {
             </CardContent>
           </StyledCard>
 
-          <Button variant="contained" color="primary" onClick={exportData}>
+          <ExportButton variant="contained" color="primary" onClick={exportData}>
             Exportar Dados
-          </Button>
+          </ExportButton>
         </Grid>
       </Grid>
       <Grid container justifyContent="center">
