@@ -23,6 +23,7 @@ const Subtitle = styled(Typography)`
     color: ${colors.third};
     text-transform: uppercase;
     font-size: 14px;
+    font-family: 'Bahnschrift', sans-serif;
   }
 `;
 

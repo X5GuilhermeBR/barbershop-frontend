@@ -54,6 +54,7 @@ export default function Options() {
     width: 100%;
     max-width: 400px; /* Defina a largura máxima conforme desejado */
     z-index: 1000; /* Defina um z-index maior que o do menu inferior */
+    font-family: 'Bahnschrift', sans-serif;
   `;
 
   return (
