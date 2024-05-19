@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Alert, Snackbar } from '@mui/material';
+import { Alert, Button, Snackbar } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateSchedule } from '../../service/api';
@@ -53,6 +53,20 @@ function SchedulingCard({ appointment }) {
     }
   };
 
+  const handleCancelAppointment = async () => {
+    try {
+      await updateSchedule(appointment.id, { status: 'Cancelado' });
+      setSnackbarMessage('Agendamento cancelado com sucesso!');
+      setSnackbarSeverity('success');
+      setSnackbarOpen(true);
+    } catch (error) {
+      console.error('Erro ao cancelar agendamento:', error);
+      setSnackbarMessage('Erro ao cancelar agendamento. Tente novamente mais tarde.');
+      setSnackbarSeverity('error');
+      setSnackbarOpen(true);
+    }
+  };
+
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
       return;
@@ -78,6 +92,11 @@ function SchedulingCard({ appointment }) {
           </p>
         </StyledCardContent>
         <StyledCardActions>
+          {appointment.status === 'Agendado' && (
+            <Button variant="contained" color="error" onClick={handleCancelAppointment}>
+              Cancelar
+            </Button>
+          )}
           <p>{appointment.type.toUpperCase()}</p>
           <StyledChip label={`R$${appointment.service_price}`} />
         </StyledCardActions>

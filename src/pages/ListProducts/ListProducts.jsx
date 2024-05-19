@@ -13,10 +13,17 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Importe o componente Link para criar o botão "Criar Novo Produto"
+import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { getProducts, updateProductStatus } from '../../service/api'; // Importe as funções necessárias para produtos
+import { getProducts, updateProductStatus } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
 
 function ListProducts() {
   const [products, setProducts] = useState([]);
@@ -82,10 +89,7 @@ function ListProducts() {
     <>
       <Header title="Produtos" />
       <Container>
-        <Typography variant="h4" gutterBottom>
-          Lista de Produtos
-        </Typography>
-        <TextField
+        <StyledTextField
           label="Buscar"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -104,9 +108,14 @@ function ListProducts() {
             <Link to="/configuracoes/produtos/novo-produto">
               <Button
                 variant="contained"
-                color="primary"
-                fullWidth // Ocupa toda a largura disponível
-                style={{ borderRadius: 0 }} // Remove o arredondamento dos cantos
+                color="secondary"
+                fullWidth
+                style={{
+                  borderRadius: 0,
+                  backgroundColor: colors.third,
+                  color: 'black',
+                  marginTop: '10px',
+                }}
               >
                 Criar Novo Produto
               </Button>
@@ -117,22 +126,37 @@ function ListProducts() {
               <Grid item key={product.id} xs={12} md={6} lg={4}>
                 <div
                   style={{
-                    border: '1px solid #ccc',
                     padding: '10px',
-                    marginBottom: '10px',
+                    marginBottom: '0px',
                     display: 'flex',
-                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    backgroundColor: colors.primary,
                   }}
                 >
-                  <Typography variant="h6">{product.name}</Typography>
-                  <Typography variant="body1">{product.description}</Typography>
-                  <Typography variant="body1">{`Preço: R$${product.price}`}</Typography>
-                  <div style={{ marginTop: 'auto' }}>
+                  <div>
+                    <Typography variant="h6" style={{ color: colors.third, fontSize: '18px' }}>
+                      {product.name.toUpperCase()}
+                    </Typography>
+                    <Typography variant="body1" style={{ maxWidth: '270px' }}>
+                      {product.description}
+                    </Typography>
+                    <Typography variant="body1" style={{ color: 'green', fontSize: '12px' }}>
+                      {`R$${product.price}`}
+                    </Typography>
+                  </div>
+                  <div>
                     <IconButton onClick={() => handleEditClick(product.id)}>
-                      <Edit />
+                      <Edit style={{ color: 'white' }} />
                     </IconButton>
                     <IconButton onClick={() => handleToggleProductStatus(product.id)}>
-                      {product.disable ? <LockOpen /> : <Lock />}
+                      {product.disable ? (
+                        <LockOpen style={{ color: 'white' }} />
+                      ) : (
+                        <Lock style={{ color: 'white' }} />
+                      )}
                     </IconButton>
                   </div>
                 </div>

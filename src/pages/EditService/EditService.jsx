@@ -2,9 +2,21 @@ import { Button, CircularProgress, Container, Grid, Snackbar, TextField } from '
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { createService, deleteService, getServiceById, updateService } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 20px;
+`;
 
 function EditService() {
   const location = useLocation();
@@ -114,8 +126,8 @@ function EditService() {
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              label="Nome"
+            <InfoText>Nome: </InfoText>
+            <StyledTextField
               value={serviceName}
               onChange={(e) => setServiceName(e.target.value)}
               fullWidth
@@ -123,8 +135,8 @@ function EditService() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Descrição"
+            <InfoText>Descrição: </InfoText>
+            <StyledTextField
               value={serviceDescription}
               onChange={(e) => setServiceDescription(e.target.value)}
               fullWidth
@@ -132,8 +144,8 @@ function EditService() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Preço"
+            <InfoText>Preço: </InfoText>
+            <StyledTextField
               value={servicePrice}
               onChange={(e) => setServicePrice(e.target.value)}
               fullWidth
@@ -141,8 +153,8 @@ function EditService() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Tempo Estimado"
+            <InfoText>Tempo Estimado: </InfoText>
+            <StyledTextField
               value={serviceTime}
               onChange={(e) => setServiceTime(e.target.value)}
               fullWidth
@@ -150,10 +162,14 @@ function EditService() {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
+        <Grid container spacing={2} marginTop={1}>
+          <Grid item xs={12}>
             <Button
               variant="contained"
+              style={{
+                backgroundColor: colors.third,
+                color: 'black',
+              }}
               color="primary"
               size="large"
               fullWidth
@@ -165,9 +181,13 @@ function EditService() {
             </Button>
           </Grid>
           {serviceId && (
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Button
-                variant="contained"
+                variant="outlined"
+                style={{
+                  borderColor: colors.third,
+                  color: colors.third,
+                }}
                 color="error"
                 size="large"
                 fullWidth

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import colors from '../../utils/colors';
 
 export const HistoryTitle = styled.h2`
-    margin-bottom: 30px;
+    margin-bottom: 15px;
     text-align: center;
     color: ${colors.third};
   `;

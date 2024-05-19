@@ -2,9 +2,21 @@ import { Button, CircularProgress, Container, Grid, Snackbar, TextField } from '
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { createProduct, deleteProduct, getProductById, updateProduct } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 20px;
+`;
 
 function EditProduct() {
   const location = useLocation();
@@ -70,6 +82,8 @@ function EditProduct() {
       setMessage('Erro ao salvar o produto. Por favor, tente novamente.');
       setSeverity('error');
       setAlertOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -90,6 +104,8 @@ function EditProduct() {
       setMessage('Erro ao excluir o produto. Por favor, tente novamente.');
       setSeverity('error');
       setAlertOpen(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -106,8 +122,8 @@ function EditProduct() {
       <Container>
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <TextField
-              label="Nome"
+            <InfoText>Nome: </InfoText>
+            <StyledTextField
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
               fullWidth
@@ -115,8 +131,8 @@ function EditProduct() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Descrição"
+            <InfoText>Descrição: </InfoText>
+            <StyledTextField
               value={productDescription}
               onChange={(e) => setProductDescription(e.target.value)}
               fullWidth
@@ -124,8 +140,8 @@ function EditProduct() {
             />
           </Grid>
           <Grid item xs={12}>
-            <TextField
-              label="Preço"
+            <InfoText>Preço: </InfoText>
+            <StyledTextField
               value={productPrice}
               onChange={(e) => setProductPrice(e.target.value)}
               fullWidth
@@ -133,11 +149,14 @@ function EditProduct() {
             />
           </Grid>
         </Grid>
-        <Grid container spacing={2}>
-          <Grid item xs={6}>
+        <Grid container spacing={2} direction="column" marginTop={1}>
+          <Grid item xs={12}>
             <Button
               variant="contained"
-              color="primary"
+              style={{
+                backgroundColor: colors.third,
+                color: 'black',
+              }}
               size="large"
               fullWidth
               onClick={handleSaveProduct}
@@ -148,10 +167,13 @@ function EditProduct() {
             </Button>
           </Grid>
           {productId && (
-            <Grid item xs={6}>
+            <Grid item xs={12}>
               <Button
-                variant="contained"
-                color="error"
+                variant="outlined"
+                style={{
+                  borderColor: colors.third,
+                  color: colors.third,
+                }}
                 size="large"
                 fullWidth
                 onClick={handleDeleteProduct}

@@ -14,9 +14,11 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { getByProfile, updateStatusUser } from '../../service/api'; // Importe a função deleteUser
+import { getByProfile, updateStatusUser } from '../../service/api';
+import colors from '../../utils/colors';
 
 function formatPhoneNumber(phoneNumber) {
   const cleaned = `${phoneNumber}`.replace(/\D/g, '');
@@ -26,6 +28,12 @@ function formatPhoneNumber(phoneNumber) {
   }
   return null;
 }
+
+// Estiliza o componente TextField com styled-components
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
 
 function Clients() {
   const [users, setUsers] = useState([]);
@@ -90,11 +98,8 @@ function Clients() {
     <>
       <Header icon={<GroupsIcon />} title="Clientes" />
       <Container>
-        <Typography variant="h4" gutterBottom>
-          Agenda Telefônica
-        </Typography>
-        <TextField
-          label="Buscar"
+        <StyledTextField
+          placeholder="Buscar por Nome"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           fullWidth
@@ -102,51 +107,63 @@ function Clients() {
           InputProps={{
             endAdornment: (
               <IconButton>
-                <Search />
+                <Search style={{ color: 'white' }} />
               </IconButton>
             ),
           }}
         />
         <Grid container spacing={2}>
           {Array.isArray(filteredUsers) &&
-            filteredUsers.map((user) => (
-              <Grid item key={user.user_id} xs={12} md={6} lg={4}>
-                <div
-                  style={{
-                    border: '1px solid #ccc',
-                    padding: '10px',
-                    marginBottom: '10px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div>
-                    <Typography variant="h6">
-                      {user.client_name.split(' ')[0]} {user.client_name.split(' ').slice(-1)}
-                    </Typography>
-                    <Typography variant="body1">{user.email}</Typography>
-                    <Typography variant="body1">
-                      {formatPhoneNumber(user.client_cellphone)}
-                    </Typography>
+            filteredUsers.map((user) => {
+              const nameParts = user.client_name.split(' ');
+              const firstName = nameParts[0].toUpperCase();
+              const lastName = nameParts[nameParts.length - 1].toUpperCase();
+
+              return (
+                <Grid item key={user.user_id} xs={12} md={6} lg={4}>
+                  <div
+                    style={{
+                      padding: '10px',
+                      marginBottom: '0px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      borderRadius: '10px',
+                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                      backgroundColor: colors.primary,
+                    }}
+                  >
+                    <div>
+                      <Typography variant="h6" style={{ color: colors.third, fontSize: '18px' }}>
+                        {firstName} {lastName}
+                      </Typography>
+                      <Typography variant="body1">{user.email}</Typography>
+                      <Typography variant="body1">
+                        {formatPhoneNumber(user.client_cellphone)}
+                      </Typography>
+                    </div>
+                    <div>
+                      <IconButton
+                        onClick={() => handleOpenConfirmationDialog('toggle', user.user_id)}
+                      >
+                        {user.disable ? (
+                          <LockOpen style={{ color: 'white' }} />
+                        ) : (
+                          <Lock style={{ color: 'white' }} />
+                        )}
+                      </IconButton>
+                      <IconButton
+                        href={`https://wa.me/55${user.client_cellphone}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <WhatsApp style={{ color: 'white' }} />
+                      </IconButton>
+                    </div>
                   </div>
-                  <div>
-                    <IconButton
-                      onClick={() => handleOpenConfirmationDialog('toggle', user.user_id)}
-                    >
-                      {user.disable ? <LockOpen /> : <Lock />}
-                    </IconButton>
-                    <IconButton
-                      href={`https://wa.me/55${user.client_cellphone}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <WhatsApp />
-                    </IconButton>
-                  </div>
-                </div>
-              </Grid>
-            ))}
+                </Grid>
+              );
+            })}
         </Grid>
       </Container>
       <FooterNavigation />

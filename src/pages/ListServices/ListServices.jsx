@@ -14,9 +14,16 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import { getServices, updateServiceStatus } from '../../service/api'; // Importe as funções necessárias para serviços
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
 
 function ListServices() {
   const [services, setServices] = useState([]);
@@ -82,11 +89,8 @@ function ListServices() {
     <>
       <Header title="Serviços" />
       <Container>
-        <Typography variant="h4" gutterBottom>
-          Lista de Serviços
-        </Typography>
-        <TextField
-          label="Buscar"
+        <StyledTextField
+          placeholder="Buscar"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           fullWidth
@@ -102,7 +106,17 @@ function ListServices() {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <Link to="/configuracoes/servicos/novo-servico">
-              <Button variant="contained" color="primary" fullWidth style={{ borderRadius: 0 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                style={{
+                  borderRadius: 0,
+                  backgroundColor: colors.third,
+                  color: 'black',
+                  marginTop: '10px',
+                }}
+              >
                 Criar Novo Serviço
               </Button>
             </Link>
@@ -112,22 +126,40 @@ function ListServices() {
               <Grid item key={service.id} xs={12} md={6} lg={4}>
                 <div
                   style={{
-                    border: '1px solid #ccc',
                     padding: '10px',
-                    marginBottom: '10px',
+                    marginBottom: '0px',
                     display: 'flex',
-                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    borderRadius: '10px',
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                    backgroundColor: colors.primary,
                   }}
                 >
-                  <Typography variant="h6">{service.name}</Typography>
-                  <Typography variant="body1">{service.description}</Typography>
-                  <Typography variant="body1">{service.price}</Typography>
+                  <div>
+                    <Typography variant="h6" style={{ color: colors.third, fontSize: '18px' }}>
+                      {service.name.toUpperCase()}
+                    </Typography>
+                    <Typography variant="body1" style={{ maxWidth: '270px' }}>
+                      {service.description}
+                    </Typography>
+                    <Typography variant="body1" style={{ color: 'green', fontSize: '12px' }}>
+                      {`R$${service.price}`}
+                    </Typography>
+                  </div>
                   <div style={{ marginTop: 'auto' }}>
-                    <IconButton onClick={() => handleEditClick(service.id)}>
+                    <IconButton
+                      onClick={() => handleEditClick(service.id)}
+                      style={{ color: 'white' }}
+                    >
                       <Edit />
                     </IconButton>
                     <IconButton onClick={() => handleToggleServiceStatus(service.id)}>
-                      {service.disable ? <LockOpen /> : <Lock />}
+                      {service.disable ? (
+                        <LockOpen style={{ color: 'white' }} />
+                      ) : (
+                        <Lock style={{ color: 'white' }} />
+                      )}
                     </IconButton>
                   </div>
                 </div>
