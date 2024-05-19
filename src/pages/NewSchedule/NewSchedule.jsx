@@ -322,7 +322,7 @@ function NewSchedule() {
             style={{
               width: '100%',
               marginBottom: '1rem',
-              marginTop: '2rem',
+              marginTop: '1rem',
               backgroundColor: isFormValid || isEditing ? colors.third : '#f0f0f0',
               color: 'black',
             }}
