@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-param-reassign */
 import ErrorIcon from '@mui/icons-material/Error';
@@ -45,7 +46,13 @@ function History() {
     async function fetchScheduledAppointments() {
       if (userInfo && userInfo.id) {
         const { data } = await checkScheduleById(startDate, endDate, userInfo.id);
-        const sortedAppointments = data.sort((a, b) => new Date(a.date) - new Date(b.date));
+        const currentDate = new Date();
+        const filteredAppointments = data.filter(
+          (appointment) => new Date(appointment.date) <= currentDate
+        );
+        const sortedAppointments = filteredAppointments.sort(
+          (a, b) => new Date(a.date) - new Date(b.date)
+        );
         setScheduledAppointments(sortedAppointments);
         setNoAppointments(sortedAppointments.length === 0);
       }
@@ -54,36 +61,52 @@ function History() {
     fetchScheduledAppointments();
   }, [userInfo, startDate, endDate]);
 
-  useEffect(() => {
-    function setInitialAndEndDate() {
-      if (startDate && endDate) {
-        return;
-      }
-
-      const currentDate = new Date();
-      const year = currentDate.getFullYear();
-      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
-      const firstDay = `${year}-${month}-01`;
-      const lastDay = new Date(year, month, 0).getDate();
-      const lastDayOfMonth = `${year}-${month}-${lastDay}`;
-      setStartDate(firstDay);
-      setEndDate(lastDayOfMonth);
-    }
-
-    setInitialAndEndDate();
-  }, [startDate, endDate]);
-
   const handleDateChange = (event) => {
     const selectedMonthYear = event.target.value;
-    if (selectedMonthYear <= maxMonth) {
-      const [year, month] = selectedMonthYear.split('-');
-      const firstDay = `${year}-${month}-01`;
-      const lastDay = new Date(year, month, 0).getDate();
-      const lastDayOfMonth = `${year}-${month}-${lastDay}`;
+    const [year, month] = selectedMonthYear.split('-');
+    const firstDay = `${year}-${month}-01`;
+    let currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+
+    if (year === currentYear && month === currentMonth) {
+      const today = currentDate.getDate();
+      const endDate = `${year}-${month}-${today}`;
       setStartDate(firstDay);
-      setEndDate(lastDayOfMonth);
+      setEndDate(endDate);
+    } else {
+      currentDate = new Date(year, month, 0);
+      const lastDayOfMonth = currentDate.getDate();
+      const lastDay = `${year}-${month}-${lastDayOfMonth}`;
+      setStartDate(firstDay);
+      setEndDate(lastDay);
     }
   };
+
+  const setInitialAndEndDate = () => {
+    const currentDate = new Date();
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    const firstDay = `${year}-${month}-01`;
+    const lastDayOfMonth = new Date(year, month, 0).getDate();
+    const lastDay = `${year}-${month}-${lastDayOfMonth}`;
+    setStartDate(firstDay);
+
+    const currentYear = String(currentDate.getFullYear());
+    const currentMonth = String(currentDate.getMonth() + 1).padStart(2, '0');
+
+    if (year === currentYear && month === currentMonth) {
+      const today = currentDate.getDate();
+      const endDate = `${year}-${month}-${today}`;
+      setEndDate(endDate);
+    } else {
+      setEndDate(lastDay);
+    }
+  };
+
+  useEffect(() => {
+    setInitialAndEndDate();
+  }, []);
 
   const formatWeekdayDateMonthYear = (dateString) => {
     const daysOfWeek = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -163,11 +186,13 @@ function History() {
                   {formatWeekdayDateMonthYear(appointments[0].date)}
                 </HistoryTitle>
                 <Grid container spacing={2}>
-                  {appointments.map((appointment) => (
-                    <Grid item key={appointment.id} xs={12}>
-                      <SchedulingCard appointment={appointment} />
-                    </Grid>
-                  ))}
+                  {appointments
+                    .filter((appointment) => appointment.status !== 'Agendado')
+                    .map((appointment) => (
+                      <Grid item key={appointment.id} xs={12}>
+                        <SchedulingCard appointment={appointment} />
+                      </Grid>
+                    ))}
                 </Grid>
               </Grid>
             ))}
