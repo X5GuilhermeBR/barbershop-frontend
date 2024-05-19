@@ -196,7 +196,7 @@ function Schedule() {
                               <>
                                 <EditIcon
                                   fontSize="small"
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: 'pointer', color: 'white' }}
                                   onClick={() =>
                                     handleEditAppointment(
                                       appointments.find(
@@ -208,7 +208,7 @@ function Schedule() {
                                 />
                                 <KeyboardArrowRightIcon
                                   fontSize="small"
-                                  style={{ cursor: 'pointer' }}
+                                  style={{ cursor: 'pointer', color: 'white' }}
                                   onClick={() =>
                                     handleEditAppointment(
                                       hour,
@@ -223,7 +223,7 @@ function Schedule() {
                             ) : (
                               <AddIcon
                                 fontSize="small"
-                                style={{ cursor: 'pointer' }}
+                                style={{ cursor: 'pointer', color: 'white' }}
                                 onClick={() => handleAddAppointment(hour)}
                               />
                             )}
@@ -231,7 +231,7 @@ function Schedule() {
                         ) : (
                           <AddIcon
                             fontSize="small"
-                            style={{ cursor: 'pointer' }}
+                            style={{ cursor: 'pointer', color: 'white' }}
                             onClick={() => handleAddAppointment(hour)}
                           />
                         )}

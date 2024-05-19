@@ -3,11 +3,10 @@ import styled from 'styled-components'
 import colors from '../../utils/colors';
 
 export const Title = styled.h2`
-    margin-bottom: 20px;
+  margin-bottom: 20px;
     text-align: center;
     color: ${colors.third};
 `;
-
 
 export const SchedulingCard = styled(Paper)`
   background-color: ${colors.primary} !important;
@@ -20,18 +19,16 @@ export const SchedulingCard = styled(Paper)`
 // Styled component for the inner container of the SchedulingCard
 export const SchedulingCardContent = styled.div`
   display: flex;
-  align-items: center;
+  align-items: center; /* Centraliza verticalmente */
+  justify-content: center; /* Centraliza horizontalmente */
 `;
-
 // Styled component for the hour text
 export const HourText = styled(Typography)`
-  padding-right: 15px;
   color: white;
 `;
 
 // Styled component for the divider
 export const StyledDivider = styled(Divider)`
-  height: 100%;
   width: 1px;
   background-color: white;
   margin: 0 20px;
@@ -42,7 +39,6 @@ export const AppointmentContent = styled.div`
   flex: 1;
   color: white;
   line-height: 28px;
-  margin-left: 15px;
 
   p {
     margin-top: 2px;
