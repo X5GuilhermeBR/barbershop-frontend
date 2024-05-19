@@ -106,17 +106,20 @@ function Schedule() {
 
     if (appointment) {
       const formattedPrice = `R$${appointment.service_price.replace('.', ',')}`;
-
       const fullName = appointment.client_name.split(' ');
       const firstName = fullName[0];
       const lastName = fullName[fullName.length - 1];
       const truncatedName = `${firstName} ${lastName}`;
+
+      console.log(appointment);
 
       return (
         <>
           <h2>Agendamento N#{appointment.id}</h2>
           <p>
             <strong>Cliente:</strong> {truncatedName}
+            <br />
+            <strong>Serviço:</strong> {appointment.service_name}
             <br />
             <strong>Valor:</strong> {formattedPrice}
             <br />
