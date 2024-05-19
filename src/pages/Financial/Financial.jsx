@@ -18,6 +18,14 @@ const InfoText = styled.div`
   padding-bottom: 8px;
 `;
 
+const Subtitle = styled(Typography)`
+  && {
+    color: ${colors.third};
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+`;
+
 export const Divider = styled.div`
   width: 100%;
   height: 1px;
@@ -95,32 +103,59 @@ function Financial() {
           <TitleText>Relatório Financeiro de </TitleText>
           <StyledCard>
             <CardContent>
-              <Typography variant="h6" gutterBottom>
+              <Subtitle variant="h6" gutterBottom>
                 Geral
+              </Subtitle>
+              <Typography
+                variant="body1"
+                gutterBottom
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                Total de Serviços:
+                <span>R${generalInfo.totalServices}</span>
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                Total de Serviços: R$ {generalInfo.totalServices}
+              <Typography
+                variant="body1"
+                gutterBottom
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                Total de Produtos:
+                <span>R${generalInfo.totalProducts}</span>
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                Total de Produtos: R$ {generalInfo.totalProducts}
+              <Typography
+                variant="body1"
+                gutterBottom
+                style={{ display: 'flex', justifyContent: 'space-between' }}
+              >
+                Total Geral:
+                <span>R$ {generalInfo.totalServices + generalInfo.totalProducts}</span>
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                Total Geral: R$ {generalInfo.totalServices + generalInfo.totalProducts}
-              </Typography>
-              <Typography variant="h6" gutterBottom>
+              <Divider />
+              <Subtitle variant="h6" gutterBottom>
                 Barbeiros
-              </Typography>
+              </Subtitle>
               {barberEarnings.map((barber, index) => (
-                <Typography key={index} variant="body1" gutterBottom>
-                  {barber.name}: R$ {barber.earnings}
+                <Typography
+                  key={index}
+                  variant="body1"
+                  gutterBottom
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  {barber.name}:<span>R${barber.earnings}</span>
                 </Typography>
               ))}
-              <Typography variant="h6" gutterBottom>
+              <Divider />
+              <Subtitle variant="h6" gutterBottom>
                 Formas de Pagamento
-              </Typography>
+              </Subtitle>
               {paymentMethods.map((method, index) => (
-                <Typography key={index} variant="body1" gutterBottom>
-                  {method.method}: R$ {method.total}
+                <Typography
+                  key={index}
+                  variant="body1"
+                  gutterBottom
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  {method.method}:<span>R${method.total}</span>
                 </Typography>
               ))}
             </CardContent>

@@ -37,7 +37,6 @@ export const WalletBalance = styled.div`
   p {
     color: ${colors.third};
     margin: 0px;
-    font-size: 14px;
     margin-bottom: 5px;
   }
 
