@@ -48,7 +48,10 @@ function History() {
         const { data } = await checkScheduleById(startDate, endDate, userInfo.id);
         const currentDate = new Date();
         const filteredAppointments = data.filter(
-          (appointment) => new Date(appointment.date) <= currentDate
+          (appointment) =>
+            new Date(appointment.date) <= currentDate &&
+            appointment.status !== 'Agendado' &&
+            appointment.status !== 'Encaixe'
         );
         const sortedAppointments = filteredAppointments.sort(
           (a, b) => new Date(a.date) - new Date(b.date)
@@ -182,17 +185,17 @@ function History() {
             {sortedGroupedAppointments.map(([dayOfWeek, appointments], index) => (
               <Grid item xs={12} key={dayOfWeek}>
                 {index !== 0 && <Divider />}
-                <HistoryTitle style={{ marginTop: '1rem' }}>
-                  {formatWeekdayDateMonthYear(appointments[0].date)}
-                </HistoryTitle>
+                {appointments.length > 0 && (
+                  <HistoryTitle style={{ marginTop: '1rem' }}>
+                    {formatWeekdayDateMonthYear(appointments[0].date)}
+                  </HistoryTitle>
+                )}
                 <Grid container spacing={2}>
-                  {appointments
-                    .filter((appointment) => appointment.status !== 'Agendado')
-                    .map((appointment) => (
-                      <Grid item key={appointment.id} xs={12}>
-                        <SchedulingCard appointment={appointment} />
-                      </Grid>
-                    ))}
+                  {appointments.map((appointment) => (
+                    <Grid item key={appointment.id} xs={12}>
+                      <SchedulingCard appointment={appointment} />
+                    </Grid>
+                  ))}
                 </Grid>
               </Grid>
             ))}
