@@ -1,17 +1,29 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
 import HistoryIcon from '@mui/icons-material/History';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import colors from '../../utils/colors';
 
-const InfoText = styled.div`
+const TitleText = styled.h2`
   color: ${colors.third};
-  font-size: 20px;
   padding-bottom: 8px;
+  text-align: center;
+`;
+
+const InfoText = styled.div`
+  font-size: 20px;
+  color: ${colors.third};
+  padding-bottom: 8px;
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.basic};
+  margin: 20px 0;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -21,11 +33,21 @@ const StyledTextField = styled(TextField)`
   }
 `;
 
-function Financial() {
-  // Estado para armazenar o mês e ano selecionados no filtro
-  const [selectedMonth, setSelectedMonth] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
+const StyledCard = styled(Card)`
+  && {
+    padding: 10px;
+    margin-bottom: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: ${colors.primary};
+    color: white;
+  }
+`;
 
+function Financial() {
   // Função para exportar os dados
   const exportData = () => {
     // Lógica para exportar os dados
@@ -66,8 +88,9 @@ function Financial() {
             }}
             fullWidth
           />
-          <InfoText>Relatório Financeiro de: </InfoText>
-          <Card>
+          <Divider />
+          <TitleText>Relatório Financeiro de </TitleText>
+          <StyledCard>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Geral
@@ -98,7 +121,7 @@ function Financial() {
                 </Typography>
               ))}
             </CardContent>
-          </Card>
+          </StyledCard>
 
           <Button variant="contained" color="primary" onClick={exportData}>
             Exportar Dados
