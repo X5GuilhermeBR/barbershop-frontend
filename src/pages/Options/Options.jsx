@@ -48,6 +48,14 @@ export default function Options() {
     }
   `;
 
+  const BottomButtonContainer = styled.div`
+    position: fixed;
+    bottom: 60px; /* Ajuste a posição vertical conforme necessário */
+    width: 100%;
+    max-width: 400px; /* Defina a largura máxima conforme desejado */
+    z-index: 1000; /* Defina um z-index maior que o do menu inferior */
+  `;
+
   return (
     <>
       <PageHeader icon={<SettingsIcon />} title="Configurações" />
@@ -99,11 +107,11 @@ export default function Options() {
               </ListItemIconStyled>
               <ListItemTextStyled primary="Serviços" />
             </ListItemButton>
-            <ListItemButton component={Link} to="/configuracoes/historico" disabled>
+            <ListItemButton component={Link} to="/configuracoes/financeiro">
               <ListItemIconStyled>
                 <AccountBalanceWalletIcon />
               </ListItemIconStyled>
-              <ListItemTextStyled primary="Carteira" />
+              <ListItemTextStyled primary="Financeiro" />
             </ListItemButton>
           </>
         )}
@@ -115,13 +123,15 @@ export default function Options() {
             <ListItemTextStyled primary="Fale Conosco" />
           </ListItemButton>
         )}
+      </Grid>
+      <BottomButtonContainer>
         <ListItemButton onClick={handleLogout}>
           <ListItemIconStyled>
             <ExitToAppIcon />
           </ListItemIconStyled>
           <ListItemTextStyled primary="Sair" />
         </ListItemButton>
-      </Grid>
+      </BottomButtonContainer>
       <FooterNavigation />
     </>
   );

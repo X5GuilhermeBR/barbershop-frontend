@@ -8,6 +8,7 @@ import EditPassword from './pages/EditPassword/EditPassword';
 import EditProduct from './pages/EditProducts/EditProducts';
 import EditProfile from './pages/EditProfile/EditProfile';
 import EditService from './pages/EditService/EditService';
+import Financial from './pages/Financial/Financial';
 import History from './pages/History/History';
 import Home from './pages/Home/Home';
 import ListProducts from './pages/ListProducts/ListProducts';
@@ -132,6 +133,14 @@ function App() {
             element={
               <PrivateRoute>
                 <EditService />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/configuracoes/financeiro"
+            element={
+              <PrivateRoute>
+                <Financial />
               </PrivateRoute>
             }
           />
