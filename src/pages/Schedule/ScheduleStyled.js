@@ -25,7 +25,8 @@ export const SchedulingCardContent = styled.div`
 // Styled component for the hour text
 export const HourText = styled(Typography)`
   color: white;
-`;
+  padding-right: 15px;
+`
 
 // Styled component for the divider
 export const StyledDivider = styled(Divider)`
@@ -39,6 +40,7 @@ export const AppointmentContent = styled.div`
   flex: 1;
   color: white;
   line-height: 28px;
+  margin-left: 15px;
 
   p {
     margin-top: 2px;
