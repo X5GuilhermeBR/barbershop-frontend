@@ -166,7 +166,7 @@ function History() {
         <Container>
           <Grid container direction="column" style={{ marginBottom: '5rem', flex: '1 0 auto' }}>
             <Grid item xs={12}>
-              <InfoText>Selecionar período: </InfoText>
+              <InfoText>Período: </InfoText>
               <StyledTextField
                 id="date"
                 type="month"
