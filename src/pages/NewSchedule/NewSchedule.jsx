@@ -334,10 +334,12 @@ function NewSchedule() {
           {location.search && (
             <Button
               variant="outlined"
-              color="primary"
+              style={{
+                borderColor: colors.third,
+                color: colors.third,
+              }}
               size="large"
               fullWidth
-              style={{ width: '100%', marginBottom: '1rem', marginTop: '2rem' }}
               onClick={handleCancelAppointment}
               disabled={!location.search || isSubmitting}
             >
