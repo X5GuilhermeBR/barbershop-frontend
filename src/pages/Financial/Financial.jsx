@@ -282,17 +282,35 @@ function Financial() {
         </Grid>
       </Grid>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      <Dialog
+        open={open}
+        onClose={() => setOpen(false)}
+        style={{ display: 'flex', flexDirection: 'column-reverse' }}
+      >
         <DialogTitle>Exportar Dados</DialogTitle>
         <DialogContent>Escolha o formato para exportar os dados:</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpen(false)} color="primary">
+        <DialogActions style={{ width: '100%', display: 'flex', flexDirection: 'column-reverse' }}>
+          <Button
+            onClick={() => setOpen(false)}
+            color="primary"
+            style={{ width: 'calc(50% - 8px)', marginTop: '5px' }}
+          >
             Cancelar
           </Button>
-          <ExportOptionsButton onClick={exportDataXLSX} color="primary" variant="contained">
+          <ExportOptionsButton
+            onClick={exportDataXLSX}
+            color="primary"
+            variant="contained"
+            style={{ width: 'calc(50% - 8px)', marginTop: '5px' }}
+          >
             Exportar como XLSX
           </ExportOptionsButton>
-          <ExportOptionsButton onClick={exportDataPDF} color="primary" variant="contained">
+          <ExportOptionsButton
+            onClick={exportDataPDF}
+            color="primary"
+            variant="contained"
+            style={{ width: 'calc(50% - 8px)' }}
+          >
             Exportar como PDF
           </ExportOptionsButton>
         </DialogActions>
