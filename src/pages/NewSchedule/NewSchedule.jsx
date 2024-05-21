@@ -263,7 +263,7 @@ function NewSchedule() {
                 label="Cliente"
                 value={selectedClient}
                 onChange={(e) => setSelectedClient(e.target.value)}
-                items={clients}
+                items={clients.filter((client) => !client.disable)}
                 disabled={isSubmitting}
               />
             ) : (
@@ -271,7 +271,7 @@ function NewSchedule() {
                 label="Barbeiro"
                 value={selectedBarber}
                 onChange={(e) => setSelectedBarber(e.target.value)}
-                items={barbers}
+                items={barbers.filter((barber) => !barber.disable)}
                 disabled={isSubmitting}
               />
             )}
@@ -279,9 +279,10 @@ function NewSchedule() {
               label="Serviço"
               value={selectedService}
               onChange={(e) => setSelectedService(e.target.value)}
-              items={services}
+              items={services.filter((service) => !service.disable)}
               disabled={isSubmitting}
             />
+
             <InfoText>Data: </InfoText>
             <StyledTextField
               type="date"
