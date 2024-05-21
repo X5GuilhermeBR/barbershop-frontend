@@ -75,6 +75,13 @@ const ExportButton = styled(Button)`
   }
 `;
 
+const ExportOptionsButton = styled(Button)`
+  && {
+    margin: 0 5px; /* Adicionando espaçamento entre os botões */
+    background-color: ${colors.red}; /* Alterando a cor do botão para vermelho */
+  }
+`;
+
 function Financial() {
   const [open, setOpen] = useState(false);
 
@@ -99,9 +106,11 @@ function Financial() {
   ];
 
   // Função para exportar os dados em XLSX
-  const exportDataToXLSX = () => {
+  const exportDataXLSX = () => {
+    // Cria um novo workbook
     const wb = XLSX.utils.book_new();
 
+    // Dados do relatório geral
     const generalInfoData = [
       ['Descrição', 'Valor'],
       ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
@@ -109,16 +118,19 @@ function Financial() {
       ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
     ];
 
+    // Dados dos barbeiros
     const barberEarningsData = [
       ['Barbeiro', 'Arrecadação'],
       ...barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
     ];
 
+    // Dados das formas de pagamento
     const paymentMethodsData = [
       ['Forma de Pagamento', 'Total'],
       ...paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
     ];
 
+    // Concatena todos os dados em uma única planilha com subtítulos
     const reportData = [
       ['Relatório Financeiro - Flow Barbershop '],
       [],
@@ -132,27 +144,29 @@ function Financial() {
       ...paymentMethodsData,
     ];
 
+    // Cria a planilha a partir dos dados
     const reportSheet = XLSX.utils.aoa_to_sheet(reportData);
     XLSX.utils.book_append_sheet(wb, reportSheet, 'Relatório');
 
+    // Converte o workbook para um arquivo e faz o download
     XLSX.writeFile(wb, 'Relatorio_Financeiro.xlsx');
+
+    console.log('Dados exportados em XLSX!');
+    setOpen(false);
   };
 
   // Função para exportar os dados em PDF
-  const exportDataToPDF = () => {
+  const exportDataPDF = () => {
     const doc = new jsPDF();
 
     doc.setFontSize(18);
-    doc.setTextColor(40);
     doc.text('Relatório Financeiro - Flow Barbershop', 14, 22);
 
-    doc.setFontSize(12);
-    doc.setTextColor(70);
-
-    // Adiciona seção geral
+    doc.setFontSize(14);
     doc.text('Geral', 14, 30);
+
     doc.autoTable({
-      startY: 34,
+      startY: 35,
       head: [['Descrição', 'Valor']],
       body: [
         ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
@@ -162,25 +176,28 @@ function Financial() {
       theme: 'striped',
     });
 
-    // Adiciona seção de barbeiros
-    doc.text('Barbeiros', 14, doc.lastAutoTable.finalY + 10);
+    doc.text('Barbeiros', 14, doc.autoTable.previous.finalY + 10);
+
     doc.autoTable({
-      startY: doc.lastAutoTable.finalY + 14,
+      startY: doc.autoTable.previous.finalY + 15,
       head: [['Barbeiro', 'Arrecadação']],
       body: barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
       theme: 'striped',
     });
 
-    // Adiciona seção de formas de pagamento
-    doc.text('Formas de Pagamento', 14, doc.lastAutoTable.finalY + 10);
+    doc.text('Formas de Pagamento', 14, doc.autoTable.previous.finalY + 10);
+
     doc.autoTable({
-      startY: doc.lastAutoTable.finalY + 14,
+      startY: doc.autoTable.previous.finalY + 15,
       head: [['Forma de Pagamento', 'Total']],
       body: paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
       theme: 'striped',
     });
 
     doc.save('Relatorio_Financeiro.pdf');
+
+    console.log('Dados exportados em PDF!');
+    setOpen(false);
   };
 
   return (
@@ -267,19 +284,17 @@ function Financial() {
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <DialogTitle>Exportar Dados</DialogTitle>
-        <DialogContent>
-          <Typography>Escolha o formato para exportar os dados:</Typography>
-        </DialogContent>
+        <DialogContent>Escolha o formato para exportar os dados:</DialogContent>
         <DialogActions>
-          <Button onClick={exportDataToXLSX} color="primary">
-            Exportar como XLSX
-          </Button>
-          <Button onClick={exportDataToPDF} color="primary">
-            Exportar como PDF
-          </Button>
-          <Button onClick={() => setOpen(false)} color="secondary">
+          <Button onClick={() => setOpen(false)} color="primary">
             Cancelar
           </Button>
+          <ExportOptionsButton onClick={exportDataXLSX} color="primary" variant="contained">
+            Exportar como XLSX
+          </ExportOptionsButton>
+          <ExportOptionsButton onClick={exportDataPDF} color="primary" variant="contained">
+            Exportar como PDF
+          </ExportOptionsButton>
         </DialogActions>
       </Dialog>
 
