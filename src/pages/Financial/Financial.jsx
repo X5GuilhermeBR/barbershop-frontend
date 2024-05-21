@@ -1,8 +1,22 @@
+/* eslint-disable new-cap */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-array-index-key */
 import HistoryIcon from '@mui/icons-material/History';
-import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
-import React from 'react';
+import {
+  Button,
+  Card,
+  CardContent,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Grid,
+  TextField,
+  Typography,
+} from '@mui/material';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import * as XLSX from 'xlsx';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
@@ -62,6 +76,8 @@ const ExportButton = styled(Button)`
 `;
 
 function Financial() {
+  const [open, setOpen] = useState(false);
+
   // Mock dos dados para o card de informações gerais
   const generalInfo = {
     totalServices: 1500, // Valor total de serviços
@@ -82,12 +98,10 @@ function Financial() {
     { method: 'Dinheiro', total: 500 },
   ];
 
-  // Função para exportar os dados
-  const exportData = () => {
-    // Cria um novo workbook
+  // Função para exportar os dados em XLSX
+  const exportDataToXLSX = () => {
     const wb = XLSX.utils.book_new();
 
-    // Dados do relatório geral
     const generalInfoData = [
       ['Descrição', 'Valor'],
       ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
@@ -95,19 +109,16 @@ function Financial() {
       ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
     ];
 
-    // Dados dos barbeiros
     const barberEarningsData = [
       ['Barbeiro', 'Arrecadação'],
       ...barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
     ];
 
-    // Dados das formas de pagamento
     const paymentMethodsData = [
       ['Forma de Pagamento', 'Total'],
       ...paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
     ];
 
-    // Concatena todos os dados em uma única planilha com subtítulos
     const reportData = [
       ['Relatório Financeiro - Flow Barbershop '],
       [],
@@ -121,14 +132,55 @@ function Financial() {
       ...paymentMethodsData,
     ];
 
-    // Cria a planilha a partir dos dados
     const reportSheet = XLSX.utils.aoa_to_sheet(reportData);
     XLSX.utils.book_append_sheet(wb, reportSheet, 'Relatório');
 
-    // Converte o workbook para um arquivo e faz o download
     XLSX.writeFile(wb, 'Relatorio_Financeiro.xlsx');
+  };
 
-    console.log('Dados exportados!');
+  // Função para exportar os dados em PDF
+  const exportDataToPDF = () => {
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.setTextColor(40);
+    doc.text('Relatório Financeiro - Flow Barbershop', 14, 22);
+
+    doc.setFontSize(12);
+    doc.setTextColor(70);
+
+    // Adiciona seção geral
+    doc.text('Geral', 14, 30);
+    doc.autoTable({
+      startY: 34,
+      head: [['Descrição', 'Valor']],
+      body: [
+        ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
+        ['Total de Produtos', `R$ ${generalInfo.totalProducts}`],
+        ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
+      ],
+      theme: 'striped',
+    });
+
+    // Adiciona seção de barbeiros
+    doc.text('Barbeiros', 14, doc.lastAutoTable.finalY + 10);
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 14,
+      head: [['Barbeiro', 'Arrecadação']],
+      body: barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
+      theme: 'striped',
+    });
+
+    // Adiciona seção de formas de pagamento
+    doc.text('Formas de Pagamento', 14, doc.lastAutoTable.finalY + 10);
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 14,
+      head: [['Forma de Pagamento', 'Total']],
+      body: paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
+      theme: 'striped',
+    });
+
+    doc.save('Relatorio_Financeiro.pdf');
   };
 
   return (
@@ -207,11 +259,30 @@ function Financial() {
             </CardContent>
           </StyledCard>
 
-          <ExportButton variant="contained" color="primary" onClick={exportData}>
+          <ExportButton variant="contained" color="primary" onClick={() => setOpen(true)}>
             Exportar Dados
           </ExportButton>
         </Grid>
       </Grid>
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <DialogTitle>Exportar Dados</DialogTitle>
+        <DialogContent>
+          <Typography>Escolha o formato para exportar os dados:</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={exportDataToXLSX} color="primary">
+            Exportar como XLSX
+          </Button>
+          <Button onClick={exportDataToPDF} color="primary">
+            Exportar como PDF
+          </Button>
+          <Button onClick={() => setOpen(false)} color="secondary">
+            Cancelar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Grid container justifyContent="center">
         <FooterNavigation style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 2 }} />
       </Grid>
