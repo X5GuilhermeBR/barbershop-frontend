@@ -1,8 +1,10 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-array-index-key */
 import HistoryIcon from '@mui/icons-material/History';
 import { Button, Card, CardContent, Grid, TextField, Typography } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
+import * as XLSX from 'xlsx';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
 import colors from '../../utils/colors';
@@ -60,12 +62,6 @@ const ExportButton = styled(Button)`
 `;
 
 function Financial() {
-  // Função para exportar os dados
-  const exportData = () => {
-    // Lógica para exportar os dados
-    console.log('Dados exportados!');
-  };
-
   // Mock dos dados para o card de informações gerais
   const generalInfo = {
     totalServices: 1500, // Valor total de serviços
@@ -85,6 +81,55 @@ function Financial() {
     { method: 'Cartão', total: 2000 },
     { method: 'Dinheiro', total: 500 },
   ];
+
+  // Função para exportar os dados
+  const exportData = () => {
+    // Cria um novo workbook
+    const wb = XLSX.utils.book_new();
+
+    // Dados do relatório geral
+    const generalInfoData = [
+      ['Descrição', 'Valor'],
+      ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
+      ['Total de Produtos', `R$ ${generalInfo.totalProducts}`],
+      ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
+    ];
+
+    // Dados dos barbeiros
+    const barberEarningsData = [
+      ['Barbeiro', 'Arrecadação'],
+      ...barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
+    ];
+
+    // Dados das formas de pagamento
+    const paymentMethodsData = [
+      ['Forma de Pagamento', 'Total'],
+      ...paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
+    ];
+
+    // Concatena todos os dados em uma única planilha com subtítulos
+    const reportData = [
+      ['Relatório Financeiro - Flow Barbershop '],
+      [],
+      ['Geral'],
+      ...generalInfoData,
+      [],
+      ['Barbeiros'],
+      ...barberEarningsData,
+      [],
+      ['Formas de Pagamento'],
+      ...paymentMethodsData,
+    ];
+
+    // Cria a planilha a partir dos dados
+    const reportSheet = XLSX.utils.aoa_to_sheet(reportData);
+    XLSX.utils.book_append_sheet(wb, reportSheet, 'Relatório');
+
+    // Converte o workbook para um arquivo e faz o download
+    XLSX.writeFile(wb, 'Relatorio_Financeiro.xlsx');
+
+    console.log('Dados exportados!');
+  };
 
   return (
     <>
