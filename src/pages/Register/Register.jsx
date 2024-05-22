@@ -5,6 +5,10 @@ import {
   CardActions,
   CardContent,
   CircularProgress,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
   TextField,
   Typography,
 } from '@mui/material';
@@ -24,6 +28,7 @@ function Register() {
     birthday: '',
     cellphone: '',
     password: '',
+    sex: '',
   });
   const [formErrors, setFormErrors] = useState({
     email: '',
@@ -31,6 +36,7 @@ function Register() {
     birthday: '',
     cellphone: '',
     password: '',
+    sex: '',
   });
   const [isLoading, setIsLoading] = useState(false);
 
@@ -47,6 +53,7 @@ function Register() {
       .string()
       .required('Senha é obrigatória')
       .min(6, 'Senha deve ter no mínimo 6 caracteres'),
+    sex: yup.string().required('Sexo é obrigatório'),
   });
 
   // Função para lidar com a mudança nos campos do formulário
@@ -170,6 +177,11 @@ function Register() {
               error={!!formErrors.password}
               helperText={formErrors.password}
             />
+            <FormLabel component="legend">Sexo</FormLabel>
+            <RadioGroup name="sex" value={formData.sex} onChange={handleInputChange}>
+              <FormControlLabel value="M" control={<Radio />} label="Masculino" />
+              <FormControlLabel value="F" control={<Radio />} label="Feminino" />
+            </RadioGroup>
           </Box>
         </CardContent>
         <CardActions>

@@ -9,7 +9,7 @@ export const api = axios.create({
   },
 });
 
-export const createAccount = async ({ profile, email, name, birthday, cellphone, password }) =>
+export const createAccount = async ({ profile, email, name, birthday, cellphone, password, sex }) =>
   api
     .post('/account', {
       profile: `${profile}`,
@@ -18,6 +18,7 @@ export const createAccount = async ({ profile, email, name, birthday, cellphone,
       birthday: `${birthday}`,
       cellphone: `${cellphone}`,
       password: `${password}`,
+      sex: `${sex}`,
     })
     .then((response) => {
       console.log(response.data);
