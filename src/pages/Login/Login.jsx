@@ -1,9 +1,9 @@
-import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import * as yup from 'yup'
-import background from '../../assets/background.jpg'
-import { useAuth } from '../../context/AuthContext'
+import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import background from '../../assets/background.jpg';
+import { useAuth } from '../../context/AuthContext';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -23,6 +23,7 @@ function Login() {
   });
 
   useEffect(() => {
+    console.log('status aqui', status);
     if (status === 201 && isAuthenticated()) {
       navigate('/inicio');
     } else if (status === 401) {
@@ -31,9 +32,11 @@ function Login() {
     } else if (status === 203) {
       setAlertOpen(true);
       setMessage('Por favor, verifique seu email para concluir o registro.');
+    } else if (status === 403) {
+      setAlertOpen(true);
+      setMessage('Usuário desabilitado, solicite para que a barbearia ative novamente.');
     }
   }, [status, isAuthenticated]);
-  
 
   const handleSubmit = () => {
     setIsLoading(true);

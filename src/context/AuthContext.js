@@ -49,13 +49,17 @@ export function AuthProvider({ children }) {
     try {
       const response = await loginApi(email, password);
       const { token } = response.data;
-      console.log("stat", status)
   
       if (response.status === 401) {
         setStatus(401); // Define o erro no estado
         return; // Retorna para interromper o fluxo do código
       }
-
+  
+      if (response.status === 403) {
+        setStatus(403); // Define o erro no estado
+        return; // Retorna para interromper o fluxo do código
+      }
+  
       if (response.status === 203) {
         setStatus(203); // Define o erro no estado
         return; // Retorna para interromper o fluxo do código
@@ -66,10 +70,14 @@ export function AuthProvider({ children }) {
       setUserDataFromToken(token);
       setStatus(201); // Define o status de sucesso
     } catch (error) {
-      setStatus(401); // Define o erro no estado
-      if (error.status === 403) {
+      if (error.response && error.response.status === 403) {
         setStatus(403); // Define o erro no estado
-         // Retorna para interromper o fluxo do código
+      } else if (error.response && error.response.status === 401) {
+        setStatus(401); // Define o erro no estado
+      } else if (error.response && error.response.status === 203) {
+        setStatus(203); // Define o erro no estado
+      } else {
+        setStatus(500); // Define o erro no estado para erros genéricos
       }
     }
   };
