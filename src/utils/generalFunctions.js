@@ -29,7 +29,10 @@ export const getFutureDate = () => {
   export const getDisabledHours = (schedule) => {
     const availableHours = generateAvailableHours();
     const disabledHours = availableHours.map((hour) => {
-      const isScheduled = schedule.some((appointment) => appointment.time === hour);
+      const isScheduled = schedule.some(
+        (appointment) => appointment.time === hour && 
+        (appointment.status !== 'Cancelado')
+      );
       return { time: hour, disabled: isScheduled };
     });
     return disabledHours;
