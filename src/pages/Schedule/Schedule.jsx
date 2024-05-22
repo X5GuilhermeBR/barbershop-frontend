@@ -246,7 +246,7 @@ function Schedule() {
             ))}
             {noAppointments && (
               <Grid item xs={12}>
-                <Title>Atendimentos previstos de {formatWeekdayDateMonthYear(selectedDate)}</Title>
+                <Title>{formatWeekdayDateMonthYear(selectedDate)}</Title>
                 {availableHours.map((hour) => (
                   <SchedulingCard elevation={3} key={hour}>
                     <SchedulingCardContent>
