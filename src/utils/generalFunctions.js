@@ -16,23 +16,19 @@ export const getFutureDate = () => {
     return `${year}-${month}-${day}`;
   };
 
-  const generateAvailableHours = () => {
-    const availableHours = [];
-    for (let hour = 9; hour <= 19; hour++) {
-      if (hour !== 12) {
-        availableHours.push(`${hour}:00`);
-      }
-    }
-    return availableHours;
-  };
-
-  export const getDisabledHours = (schedule) => {
-    const availableHours = generateAvailableHours();
+const generateAvailableHours = (appointmentType) => {
+  const baseHours = ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  if (appointmentType === 'Encaixe') {
+    return baseHours.map(hour => `${hour.charAt(0)}:30`);
+  }
+  return baseHours;
+};
+  
+  export const getDisabledHours = (schedule, appointmentType) => {
+    const availableHours = generateAvailableHours(appointmentType);
     const disabledHours = availableHours.map((hour) => {
-      const isScheduled = schedule.some(
-        (appointment) => appointment.time === hour && 
-        (appointment.status !== 'Cancelado')
-      );
+      const isScheduled = schedule.some((appointment) => appointment.time === hour && 
+      (appointment.status !== 'Cancelado'));
       return { time: hour, disabled: isScheduled };
     });
     return disabledHours;

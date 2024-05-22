@@ -1,5 +1,18 @@
 import ArticleIcon from '@mui/icons-material/Article';
-import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
+import {
+  Button,
+  Container,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  Snackbar,
+  TextField,
+} from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -19,21 +32,18 @@ import {
 import colors from '../../utils/colors';
 import { getCurrentDate, getDisabledHours, getFutureDate } from '../../utils/generalFunctions';
 
-// Estiliza o componente Select com styled-components
 const StyledSelect = styled(Select)`
-  background-color: white; // Define o fundo como branco
-  color: black; // Define a cor do texto como preto
+  background-color: white;
+  color: black;
 `;
 
-// Estiliza o componente MenuItem com styled-components
 const StyledMenuItem = styled(MenuItem)`
-  color: black; // Define a cor do texto como preto
+  color: black;
 `;
 
-// Estiliza o componente TextField com styled-components
 const StyledTextField = styled(TextField)`
-  background-color: white; // Define o fundo como branco
-  color: black; // Define a cor do texto como preto
+  background-color: white;
+  color: black;
 `;
 
 const InfoText = styled.div`
@@ -64,6 +74,7 @@ function NewSchedule() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [appointmentType, setAppointmentType] = useState('Marcado'); // Adicionado
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = useAuth();
@@ -170,7 +181,6 @@ function NewSchedule() {
       }
     };
 
-    // Aguarde até que os barbeiros, serviços e clientes sejam carregados antes de buscar o agendamento
     if (barbers.length > 0 && services.length > 0 && clients.length > 0) {
       fetchScheduleById();
     }
@@ -185,7 +195,7 @@ function NewSchedule() {
     const scheduleData = {
       id_user_client: userInfo.profile === 'client' ? userInfo.id : selectedClient.user_id,
       id_user_barber: userInfo.profile === 'barber' ? userInfo.id : selectedBarber.user_id,
-      type: 'Marcado',
+      type: appointmentType, // Alterado
       date: selectedDate,
       time: selectedHour,
       id_service: selectedService.id,
@@ -254,6 +264,21 @@ function NewSchedule() {
       <Grid item style={{ marginBottom: '2rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">
+                <InfoText>Atendimento: </InfoText>
+              </FormLabel>
+              <RadioGroup
+                row
+                aria-label="appointmentType"
+                name="appointmentType"
+                value={appointmentType}
+                onChange={(e) => setAppointmentType(e.target.value)}
+              >
+                <FormControlLabel value="Marcado" control={<Radio />} label="Marcado" />
+                <FormControlLabel value="Encaixe" control={<Radio />} label="Encaixe" />
+              </RadioGroup>
+            </FormControl>
             {userInfo?.profile === 'barber' ? (
               <SelectComponent
                 label="Cliente"
@@ -300,7 +325,7 @@ function NewSchedule() {
               disabled={isSubmitting}
             >
               <MenuItem value="">Selecione uma hora</MenuItem>
-              {getDisabledHours(schedule).map((hour) => (
+              {getDisabledHours(schedule, appointmentType).map((hour) => (
                 <StyledMenuItem key={hour.time} value={hour.time} disabled={hour.disabled}>
                   {hour.time}
                 </StyledMenuItem>

@@ -1,3 +1,7 @@
+/* eslint-disable radix */
+/* eslint-disable prefer-template */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-plusplus */
 /* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-param-reassign */
 import AddIcon from '@mui/icons-material/Add';
@@ -81,9 +85,16 @@ function Schedule() {
     return `Atendimentos Previstos para ${dayOfWeek}`;
   };
 
-  const formatHour = (hour) => (hour < 10 ? `0${hour}:00` : `${hour}:00`);
+  const generateAvailableHoursArray = () => {
+    const availableHours = [];
+    for (let hour = 9; hour <= 19; hour++) {
+      availableHours.push(`${hour < 10 ? `0${hour}` : hour}:00`);
+      availableHours.push(`${hour < 10 ? `0${hour}` : hour}:30`);
+    }
+    return availableHours;
+  };
 
-  const availableHours = Array.from({ length: 11 }, (_, index) => index + 9);
+  const availableHours = generateAvailableHoursArray();
 
   const groupedAppointmentsByDate = scheduledAppointments.reduce((grouped, appointment) => {
     const { date } = appointment;
@@ -96,8 +107,7 @@ function Schedule() {
 
   const renderAppointmentOrVago = (hour, appointments) => {
     const appointment = appointments.find(
-      (appoint) =>
-        parseInt(appoint.time.split(':')[0], 10) === hour && appoint.status !== 'Cancelado'
+      (appoint) => appoint.time === hour && appoint.status !== 'Cancelado'
     );
 
     if (hour === 12) {
@@ -110,8 +120,6 @@ function Schedule() {
       const firstName = fullName[0];
       const lastName = fullName[fullName.length - 1];
       const truncatedName = `${firstName} ${lastName}`;
-
-      console.log(appointment);
 
       return (
         <>
@@ -181,7 +189,7 @@ function Schedule() {
                 {availableHours.map((hour) => (
                   <SchedulingCard elevation={3} key={hour}>
                     <SchedulingCardContent>
-                      <HourText variant="body1">{`${formatHour(hour)}`}</HourText>
+                      <HourText variant="body1">{hour}</HourText>
                       <StyledDivider orientation="vertical" flexItem />
                       <AppointmentContent>
                         {renderAppointmentOrVago(hour, appointments)}
@@ -250,7 +258,7 @@ function Schedule() {
                 {availableHours.map((hour) => (
                   <SchedulingCard elevation={3} key={hour}>
                     <SchedulingCardContent>
-                      <HourText variant="body1">{`${formatHour(hour)}`}</HourText>
+                      <HourText variant="body1">{hour}</HourText>
                       <StyledDivider orientation="vertical" flexItem />
                       <AppointmentContent>
                         <h2>Horário vago</h2>
