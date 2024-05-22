@@ -53,7 +53,10 @@ function HomePage() {
         const formattedDate = today.toISOString().split('T')[0];
         const { data } = await checkScheduleById(formattedDate, '', userInfo.id);
         const sortedSchedule = data
-          .filter((appointment) => appointment.status !== 'Cancelado')
+          .filter(
+            (appointment) =>
+              appointment.status !== 'Cancelado' && appointment.status !== 'Finalizado'
+          ) // Filtra "Cancelado" e "Finalizado"
           .sort((a, b) => new Date(a.date) - new Date(b.date));
         setSchedule(sortedSchedule);
         const hasAppointmentToday = sortedSchedule.some((appointment) => {
