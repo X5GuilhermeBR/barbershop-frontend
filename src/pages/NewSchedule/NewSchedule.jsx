@@ -144,7 +144,6 @@ function NewSchedule() {
   }, [selectedService, selectedDate, selectedHour]);
 
   useEffect(() => {
-    // Inicialize o estado selectedClient ao carregar a página de edição
     const fetchScheduleById = async () => {
       const params = new URLSearchParams(location.search);
       const scheduleId = params.get('scheduleId');
@@ -164,15 +163,18 @@ function NewSchedule() {
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
           setIsEditing(true);
-          setSelectedClient(data.id_user_client);
+          setSelectedClient(clients.find((client) => client.user_id === data.id_user_client));
         } catch (error) {
           console.error('Erro ao carregar agendamento:', error);
         }
       }
     };
 
-    fetchScheduleById();
-  }, [barbers, services, location.search, userInfo]);
+    // Aguarde até que os barbeiros, serviços e clientes sejam carregados antes de buscar o agendamento
+    if (barbers.length > 0 && services.length > 0 && clients.length > 0) {
+      fetchScheduleById();
+    }
+  }, [barbers, services, clients, location.search, userInfo]);
 
   const handleSubmit = async () => {
     if (!isFormValid || isSubmitting) {
