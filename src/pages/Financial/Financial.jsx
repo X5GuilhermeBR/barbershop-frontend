@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable new-cap */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-array-index-key */
@@ -21,6 +22,7 @@ import styled from 'styled-components';
 import * as XLSX from 'xlsx';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
+import { getScheduleReport } from '../../service/api';
 import colors from '../../utils/colors';
 
 const TitleText = styled.h2`
@@ -84,78 +86,67 @@ const ExportOptionsButton = styled(Button)`
 
 function Financial() {
   const [open, setOpen] = useState(false);
+  const [reportData, setReportData] = useState(null);
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
 
-  // Mock dos dados para o card de informações gerais
-  const generalInfo = {
-    totalServices: 1500, // Valor total de serviços
-    totalProducts: 800, // Valor total de produtos
+  const fetchReportData = async () => {
+    try {
+      const data = await getScheduleReport(startDate, endDate);
+      setReportData(data);
+    } catch (error) {
+      console.error('Erro ao buscar dados do relatório:', error);
+    }
   };
 
-  // Mock dos dados de arrecadação por barbeiro
-  const barberEarnings = [
-    { name: 'João', earnings: 600 },
-    { name: 'Pedro', earnings: 800 },
-    { name: 'Maria', earnings: 1000 },
-  ];
-
-  // Mock dos dados de formas de pagamento
-  const paymentMethods = [
-    { method: 'Pix', total: 1200 },
-    { method: 'Cartão', total: 2000 },
-    { method: 'Dinheiro', total: 500 },
-  ];
-
-  // Função para exportar os dados em XLSX
   const exportDataXLSX = () => {
-    // Cria um novo workbook
     const wb = XLSX.utils.book_new();
 
-    // Dados do relatório geral
     const generalInfoData = [
       ['Descrição', 'Valor'],
-      ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
-      ['Total de Produtos', `R$ ${generalInfo.totalProducts}`],
-      ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
+      ['Total de Serviços', `R$ ${reportData.totalServicesAmount}`],
+      ['Total de Produtos', `R$ ${reportData.totalProductsAmount}`],
+      ['Total Geral', `R$ ${reportData.totalAmount}`],
     ];
 
-    // Dados dos barbeiros
-    const barberEarningsData = [
-      ['Barbeiro', 'Arrecadação'],
-      ...barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
-    ];
-
-    // Dados das formas de pagamento
     const paymentMethodsData = [
       ['Forma de Pagamento', 'Total'],
-      ...paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
+      ...Object.entries(reportData.paymentTypeTotals).map(([method, total]) => [
+        method || 'Indefinido',
+        `R$ ${total}`,
+      ]),
     ];
 
-    // Concatena todos os dados em uma única planilha com subtítulos
-    const reportData = [
+    const dailyReportsData = [
+      ['Data', 'Total de Serviços', 'Total de Produtos'],
+      ...Object.entries(reportData.dailyReports).map(([date, { totalServices, totalProducts }]) => [
+        new Date(date).toLocaleDateString('pt-BR'),
+        `R$ ${totalServices}`,
+        `R$ ${totalProducts}`,
+      ]),
+    ];
+
+    const reportDataSheet = [
       ['Relatório Financeiro - Flow Barbershop '],
       [],
       ['Geral'],
       ...generalInfoData,
       [],
-      ['Barbeiros'],
-      ...barberEarningsData,
-      [],
       ['Formas de Pagamento'],
       ...paymentMethodsData,
+      [],
+      ['Relatório Diário'],
+      ...dailyReportsData,
     ];
 
-    // Cria a planilha a partir dos dados
-    const reportSheet = XLSX.utils.aoa_to_sheet(reportData);
+    const reportSheet = XLSX.utils.aoa_to_sheet(reportDataSheet);
     XLSX.utils.book_append_sheet(wb, reportSheet, 'Relatório');
 
-    // Converte o workbook para um arquivo e faz o download
     XLSX.writeFile(wb, 'Relatorio_Financeiro.xlsx');
-
     console.log('Dados exportados em XLSX!');
     setOpen(false);
   };
 
-  // Função para exportar os dados em PDF
   const exportDataPDF = () => {
     const doc = new jsPDF();
 
@@ -169,19 +160,10 @@ function Financial() {
       startY: 35,
       head: [['Descrição', 'Valor']],
       body: [
-        ['Total de Serviços', `R$ ${generalInfo.totalServices}`],
-        ['Total de Produtos', `R$ ${generalInfo.totalProducts}`],
-        ['Total Geral', `R$ ${generalInfo.totalServices + generalInfo.totalProducts}`],
+        ['Total de Serviços', `R$ ${reportData.totalServicesAmount}`],
+        ['Total de Produtos', `R$ ${reportData.totalProductsAmount}`],
+        ['Total Geral', `R$ ${reportData.totalAmount}`],
       ],
-      theme: 'striped',
-    });
-
-    doc.text('Barbeiros', 14, doc.autoTable.previous.finalY + 10);
-
-    doc.autoTable({
-      startY: doc.autoTable.previous.finalY + 15,
-      head: [['Barbeiro', 'Arrecadação']],
-      body: barberEarnings.map((barber) => [barber.name, `R$ ${barber.earnings}`]),
       theme: 'striped',
     });
 
@@ -190,12 +172,29 @@ function Financial() {
     doc.autoTable({
       startY: doc.autoTable.previous.finalY + 15,
       head: [['Forma de Pagamento', 'Total']],
-      body: paymentMethods.map((method) => [method.method, `R$ ${method.total}`]),
+      body: Object.entries(reportData.paymentTypeTotals).map(([method, total]) => [
+        method || 'Indefinido',
+        `R$ ${total}`,
+      ]),
+      theme: 'striped',
+    });
+
+    doc.text('Relatório Diário', 14, doc.autoTable.previous.finalY + 10);
+
+    doc.autoTable({
+      startY: doc.autoTable.previous.finalY + 15,
+      head: [['Data', 'Total de Serviços', 'Total de Produtos']],
+      body: Object.entries(reportData.dailyReports).map(
+        ([date, { totalServices, totalProducts }]) => [
+          new Date(date).toLocaleDateString('pt-BR'),
+          `R$ ${totalServices}`,
+          `R$ ${totalProducts}`,
+        ]
+      ),
       theme: 'striped',
     });
 
     doc.save('Relatorio_Financeiro.pdf');
-
     console.log('Dados exportados em PDF!');
     setOpen(false);
   };
@@ -207,75 +206,90 @@ function Financial() {
         <Grid item xs={12}>
           <InfoText>Período: </InfoText>
           <StyledTextField
-            id="date"
-            type="month"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            id="startDate"
+            label="Data Inicial"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
             fullWidth
           />
+          <StyledTextField
+            id="endDate"
+            label="Data Final"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            fullWidth
+          />
+          <Button variant="contained" color="primary" onClick={fetchReportData}>
+            Buscar Relatório
+          </Button>
           <Divider />
-          <TitleText>Relatório Financeiro de </TitleText>
-          <StyledCard>
-            <CardContent>
-              <Subtitle variant="h6" gutterBottom>
-                Geral
-              </Subtitle>
-              <Typography
-                variant="body1"
-                gutterBottom
-                style={{ display: 'flex', justifyContent: 'space-between' }}
-              >
-                Total de Serviços:
-                <span>R${generalInfo.totalServices}</span>
-              </Typography>
-              <Typography
-                variant="body1"
-                gutterBottom
-                style={{ display: 'flex', justifyContent: 'space-between' }}
-              >
-                Total de Produtos:
-                <span>R${generalInfo.totalProducts}</span>
-              </Typography>
-              <Typography
-                variant="body1"
-                gutterBottom
-                style={{ display: 'flex', justifyContent: 'space-between' }}
-              >
-                Total Geral:
-                <span>R$ {generalInfo.totalServices + generalInfo.totalProducts}</span>
-              </Typography>
-              <Divider />
-              <Subtitle variant="h6" gutterBottom>
-                Barbeiros
-              </Subtitle>
-              {barberEarnings.map((barber, index) => (
+          {reportData && (
+            <StyledCard>
+              <CardContent>
+                <Subtitle variant="h6" gutterBottom>
+                  Geral
+                </Subtitle>
                 <Typography
-                  key={index}
                   variant="body1"
                   gutterBottom
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  {barber.name}:<span>R${barber.earnings}</span>
+                  Total de Serviços:<span>R${reportData.totalServicesAmount}</span>
                 </Typography>
-              ))}
-              <Divider />
-              <Subtitle variant="h6" gutterBottom>
-                Formas de Pagamento
-              </Subtitle>
-              {paymentMethods.map((method, index) => (
                 <Typography
-                  key={index}
                   variant="body1"
                   gutterBottom
                   style={{ display: 'flex', justifyContent: 'space-between' }}
                 >
-                  {method.method}:<span>R${method.total}</span>
+                  Total de Produtos:<span>R${reportData.totalProductsAmount}</span>
                 </Typography>
-              ))}
-            </CardContent>
-          </StyledCard>
-
+                <Typography
+                  variant="body1"
+                  gutterBottom
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  Total Geral:<span>R${reportData.totalAmount}</span>
+                </Typography>
+                <Divider />
+                <Subtitle variant="h6" gutterBottom>
+                  Formas de Pagamento
+                </Subtitle>
+                {Object.entries(reportData.paymentTypeTotals).map(([method, total], index) => (
+                  <Typography
+                    key={index}
+                    variant="body1"
+                    gutterBottom
+                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    {method || 'Indefinido'}:<span>R${total}</span>
+                  </Typography>
+                ))}
+                <Divider />
+                <Subtitle variant="h6" gutterBottom>
+                  Relatório Diário
+                </Subtitle>
+                {Object.entries(reportData.dailyReports).map(
+                  ([date, { totalServices, totalProducts }], index) => (
+                    <Typography
+                      key={index}
+                      variant="body1"
+                      gutterBottom
+                      style={{ display: 'flex', justifyContent: 'space-between' }}
+                    >
+                      {new Date(date).toLocaleDateString('pt-BR')}:
+                      <span>
+                        Serviços: R${totalServices}, Produtos: R${totalProducts}
+                      </span>
+                    </Typography>
+                  )
+                )}
+              </CardContent>
+            </StyledCard>
+          )}
           <ExportButton variant="contained" color="primary" onClick={() => setOpen(true)}>
             Exportar Dados
           </ExportButton>

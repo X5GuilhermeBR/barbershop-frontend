@@ -664,3 +664,30 @@ export const createSale = async (saleInfo) => {
     throw error;
   }
 };
+
+export const getScheduleReport = async (startDate, endDate) => {
+  const token = sessionStorage.getItem('token');
+  if (!token) {
+    throw new Error('Token não encontrado na sessionStorage');
+  }
+
+  const queryParams = new URLSearchParams({
+    startDate,
+    endDate,
+  }).toString();
+
+  return api
+    .get(`/schedule/report?${queryParams}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      console.log(response.data);
+      return response.data;
+    })
+    .catch((error) => {
+      console.error('Erro ao fazer a requisição:', error);
+      throw error;
+    });
+};
