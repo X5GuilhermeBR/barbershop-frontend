@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/label-has-associated-control */
-/* eslint-disable no-undef */
 import ArticleIcon from '@mui/icons-material/Article';
 import { Button, Container, Grid, MenuItem, Select, Snackbar, TextField } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
@@ -76,7 +74,7 @@ function NewSchedule() {
     } else if (userInfo && userInfo.profile === 'barber') {
       setSelectedBarber(userInfo.id);
     }
-  }, [userInfo?.profile]);
+  }, [userInfo]);
 
   useEffect(() => {
     async function fetchData() {
@@ -95,13 +93,13 @@ function NewSchedule() {
     }
 
     fetchData();
-  }, [userInfo?.profile]);
+  }, []);
 
   useEffect(() => {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          const { data } = await getSchedule(selectedDate, selectedDate, userInfo.id);
+          const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
           setSchedule(data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
@@ -110,7 +108,7 @@ function NewSchedule() {
     };
 
     fetchScheduleData();
-  }, [selectedBarber, selectedClient, selectedService, selectedDate, userInfo?.profile]);
+  }, [selectedBarber, selectedService, selectedDate]);
 
   useEffect(() => {
     setIsFormValid(
@@ -143,7 +141,7 @@ function NewSchedule() {
     };
 
     setAppointmentInfo(generateAppointmentInfo());
-  }, [selectedBarber, selectedService, selectedDate, selectedHour]);
+  }, [selectedService, selectedDate, selectedHour]);
 
   useEffect(() => {
     // Inicialize o estado selectedClient ao carregar a página de edição
@@ -173,8 +171,6 @@ function NewSchedule() {
       }
     };
 
-    console.log(selectedBarber, 'barbeiro selecionado');
-
     fetchScheduleById();
   }, [barbers, services, location.search, userInfo]);
 
@@ -199,14 +195,12 @@ function NewSchedule() {
         const params = new URLSearchParams(location.search);
         const scheduleId = params.get('scheduleId');
         if (scheduleId) {
-          // Aqui está o problema, você não está definindo a variável scheduleId
           await updateSchedule(scheduleId, scheduleData);
           setMessage(
             'Agendamento atualizado com sucesso! Você será redirecionado para a tela inicial em 3 segundos...'
           );
           setSnackbarOpen(true);
         } else {
-          // Lidere com o caso em que scheduleId não está definido
           console.error('scheduleId não está definido');
         }
       } else {
