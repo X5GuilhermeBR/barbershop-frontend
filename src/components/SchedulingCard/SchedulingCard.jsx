@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { Alert, Button, Snackbar } from '@mui/material';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import EditIcon from '@mui/icons-material/Edit';
+import { Alert, IconButton, Snackbar, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateSchedule } from '../../service/api';
@@ -21,9 +23,9 @@ function SchedulingCard({ appointment }) {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
 
-  const handleEditClick = () => {
+  const handleEditAppointment = (appoin) => {
     if (appointment.status === 'Agendado') {
-      navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
+      navigate(`/novo-agendamento?scheduleId=${appoin.id}`);
     }
   };
 
@@ -80,6 +82,7 @@ function SchedulingCard({ appointment }) {
         <StyledCardContent>
           <h2>Agendamento N#{appointment.id}</h2>
           <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
+          <StyledChip label={appointment.type.toUpperCase()} type={appointment.type} />
           <p>
             <strong>Data:</strong> {appointment.date}
             <br />
@@ -92,12 +95,21 @@ function SchedulingCard({ appointment }) {
           </p>
         </StyledCardContent>
         <StyledCardActions>
-          {appointment.status === 'Agendado' && (
-            <Button variant="contained" color="error" onClick={handleCancelAppointment}>
-              Cancelar
-            </Button>
-          )}
-          <p>{appointment.type.toUpperCase()}</p>
+          <div>
+            <Tooltip title="Editar">
+              <IconButton color="primary" onClick={() => handleEditAppointment(appointment)}>
+                <EditIcon
+                  fontSize="small"
+                  style={{ cursor: 'pointer', color: 'white', marginRight: '12px' }}
+                />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Calendário" style={{ cursor: 'pointer', color: 'white' }}>
+              <IconButton color="primary">
+                <CalendarTodayIcon />
+              </IconButton>
+            </Tooltip>
+          </div>
           <StyledChip label={`R$${appointment.service_price}`} />
         </StyledCardActions>
       </StyledCard>

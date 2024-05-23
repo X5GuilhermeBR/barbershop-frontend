@@ -61,14 +61,14 @@ export const StyledCardActions = styled(CardActions)`
 
 export const StyledChip = styled(Chip)`
   && {
-    padding-top: 2px;
-    font-size: 14px;
-    background-color: ${({ status }) => {
-      switch (status) {
-        case 'Agendado':
-          return colors.third;
-        case 'Em Progresso':
-          return colors.third;
+    font-size: 10px;
+    margin-right: 5px;
+    background-color: ${({ type }) => {
+      switch (type) {
+        case 'Marcado':
+          return '#94c7b6';
+        case 'Encaixe':
+          return '#de6262';
         case 'Finalizado':
           return colors.third;
         case 'Cancelado':
@@ -79,5 +79,11 @@ export const StyledChip = styled(Chip)`
     }};
     color: ${colors.primary};
     font-weight: bold;
+    height: 20px;
+
+    span {
+      padding: 0px 6px 0px 6px;
+      
+    }
   }
 `;

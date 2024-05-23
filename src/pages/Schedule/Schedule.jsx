@@ -132,8 +132,8 @@ function Schedule() {
             <strong>Valor:</strong> {formattedPrice}
             <br />
           </p>
-          <StyledChip label={appointment.type.toUpperCase()} type={appointment.type} />
           <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
+          <StyledChip label={appointment.type.toUpperCase()} type={appointment.type} />
         </>
       );
     }
