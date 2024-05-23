@@ -3,6 +3,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react/no-array-index-key */
 import HistoryIcon from '@mui/icons-material/History';
+import SearchIcon from '@mui/icons-material/Search';
 import {
   Button,
   Card,
@@ -33,14 +34,15 @@ const TitleText = styled.h2`
 const InfoText = styled.div`
   font-size: 20px;
   color: ${colors.third};
-  padding-bottom: 8px;
+  padding-bottom: 16px;
+  padding-top: 16px;
 `;
 
 const Subtitle = styled(Typography)`
   && {
     color: ${colors.third};
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 16px;
     font-family: 'Bahnschrift', sans-serif;
   }
 `;
@@ -49,7 +51,11 @@ export const Divider = styled.div`
   width: 100%;
   height: 1px;
   background-color: ${colors.basic};
-  margin: 20px 0;
+  margin: 8px 0;
+`;
+
+export const Box = styled.div`
+  margin-bottom: 30px;
 `;
 
 const StyledTextField = styled(TextField)`
@@ -82,6 +88,34 @@ const ExportOptionsButton = styled(Button)`
     margin: 0 5px; /* Adicionando espaçamento entre os botões */
     background-color: ${colors.red}; /* Alterando a cor do botão para vermelho */
   }
+`;
+
+const SearchButton = styled(Button)`
+  && {
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: ${(props) => props.color || 'black'};
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    margin-top: 20px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+const RedText = styled.span`
+  color: red;
 `;
 
 function Financial() {
@@ -204,89 +238,139 @@ function Financial() {
       <Header icon={<HistoryIcon />} title="Financeiro" />
       <Grid container spacing={3} style={{ padding: '1rem', flexGrow: 1 }}>
         <Grid item xs={12}>
-          <InfoText>Período: </InfoText>
+          <InfoText>Período Inicial</InfoText>
           <StyledTextField
             id="startDate"
-            label="Data Inicial"
+            placeholder="Selecione a data Inicial"
             type="date"
             InputLabelProps={{ shrink: true }}
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
             fullWidth
           />
+          <InfoText>Período Final: </InfoText>
           <StyledTextField
             id="endDate"
-            label="Data Final"
+            placeholder="Selecione a data Final"
             type="date"
             InputLabelProps={{ shrink: true }}
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
             fullWidth
           />
-          <Button variant="contained" color="primary" onClick={fetchReportData}>
-            Buscar Relatório
-          </Button>
+          <SearchButton variant="contained" onClick={fetchReportData} startIcon={<SearchIcon />}>
+            BUSCAR RELATÓRIO
+          </SearchButton>
           <Divider />
           {reportData && (
             <StyledCard>
               <CardContent>
-                <Subtitle variant="h6" gutterBottom>
-                  Geral
-                </Subtitle>
-                <Typography
-                  variant="body1"
-                  gutterBottom
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  Total de Serviços:<span>R${reportData.totalServicesAmount}</span>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  gutterBottom
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  Total de Produtos:<span>R${reportData.totalProductsAmount}</span>
-                </Typography>
-                <Typography
-                  variant="body1"
-                  gutterBottom
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
-                >
-                  Total Geral:<span>R${reportData.totalAmount}</span>
-                </Typography>
-                <Divider />
-                <Subtitle variant="h6" gutterBottom>
-                  Formas de Pagamento
-                </Subtitle>
-                {Object.entries(reportData.paymentTypeTotals).map(([method, total], index) => (
+                <Box>
+                  <Subtitle variant="h6" gutterBottom>
+                    Geral
+                  </Subtitle>
                   <Typography
-                    key={index}
                     variant="body1"
                     gutterBottom
-                    style={{ display: 'flex', justifyContent: 'space-between' }}
+                    style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px' }}
                   >
-                    {method || 'Indefinido'}:<span>R${total}</span>
+                    Total de Serviços:<span>R${reportData.totalServicesAmount}</span>
                   </Typography>
-                ))}
-                <Divider />
-                <Subtitle variant="h6" gutterBottom>
-                  Relatório Diário
-                </Subtitle>
-                {Object.entries(reportData.dailyReports).map(
-                  ([date, { totalServices, totalProducts }], index) => (
-                    <Typography
-                      key={index}
-                      variant="body1"
-                      gutterBottom
-                      style={{ display: 'flex', justifyContent: 'space-between' }}
-                    >
-                      {new Date(date).toLocaleDateString('pt-BR')}:
-                      <span>
-                        Serviços: R${totalServices}, Produtos: R${totalProducts}
-                      </span>
-                    </Typography>
-                  )
-                )}
+                  <Divider />
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontSize: '18px',
+                    }}
+                  >
+                    Total de Produtos:<span>R${reportData.totalProductsAmount}</span>
+                  </Typography>
+                  <Divider />
+                  <Typography
+                    variant="body1"
+                    gutterBottom
+                    style={{ display: 'flex', justifyContent: 'space-between', fontSize: '18px' }}
+                  >
+                    Total Geral:<span>R${reportData.totalAmount}</span>
+                  </Typography>
+                  <Divider />
+                </Box>
+                <Box>
+                  <Subtitle variant="h6" gutterBottom>
+                    Formas de Pagamento
+                  </Subtitle>
+                  {Object.entries(reportData.paymentTypeTotals).map(([method, total], index) => (
+                    <>
+                      <Typography
+                        key={index}
+                        variant="body1"
+                        gutterBottom
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          fontSize: '18px',
+                        }}
+                      >
+                        {method || 'Indefinido'}:<span>R${total}</span>
+                      </Typography>
+                      <Divider />
+                    </>
+                  ))}
+                </Box>
+                <Box>
+                  <Subtitle variant="h6" gutterBottom>
+                    Relatório Diário
+                  </Subtitle>
+                  {Object.entries(reportData.dailyReports).map(
+                    ([date, { totalServices, totalProducts }], index) => (
+                      <div
+                        key={index}
+                        style={{
+                          paddingBottom: '15px',
+                        }}
+                      >
+                        <Typography
+                          variant="body1"
+                          gutterBottom
+                          style={{
+                            fontSize: '18px',
+                            color: colors.second,
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          {new Date(date).toLocaleDateString('pt-BR')}
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          gutterBottom
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            fontSize: '18px',
+                          }}
+                        >
+                          Serviço:<span>R${totalServices}</span>
+                        </Typography>
+                        <Divider />
+                        <Typography
+                          variant="body1"
+                          gutterBottom
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            fontSize: '18px',
+                          }}
+                        >
+                          Produto:<span>R${totalProducts}</span>
+                        </Typography>
+                        <Divider />
+                      </div>
+                    )
+                  )}
+                </Box>
               </CardContent>
             </StyledCard>
           )}

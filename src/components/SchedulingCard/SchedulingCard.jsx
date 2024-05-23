@@ -1,7 +1,10 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
+
 import { Alert, IconButton, Snackbar, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -96,21 +99,28 @@ function SchedulingCard({ appointment }) {
         </StyledCardContent>
         <StyledCardActions>
           <div>
-            <Tooltip title="Editar">
-              <IconButton color="primary" onClick={() => handleEditAppointment(appointment)}>
-                <EditIcon
-                  fontSize="small"
-                  style={{ cursor: 'pointer', color: 'white', marginRight: '12px' }}
-                />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Calendário" style={{ cursor: 'pointer', color: 'white' }}>
-              <IconButton color="primary">
-                <CalendarTodayIcon />
-              </IconButton>
-            </Tooltip>
+            {appointment.status === 'Agendado' ? (
+              <>
+                <Tooltip title="Editar">
+                  <IconButton color="primary" onClick={() => handleEditAppointment(appointment)}>
+                    <EditIcon
+                      fontSize="small"
+                      style={{ cursor: 'pointer', color: 'white', marginRight: '12px' }}
+                    />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Calendário" style={{ cursor: 'pointer', color: 'white' }}>
+                  <IconButton color="primary">
+                    <CalendarTodayIcon />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ) : appointment.status === 'Finalizado' ? (
+              <p style={{ cursor: 'pointer', color: 'white' }}>AVALIAR ATENDIMENTO</p>
+            ) : null}
           </div>
-          <StyledChip label={`R$${appointment.service_price}`} />
+
+          <p style={{ color: 'green' }}>R${appointment.service_price},00 </p>
         </StyledCardActions>
       </StyledCard>
       <Snackbar
