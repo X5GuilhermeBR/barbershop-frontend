@@ -10,7 +10,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importe useHistory
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -30,8 +30,8 @@ import {
 
 function Schedule() {
   const StyledTextField = styled(TextField)`
-    background-color: white; // Define o fundo como branco
-    color: black; // Define a cor do texto como preto
+    background-color: white;
+    color: black;
   `;
 
   const InfoText = styled.div`
@@ -44,7 +44,7 @@ function Schedule() {
   const [scheduledAppointments, setScheduledAppointments] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [noAppointments, setNoAppointments] = useState(false);
-  const navigate = useNavigate(); // Obtenha a instância de useHistory
+  const navigate = useNavigate();
 
   useEffect(() => {
     const currentDate = new Date();
@@ -110,7 +110,7 @@ function Schedule() {
       (appoint) => appoint.time === hour && appoint.status !== 'Cancelado'
     );
 
-    if (hour === 12) {
+    if (hour === '12:00') {
       return <h2>Intervalo para Almoço</h2>;
     }
 
@@ -132,6 +132,7 @@ function Schedule() {
             <strong>Valor:</strong> {formattedPrice}
             <br />
           </p>
+          <StyledChip label={appointment.type.toUpperCase()} type={appointment.type} />
           <StyledChip label={appointment.status.toUpperCase()} status={appointment.status} />
         </>
       );
@@ -141,7 +142,7 @@ function Schedule() {
   };
 
   const handleAddAppointment = () => {
-    navigate('/novo-agendamento'); // Navegue para a rota '/novo-agendamento' quando o ícone de adição for clicado
+    navigate('/novo-agendamento');
   };
 
   const handleEditAppointment = (appointment) => {
@@ -176,8 +177,8 @@ function Schedule() {
                 fullWidth
                 value={selectedDate}
                 inputProps={{
-                  min: new Date().toISOString().split('T')[0], // Data atual
-                  max: new Date(new Date().getTime() + 45 * 24 * 60 * 60 * 1000) // 45 dias à frente
+                  min: new Date().toISOString().split('T')[0],
+                  max: new Date(new Date().getTime() + 45 * 24 * 60 * 60 * 1000)
                     .toISOString()
                     .split('T')[0],
                 }}
@@ -186,70 +187,87 @@ function Schedule() {
             {Object.entries(groupedAppointmentsByDate).map(([date, appointments]) => (
               <Grid item xs={12} key={date}>
                 <Title>{formatWeekdayDateMonthYear(date)}</Title>
-                {availableHours.map((hour) => (
-                  <SchedulingCard elevation={3} key={hour}>
-                    <SchedulingCardContent>
-                      <HourText variant="body1">{hour}</HourText>
-                      <StyledDivider orientation="vertical" flexItem />
-                      <AppointmentContent>
-                        {renderAppointmentOrVago(hour, appointments)}
-                      </AppointmentContent>
-                      <ActionIcons>
-                        {appointments.find(
-                          (appoint) => parseInt(appoint.time.split(':')[0], 10) === hour
-                        ) ? (
-                          <>
-                            {appointments.find(
-                              (appoint) =>
-                                parseInt(appoint.time.split(':')[0], 10) === hour &&
-                                appoint.status !== 'Cancelado'
-                            ) ? (
-                              <>
-                                <EditIcon
+                {availableHours.map((hour, index) => {
+                  const isHour30 = hour.endsWith(':30');
+                  const hasAppointmentForHour30 = appointments.find(
+                    (appoint) =>
+                      parseInt(appoint.time.split(':')[0], 10) ===
+                        parseInt(hour.split(':')[0], 10) &&
+                      parseInt(appoint.time.split(':')[1], 10) === 30
+                  );
+
+                  if (isHour30 && !hasAppointmentForHour30) {
+                    return null; // Não renderiza o card se não houver agendamento para o horário :30
+                  }
+
+                  return (
+                    <SchedulingCard elevation={3} key={hour}>
+                      <SchedulingCardContent>
+                        <HourText variant="body1">{hour}</HourText>
+                        <StyledDivider orientation="vertical" flexItem />
+                        <AppointmentContent>
+                          {renderAppointmentOrVago(hour, appointments)}
+                        </AppointmentContent>
+                        <ActionIcons>
+                          {appointments.find(
+                            (appoint) =>
+                              parseInt(appoint.time.split(':')[0], 10) ===
+                                parseInt(hour.split(':')[0], 10) ||
+                              (parseInt(appoint.time.split(':')[0], 10) ===
+                                parseInt(hour.split(':')[0], 10) - 1 &&
+                                parseInt(appoint.time.split(':')[1], 10) === 30 &&
+                                index % 2 === 1)
+                          ) ? (
+                            <>
+                              {appointments.find(
+                                (appoint) =>
+                                  parseInt(appoint.time.split(':')[0], 10) ===
+                                    parseInt(hour.split(':')[0], 10) &&
+                                  appoint.status !== 'Cancelado'
+                              ) ? (
+                                <>
+                                  <EditIcon
+                                    fontSize="small"
+                                    style={{ cursor: 'pointer', color: 'white' }}
+                                    onClick={() =>
+                                      handleEditAppointment(
+                                        appointments.find(
+                                          (appoint) =>
+                                            parseInt(appoint.time.split(':')[0], 10) ===
+                                            parseInt(hour.split(':')[0], 10)
+                                        )
+                                      )
+                                    }
+                                  />
+                                  <KeyboardArrowRightIcon
+                                    fontSize="small"
+                                    style={{ cursor: 'pointer', color: 'white' }}
+                                    onClick={() =>
+                                      handleEditAppointment(
+                                        hour,
+                                        appointments.find(
+                                          (appoint) =>
+                                            parseInt(appoint.time.split(':')[0], 10) ===
+                                            parseInt(hour.split(':')[0], 10)
+                                        )
+                                      )
+                                    }
+                                  />
+                                </>
+                              ) : (
+                                <AddIcon
                                   fontSize="small"
                                   style={{ cursor: 'pointer', color: 'white' }}
-                                  onClick={() =>
-                                    handleEditAppointment(
-                                      appointments.find(
-                                        (appoint) =>
-                                          parseInt(appoint.time.split(':')[0], 10) === hour
-                                      )
-                                    )
-                                  }
+                                  onClick={() => handleAddAppointment(hour)}
                                 />
-                                <KeyboardArrowRightIcon
-                                  fontSize="small"
-                                  style={{ cursor: 'pointer', color: 'white' }}
-                                  onClick={() =>
-                                    handleEditAppointment(
-                                      hour,
-                                      appointments.find(
-                                        (appoint) =>
-                                          parseInt(appoint.time.split(':')[0], 10) === hour
-                                      )
-                                    )
-                                  }
-                                />
-                              </>
-                            ) : (
-                              <AddIcon
-                                fontSize="small"
-                                style={{ cursor: 'pointer', color: 'white' }}
-                                onClick={() => handleAddAppointment(hour)}
-                              />
-                            )}
-                          </>
-                        ) : (
-                          <AddIcon
-                            fontSize="small"
-                            style={{ cursor: 'pointer', color: 'white' }}
-                            onClick={() => handleAddAppointment(hour)}
-                          />
-                        )}
-                      </ActionIcons>
-                    </SchedulingCardContent>
-                  </SchedulingCard>
-                ))}
+                              )}
+                            </>
+                          ) : null}
+                        </ActionIcons>
+                      </SchedulingCardContent>
+                    </SchedulingCard>
+                  );
+                })}
               </Grid>
             ))}
             {noAppointments && (
