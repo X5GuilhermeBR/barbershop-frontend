@@ -110,7 +110,13 @@ function NewSchedule() {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          const { data } = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
+          let barberId = null;
+          if (userInfo.profile === 'barber') {
+            barberId = selectedBarber;
+          } else {
+            barberId = selectedBarber.user_id;
+          }
+          const { data } = await getSchedule(selectedDate, selectedDate, barberId);
           setSchedule(data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
@@ -119,7 +125,7 @@ function NewSchedule() {
     };
 
     fetchScheduleData();
-  }, [selectedBarber, selectedService, selectedDate]);
+  }, [selectedBarber, selectedService, selectedDate, userInfo.profile]);
 
   useEffect(() => {
     setIsFormValid(
@@ -166,15 +172,16 @@ function NewSchedule() {
           let selectedBarberId = null;
           if (userInfo?.profile === 'barber') {
             selectedBarberId = userInfo.id;
+            setSelectedClient(data.id_user_client); // Usando o userId do cliente do agendamento
           } else {
             selectedBarberId = data.id_user_barber;
+            setSelectedClient(userInfo?.id); // Usando o userId do próprio usuário (cliente)
           }
           const selectedBarberData = barbers.find((barber) => barber.user_id === selectedBarberId);
           setSelectedBarber(selectedBarberData);
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
           setIsEditing(true);
-          setSelectedClient(clients.find((client) => client.user_id === data.id_user_client));
         } catch (error) {
           console.error('Erro ao carregar agendamento:', error);
         }
