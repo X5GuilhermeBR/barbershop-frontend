@@ -184,62 +184,65 @@ function Schedule() {
                 }}
               />
             </Grid>
-            {Object.entries(groupedAppointmentsByDate).map(([date, appointments]) => (
-              <Grid item xs={12} key={date}>
-                <Title>{formatWeekdayDateMonthYear(date)}</Title>
-                {availableHours.map((hour, index) => {
-                  const isHour30 = hour.endsWith(':30');
-                  const hasAppointmentForHour30 = appointments.find(
-                    (appoint) =>
-                      parseInt(appoint.time.split(':')[0], 10) ===
-                        parseInt(hour.split(':')[0], 10) &&
-                      parseInt(appoint.time.split(':')[1], 10) === 30
-                  );
+            {Object.entries(groupedAppointmentsByDate).map(
+              ([date, appointments]) =>
+                selectedDate === date && (
+                  <Grid item xs={12} key={date}>
+                    <Title>{formatWeekdayDateMonthYear(date)}</Title>
+                    {availableHours.map((hour, index) => {
+                      const isHour30 = hour.endsWith(':30');
+                      const hasAppointmentForHour30 = appointments.find(
+                        (appoint) =>
+                          parseInt(appoint.time.split(':')[0], 10) ===
+                            parseInt(hour.split(':')[0], 10) &&
+                          parseInt(appoint.time.split(':')[1], 10) === 30
+                      );
 
-                  if (isHour30 && !hasAppointmentForHour30) {
-                    return null; // Não renderiza o card se não houver agendamento para o horário :30
-                  }
+                      if (isHour30 && !hasAppointmentForHour30) {
+                        return null; // Não renderiza o card se não houver agendamento para o horário :30
+                      }
 
-                  const appointment = appointments.find(
-                    (appoint) => appoint.time === hour && appoint.status !== 'Cancelado'
-                  );
+                      const appointment = appointments.find(
+                        (appoint) => appoint.time === hour && appoint.status !== 'Cancelado'
+                      );
 
-                  return (
-                    <SchedulingCard elevation={3} key={hour}>
-                      <SchedulingCardContent>
-                        <HourText variant="body1">{hour}</HourText>
-                        <StyledDivider orientation="vertical" flexItem />
-                        <AppointmentContent>
-                          {renderAppointmentOrVago(hour, appointments)}
-                        </AppointmentContent>
-                        <ActionIcons>
-                          {appointment ? (
-                            <>
-                              <EditIcon
-                                fontSize="small"
-                                style={{ cursor: 'pointer', color: 'white' }}
-                                onClick={() => handleEditAppointment(appointment)}
-                              />
-                              <KeyboardArrowRightIcon
-                                fontSize="small"
-                                style={{ cursor: 'pointer', color: 'white' }}
-                                onClick={() => handleEditAppointment(appointment)}
-                              />
-                            </>
-                          ) : (
-                            <AddIcon
-                              fontSize="small"
-                              style={{ cursor: 'pointer', color: 'white' }}
-                              onClick={handleAddAppointment}
-                            />
-                          )}
-                        </ActionIcons>
-                      </SchedulingCardContent>
-                    </SchedulingCard>
-                  );
-                })}
-              </Grid>
-            ))}
+                      return (
+                        <SchedulingCard elevation={3} key={hour}>
+                          <SchedulingCardContent>
+                            <HourText variant="body1">{hour}</HourText>
+                            <StyledDivider orientation="vertical" flexItem />
+                            <AppointmentContent>
+                              {renderAppointmentOrVago(hour, appointments)}
+                            </AppointmentContent>
+                            <ActionIcons>
+                              {appointment ? (
+                                <>
+                                  <EditIcon
+                                    fontSize="small"
+                                    style={{ cursor: 'pointer', color: 'white' }}
+                                    onClick={() => handleEditAppointment(appointment)}
+                                  />
+                                  <KeyboardArrowRightIcon
+                                    fontSize="small"
+                                    style={{ cursor: 'pointer', color: 'white' }}
+                                    onClick={() => handleEditAppointment(appointment)}
+                                  />
+                                </>
+                              ) : (
+                                <AddIcon
+                                  fontSize="small"
+                                  style={{ cursor: 'pointer', color: 'white' }}
+                                  onClick={handleAddAppointment}
+                                />
+                              )}
+                            </ActionIcons>
+                          </SchedulingCardContent>
+                        </SchedulingCard>
+                      );
+                    })}
+                  </Grid>
+                )
+            )}
             {noAppointments && (
               <Grid item xs={12}>
                 <Title>{formatWeekdayDateMonthYear(selectedDate)}</Title>
