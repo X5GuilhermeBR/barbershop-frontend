@@ -200,6 +200,10 @@ function Schedule() {
                     return null; // Não renderiza o card se não houver agendamento para o horário :30
                   }
 
+                  const appointment = appointments.find(
+                    (appoint) => appoint.time === hour && appoint.status !== 'Cancelado'
+                  );
+
                   return (
                     <SchedulingCard elevation={3} key={hour}>
                       <SchedulingCardContent>
@@ -209,60 +213,26 @@ function Schedule() {
                           {renderAppointmentOrVago(hour, appointments)}
                         </AppointmentContent>
                         <ActionIcons>
-                          {appointments.find(
-                            (appoint) =>
-                              parseInt(appoint.time.split(':')[0], 10) ===
-                                parseInt(hour.split(':')[0], 10) ||
-                              (parseInt(appoint.time.split(':')[0], 10) ===
-                                parseInt(hour.split(':')[0], 10) - 1 &&
-                                parseInt(appoint.time.split(':')[1], 10) === 30 &&
-                                index % 2 === 1)
-                          ) ? (
+                          {appointment ? (
                             <>
-                              {appointments.find(
-                                (appoint) =>
-                                  parseInt(appoint.time.split(':')[0], 10) ===
-                                    parseInt(hour.split(':')[0], 10) &&
-                                  appoint.status !== 'Cancelado'
-                              ) ? (
-                                <>
-                                  <EditIcon
-                                    fontSize="small"
-                                    style={{ cursor: 'pointer', color: 'white' }}
-                                    onClick={() =>
-                                      handleEditAppointment(
-                                        appointments.find(
-                                          (appoint) =>
-                                            parseInt(appoint.time.split(':')[0], 10) ===
-                                            parseInt(hour.split(':')[0], 10)
-                                        )
-                                      )
-                                    }
-                                  />
-                                  <KeyboardArrowRightIcon
-                                    fontSize="small"
-                                    style={{ cursor: 'pointer', color: 'white' }}
-                                    onClick={() =>
-                                      handleEditAppointment(
-                                        hour,
-                                        appointments.find(
-                                          (appoint) =>
-                                            parseInt(appoint.time.split(':')[0], 10) ===
-                                            parseInt(hour.split(':')[0], 10)
-                                        )
-                                      )
-                                    }
-                                  />
-                                </>
-                              ) : (
-                                <AddIcon
-                                  fontSize="small"
-                                  style={{ cursor: 'pointer', color: 'white' }}
-                                  onClick={() => handleAddAppointment(hour)}
-                                />
-                              )}
+                              <EditIcon
+                                fontSize="small"
+                                style={{ cursor: 'pointer', color: 'white' }}
+                                onClick={() => handleEditAppointment(appointment)}
+                              />
+                              <KeyboardArrowRightIcon
+                                fontSize="small"
+                                style={{ cursor: 'pointer', color: 'white' }}
+                                onClick={() => handleEditAppointment(appointment)}
+                              />
                             </>
-                          ) : null}
+                          ) : (
+                            <AddIcon
+                              fontSize="small"
+                              style={{ cursor: 'pointer', color: 'white' }}
+                              onClick={handleAddAppointment}
+                            />
+                          )}
                         </ActionIcons>
                       </SchedulingCardContent>
                     </SchedulingCard>
@@ -284,8 +254,8 @@ function Schedule() {
                       <ActionIcons>
                         <AddIcon
                           fontSize="small"
-                          style={{ cursor: 'pointer' }}
-                          onClick={() => handleAddAppointment(hour)}
+                          style={{ cursor: 'pointer', color: 'white' }}
+                          onClick={handleAddAppointment}
                         />
                       </ActionIcons>
                     </SchedulingCardContent>
