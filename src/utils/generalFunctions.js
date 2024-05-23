@@ -17,7 +17,7 @@ export const getFutureDate = () => {
   };
 
 const generateAvailableHours = (appointmentType) => {
-  const baseHours = ['9:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+  const baseHours = ['9:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
   if (appointmentType === 'Encaixe') {
     return baseHours.map(hour => `${hour.charAt(0)}:30`);
   }

@@ -74,7 +74,7 @@ function NewSchedule() {
   const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [appointmentType, setAppointmentType] = useState('Marcado'); // Adicionado
+  const [appointmentType, setAppointmentType] = useState('Marcado');
   const navigate = useNavigate();
   const location = useLocation();
   const { userInfo } = useAuth();
@@ -195,7 +195,7 @@ function NewSchedule() {
     const scheduleData = {
       id_user_client: userInfo.profile === 'client' ? userInfo.id : selectedClient.user_id,
       id_user_barber: userInfo.profile === 'barber' ? userInfo.id : selectedBarber.user_id,
-      type: appointmentType, // Alterado
+      type: appointmentType,
       date: selectedDate,
       time: selectedHour,
       id_service: selectedService.id,
@@ -258,27 +258,40 @@ function NewSchedule() {
     setSnackbarOpen(false);
   };
 
+  const pageTitle = isEditing ? 'Editar Atendimento' : 'Novo Atendimento';
+
   return (
     <>
-      <Header icon={<ArticleIcon />} title="Novo Agendamento" />
-      <Grid item style={{ marginBottom: '2rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
+      <Header icon={<ArticleIcon />} title={pageTitle} />
+      <Grid
+        item
+        style={{
+          marginBottom: '2rem',
+          marginTop: '2rem',
+          flex: '1 0 auto',
+          zIndex: 1,
+          paddingBottom: '4rem',
+        }}
+      >
         <Container maxWidth="sm" textAlign="center">
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <FormControl component="fieldset">
-              <FormLabel component="legend">
-                <InfoText>Atendimento: </InfoText>
-              </FormLabel>
-              <RadioGroup
-                row
-                aria-label="appointmentType"
-                name="appointmentType"
-                value={appointmentType}
-                onChange={(e) => setAppointmentType(e.target.value)}
-              >
-                <FormControlLabel value="Marcado" control={<Radio />} label="Marcado" />
-                <FormControlLabel value="Encaixe" control={<Radio />} label="Encaixe" />
-              </RadioGroup>
-            </FormControl>
+            {userInfo?.profile === 'barber' && (
+              <FormControl component="fieldset">
+                <FormLabel component="legend">
+                  <InfoText>Atendimento: </InfoText>
+                </FormLabel>
+                <RadioGroup
+                  row
+                  aria-label="appointmentType"
+                  name="appointmentType"
+                  value={appointmentType}
+                  onChange={(e) => setAppointmentType(e.target.value)}
+                >
+                  <FormControlLabel value="Marcado" control={<Radio />} label="Marcado" />
+                  <FormControlLabel value="Encaixe" control={<Radio />} label="Encaixe" />
+                </RadioGroup>
+              </FormControl>
+            )}
             {userInfo?.profile === 'barber' ? (
               <SelectComponent
                 label="Cliente"
@@ -345,8 +358,9 @@ function NewSchedule() {
               width: '100%',
               marginBottom: '1rem',
               marginTop: '1rem',
-              backgroundColor: isFormValid || isEditing ? colors.third : '#f0f0f0',
+              backgroundColor: isFormValid || isEditing ? colors.second : '#f0f0f0',
               color: 'black',
+              height: '60px',
             }}
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
@@ -357,8 +371,9 @@ function NewSchedule() {
             <Button
               variant="outlined"
               style={{
-                borderColor: colors.third,
-                color: colors.third,
+                borderColor: colors.second,
+                color: colors.second,
+                height: '60px',
               }}
               size="large"
               fullWidth
