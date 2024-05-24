@@ -1,15 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
   Button,
+  Chip,
   CircularProgress,
   Container,
   FormControl,
   FormControlLabel,
   Grid,
   IconButton,
-  InputLabel,
   List,
   ListItem,
   ListItemSecondaryAction,
@@ -20,11 +21,88 @@ import {
   Select,
   Typography,
 } from '@mui/material';
+import CardContent from '@mui/material/CardContent';
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { createSale, getProducts, getScheduleById, updateSchedule } from '../../service/api'; // Importa a função getProducts
+import { createSale, getProducts, getScheduleById, updateSchedule } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(Select)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 20px;
+`;
+
+export const Divider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.basic};
+  margin: 30px 0;
+`;
+
+export const Title = styled.h2`
+  margin-bottom: 20px;
+  text-align: center;
+  color: ${colors.third};
+`;
+
+export const StyledCardContent = styled(CardContent)`
+  && {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: ${colors.primary};
+    color: white;
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: ${colors.third};
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 28px;
+      margin-bottom: 10px;
+    }
+  }
+`;
+
+export const StyledChip = styled(Chip)`
+  && {
+    font-size: 10px;
+    margin-right: 5px;
+    background-color: ${({ type }) => {
+      switch (type) {
+        case 'Marcado':
+          return '#94c7b6';
+        case 'Encaixe':
+          return '#de6262';
+        case 'Finalizado':
+          return colors.third;
+        case 'Cancelado':
+          return colors.third;
+        default:
+          return colors.third;
+      }
+    }};
+    color: ${colors.primary};
+    font-weight: bold;
+    height: 20px;
+
+    span {
+      padding: 3px 6px 0px 6px;
+    }
+  }
+`;
 
 function CustomerService() {
   const [clientName, setClientName] = useState('');
@@ -40,22 +118,21 @@ function CustomerService() {
   const [paymentMethod, setPaymentMethod] = useState('');
   const [serviceCost, setServiceCost] = useState(0);
   const [totalConsumption, setTotalConsumption] = useState(0);
-  const [fakeProducts, setFakeProducts] = useState([]); // State para armazenar os produtos
+  const [fakeProducts, setFakeProducts] = useState([]);
   const navigate = useNavigate();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const scheduleId = params.get('scheduleId');
 
-  // Busca os produtos assim que o componente for montado
   useEffect(() => {
     getProducts()
       .then((response) => {
-        setFakeProducts(response.data); // Define os produtos obtidos na state fakeProducts
+        setFakeProducts(response.data);
       })
       .catch((error) => {
         console.error('Erro ao buscar produtos:', error);
       });
-  }, []); // Esta função só precisa ser chamada uma vez, então passamos um array vazio como dependência
+  }, []);
 
   useEffect(() => {
     if (scheduleId) {
@@ -67,7 +144,7 @@ function CustomerService() {
           setScheduledTime(scheduleData.time);
           setScheduledDate(scheduleData.date);
           setScheduleService(scheduleData.serviceName);
-          setServiceCost(scheduleData.serviceCost); // Definir o custo do serviço
+          setServiceCost(scheduleData.serviceCost);
           setScheduleStatus(scheduleData.status);
         })
         .catch((error) => {
@@ -79,7 +156,6 @@ function CustomerService() {
     }
   }, [location.search, navigate, scheduleId]);
 
-  // Função para adicionar produto ao carrinho
   const handleAddToCart = () => {
     if (selectedProduct && selectedQuantity > 0) {
       const productToAdd = fakeProducts.find((product) => product.id === selectedProduct);
@@ -92,24 +168,22 @@ function CustomerService() {
     }
   };
 
-  // Função para remover produto do carrinho
   const handleRemoveFromCart = (index) => {
     const updatedProducts = [...selectedProducts];
     updatedProducts.splice(index, 1);
     setSelectedProducts(updatedProducts);
   };
 
-  // Função para iniciar o atendimento
   const handleStartService = async () => {
     setIsProcessing(true);
     try {
       const updatedSchedule = await updateSchedule(scheduleId, {
         status: 'Em Andamento',
         started_service: new Date(),
-        payment_method: paymentMethod, // Adiciona a forma de pagamento ao iniciar o serviço
+        payment_method: paymentMethod,
       });
       console.log('Atendimento iniciado:', updatedSchedule);
-      setScheduleStatus('Em Andamento'); // Atualizar o status do botão
+      setScheduleStatus('Em Andamento');
       setIsProcessing(false);
     } catch (error) {
       console.error('Erro ao iniciar o atendimento:', error);
@@ -120,7 +194,6 @@ function CustomerService() {
   const handleFinishService = async () => {
     setIsProcessing(true);
     try {
-      // Atualiza o status do atendimento para 'Finalizado'
       const updatedSchedule = await updateSchedule(scheduleId, {
         status: 'Finalizado',
         finished_service: new Date(),
@@ -128,7 +201,6 @@ function CustomerService() {
       });
       console.log('Atendimento finalizado:', updatedSchedule);
 
-      // Cria as vendas para cada produto no carrinho
       await Promise.all(
         selectedProducts.map(async (item) => {
           try {
@@ -137,8 +209,6 @@ function CustomerService() {
               id_product: item.product.id,
               quantity: item.quantity,
             };
-
-            // Chama o serviço createSales para criar uma venda
             await createSale(saleData);
             console.log('Venda criada para o produto:', item.product.id);
           } catch (error) {
@@ -154,18 +224,14 @@ function CustomerService() {
     }
   };
 
-  // Função para editar o atendimento
   const handleEditService = () => {
-    // Adicione aqui a lógica para redirecionar para a página de edição de atendimento
     navigate(`/editar-atendimento/${scheduleId}`);
   };
 
-  // Função para controlar a mudança na forma de pagamento
   const handlePaymentMethodChange = (event) => {
     setPaymentMethod(event.target.value);
   };
 
-  // Calcular o total do consumo
   useEffect(() => {
     const totalConsum = selectedProducts.reduce(
       (total, item) => total + item.product.price * item.quantity,
@@ -187,26 +253,29 @@ function CustomerService() {
         }}
       >
         <Container maxWidth="sm">
-          <Typography variant="h6" style={{ marginBottom: '1rem' }}>
-            Detalhes do Serviço - Status: {scheduleStatus}
-          </Typography>
-          <Typography variant="body1" style={{ marginBottom: '1rem' }}>
-            Cliente: {clientName}
-          </Typography>
-          <Typography variant="body1" style={{ marginBottom: '1rem' }}>
-            Barbeiro: {barberName}
-          </Typography>
-          <Typography variant="body1" style={{ marginBottom: '1rem' }}>
-            Hora do Corte: {scheduledTime} - Data do Corte: {scheduledDate}
-          </Typography>
-          <Typography variant="body1" style={{ marginBottom: '1rem' }}>
-            Serviço: {scheduleService} - Valor do Serviço: R$ {serviceCost}
-          </Typography>
+          <StyledCardContent>
+            <h2>DETALHES DO SERVIÇO</h2>
+            <StyledChip label={scheduleStatus.toUpperCase()} status={scheduleStatus} />
+            <p>
+              <strong>Cliente:</strong> {clientName}
+              <br />
+              <strong>Barbeiro:</strong> {barberName}
+              <br />
+              <strong>Data:</strong> {scheduledDate}
+              <br />
+              <strong>Hora:</strong> {scheduledTime}
+              <br />
+              <strong>Valor:</strong> R${serviceCost},00
+              <br />
+            </p>
+          </StyledCardContent>
+          <Divider />
+          <Title>Carrinho</Title>
           {scheduleStatus !== 'Agendado' && (
             <>
               <FormControl fullWidth style={{ marginBottom: '1rem' }}>
-                <InputLabel id="product-label">Produto</InputLabel>
-                <Select
+                <InfoText>Produto</InfoText>
+                <StyledTextField
                   labelId="product-label"
                   id="product-select"
                   value={selectedProduct}
@@ -220,11 +289,11 @@ function CustomerService() {
                       {product.name} - R${product.price}
                     </MenuItem>
                   ))}
-                </Select>
+                </StyledTextField>
               </FormControl>
               <FormControl fullWidth style={{ marginBottom: '1rem' }}>
-                <InputLabel id="quantity-label">Quantidade</InputLabel>
-                <Select
+                <InfoText>Quantidade</InfoText>
+                <StyledTextField
                   labelId="quantity-label"
                   id="quantity-select"
                   value={selectedQuantity}
@@ -235,7 +304,7 @@ function CustomerService() {
                       {quantity}
                     </MenuItem>
                   ))}
-                </Select>
+                </StyledTextField>
               </FormControl>
               <Button
                 variant="contained"

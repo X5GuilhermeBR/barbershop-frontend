@@ -81,7 +81,7 @@ export const StyledChip = styled(Chip)`
     height: 20px;
 
     span {
-      padding: 0px 6px 0px 6px;
+      padding: 3px 6px 0px 6px;
       
     }
   }
