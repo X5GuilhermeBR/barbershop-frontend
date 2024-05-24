@@ -54,6 +54,13 @@ export const Divider = styled.div`
   margin: 8px 0;
 `;
 
+export const DividerBlock = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: ${colors.basic};
+  margin: 30px 0;
+`;
+
 export const Box = styled.div`
   margin-bottom: 30px;
 `;
@@ -114,10 +121,6 @@ const SearchButton = styled(Button)`
   }
 `;
 
-const RedText = styled.span`
-  color: red;
-`;
-
 function Financial() {
   const [open, setOpen] = useState(false);
   const [reportData, setReportData] = useState(null);
@@ -143,6 +146,26 @@ function Financial() {
       ['Total Geral', `R$ ${reportData.totalAmount}`],
     ];
 
+    const servicesData = [
+      ['ID Serviço', 'Nome', 'Quantidade', 'Valor Total'],
+      ...reportData.services.map((service) => [
+        service.id_service,
+        service.name,
+        service.count,
+        `R$ ${service.total_value}`,
+      ]),
+    ];
+
+    const productsData = [
+      ['ID Produto', 'Nome', 'Quantidade', 'Valor Total'],
+      ...reportData.products.map((product) => [
+        product.id_product,
+        product.name,
+        product.count,
+        `R$ ${product.total_value}`,
+      ]),
+    ];
+
     const paymentMethodsData = [
       ['Forma de Pagamento', 'Total'],
       ...Object.entries(reportData.paymentTypeTotals).map(([method, total]) => [
@@ -165,6 +188,12 @@ function Financial() {
       [],
       ['Geral'],
       ...generalInfoData,
+      [],
+      ['Serviços'],
+      ...servicesData,
+      [],
+      ['Produtos'],
+      ...productsData,
       [],
       ['Formas de Pagamento'],
       ...paymentMethodsData,
@@ -198,6 +227,34 @@ function Financial() {
         ['Total de Produtos', `R$ ${reportData.totalProductsAmount}`],
         ['Total Geral', `R$ ${reportData.totalAmount}`],
       ],
+      theme: 'striped',
+    });
+
+    doc.text('Serviços', 14, doc.autoTable.previous.finalY + 10);
+
+    doc.autoTable({
+      startY: doc.autoTable.previous.finalY + 15,
+      head: [['ID Serviço', 'Nome', 'Quantidade', 'Valor Total']],
+      body: reportData.services.map((service) => [
+        service.id_service,
+        service.name,
+        service.count,
+        `R$ ${service.total_value}`,
+      ]),
+      theme: 'striped',
+    });
+
+    doc.text('Produtos', 14, doc.autoTable.previous.finalY + 10);
+
+    doc.autoTable({
+      startY: doc.autoTable.previous.finalY + 15,
+      head: [['ID Produto', 'Nome', 'Quantidade', 'Valor Total']],
+      body: reportData.products.map((product) => [
+        product.id_product,
+        product.name,
+        product.count,
+        `R$ ${product.total_value}`,
+      ]),
       theme: 'striped',
     });
 
@@ -261,7 +318,7 @@ function Financial() {
           <SearchButton variant="contained" onClick={fetchReportData} startIcon={<SearchIcon />}>
             BUSCAR RELATÓRIO
           </SearchButton>
-          <Divider />
+          <DividerBlock />
           {reportData && (
             <StyledCard>
               <CardContent>
@@ -297,6 +354,72 @@ function Financial() {
                     Total Geral:<span>R${reportData.totalAmount}</span>
                   </Typography>
                   <Divider />
+                </Box>
+                <Box>
+                  <Subtitle variant="h6" gutterBottom>
+                    Serviços
+                  </Subtitle>
+                  {reportData.services.map((service, index) => (
+                    <div key={index}>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          fontSize: '18px',
+                        }}
+                      >
+                        {`${service.name}: `} <span>{`R$ ${service.total_value}`}</span>
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        style={{
+                          display: 'flex',
+                          marginTop: '-8px',
+                          justifyContent: 'space-between',
+                          fontSize: '14px',
+                        }}
+                      >
+                        {`${service.count}x realizado`}
+                      </Typography>
+                      <Divider />
+                    </div>
+                  ))}
+                </Box>
+                <Box>
+                  <Subtitle variant="h6" gutterBottom>
+                    Produtos
+                  </Subtitle>
+                  {reportData.products.map((product, index) => (
+                    <div key={index}>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          fontSize: '18px',
+                        }}
+                      >
+                        {`${product.name}: `} <span>{`R$ ${product.total_value}`}</span>
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        gutterBottom
+                        style={{
+                          display: 'flex',
+                          marginTop: '-8px',
+                          justifyContent: 'space-between',
+                          fontSize: '14px',
+                        }}
+                      >
+                        {`${product.count} unidades vendidas`}
+                      </Typography>
+                      <Divider />
+                    </div>
+                  ))}
                 </Box>
                 <Box>
                   <Subtitle variant="h6" gutterBottom>
