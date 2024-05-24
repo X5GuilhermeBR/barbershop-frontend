@@ -153,9 +153,9 @@ function ListProducts() {
                     </IconButton>
                     <IconButton onClick={() => handleToggleProductStatus(product.id)}>
                       {product.disable ? (
-                        <LockOpen style={{ color: 'white' }} />
-                      ) : (
                         <Lock style={{ color: 'white' }} />
+                      ) : (
+                        <LockOpen style={{ color: 'white' }} />
                       )}
                     </IconButton>
                   </div>

@@ -156,9 +156,9 @@ function ListServices() {
                     </IconButton>
                     <IconButton onClick={() => handleToggleServiceStatus(service.id)}>
                       {service.disable ? (
-                        <LockOpen style={{ color: 'white' }} />
-                      ) : (
                         <Lock style={{ color: 'white' }} />
+                      ) : (
+                        <LockOpen style={{ color: 'white' }} />
                       )}
                     </IconButton>
                   </div>
