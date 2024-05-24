@@ -127,7 +127,16 @@ function SchedulingCard({ appointment }) {
                 />
               ) : (
                 <>
-                  <Button variant="contained" color="primary" onClick={() => setIsModalOpen(true)}>
+                  <Button
+                    variant="contained"
+                    style={{
+                      color: 'black',
+                      border: 'none',
+                      backgroundColor: colors.second,
+                      marginBottom: '4px',
+                    }}
+                    onClick={() => setIsModalOpen(true)}
+                  >
                     AVALIAR ATENDIMENTO
                   </Button>
                   <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
