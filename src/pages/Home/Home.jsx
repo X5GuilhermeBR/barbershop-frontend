@@ -125,18 +125,17 @@ function HomePage() {
             </CustomButton>
 
             {Array.isArray(schedule) &&
-              schedule.map(
-                (appointment) =>
-                  appointment.status !== 'Cancelado' && (
-                    <>
-                      <Divider />
-                      <LocationContainer>
-                        <LocationTitle>Próximo Atendimento</LocationTitle>
-                      </LocationContainer>
-                      <SchedulingCard key={appointment.id} appointment={appointment} />
-                    </>
-                  )
-              )}
+              schedule
+                .filter((appointment) => appointment.status === 'Agendado')
+                .map((appointment) => (
+                  <>
+                    <Divider />
+                    <LocationContainer>
+                      <LocationTitle>Próximo Atendimento</LocationTitle>
+                    </LocationContainer>
+                    <SchedulingCard key={appointment.id} appointment={appointment} />
+                  </>
+                ))}
             <Divider />
             <LocationContainer>
               <LocationTitle>Principais Serviços</LocationTitle>
