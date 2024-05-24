@@ -1,12 +1,9 @@
-/* eslint-disable radix */
-/* eslint-disable prefer-template */
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-plusplus */
-/* eslint-disable react/jsx-no-useless-fragment */
 /* eslint-disable no-param-reassign */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-nested-ternary */
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import HistoryIcon from '@mui/icons-material/History';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { Container, Grid, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -151,9 +148,33 @@ function Schedule() {
     }
   };
 
+  const handleClientService = (appointment) => {
+    navigate(`/agenda/atendimento-ao-cliente?scheduleId=${appointment.id}`);
+  };
+
+  const isWithinHour = (appointmentTime) => {
+    const now = new Date();
+    const appointmentDateTime = new Date(`${selectedDate}T${appointmentTime}`);
+    const timeDiff = (appointmentDateTime - now) / (1000 * 60 * 60); // diferença em horas
+    return timeDiff <= 1 && timeDiff >= 0;
+  };
+
+  const isMoreThanFourHoursSinceFinalized = (appointmentTime) => {
+    const now = new Date();
+    const appointmentDateTime = new Date(`${selectedDate}T${appointmentTime}`);
+    const timeDiff = (now - appointmentDateTime) / (1000 * 60 * 60); // diferença em horas
+    return timeDiff > 4;
+  };
+
+  const isCurrentHourLaterThanVago = (hour) => {
+    const now = new Date();
+    const vagoTime = new Date(`${selectedDate}T${hour}`);
+    return now > vagoTime;
+  };
+
   return (
     <>
-      <Header icon={<HistoryIcon />} title="Minha agenda" />
+      <Header title="Minha agenda" />
       <Grid
         container
         style={{
@@ -197,7 +218,6 @@ function Schedule() {
                             parseInt(hour.split(':')[0], 10) &&
                           parseInt(appoint.time.split(':')[1], 10) === 30
                       );
-
                       if (isHour30 && !hasAppointmentForHour30) {
                         return null; // Não renderiza o card se não houver agendamento para o horário :30
                       }
@@ -216,24 +236,31 @@ function Schedule() {
                             </AppointmentContent>
                             <ActionIcons>
                               {appointment ? (
-                                <>
-                                  <EditIcon
-                                    fontSize="small"
-                                    style={{ cursor: 'pointer', color: 'white' }}
-                                    onClick={() => handleEditAppointment(appointment)}
-                                  />
-                                  <KeyboardArrowRightIcon
-                                    fontSize="small"
-                                    style={{ cursor: 'pointer', color: 'white' }}
-                                    onClick={() => handleEditAppointment(appointment)}
-                                  />
-                                </>
+                                !isMoreThanFourHoursSinceFinalized(appointment.time) ? (
+                                  <>
+                                    <EditIcon
+                                      fontSize="small"
+                                      style={{ cursor: 'pointer', color: 'white' }}
+                                      onClick={() => handleEditAppointment(appointment)}
+                                    />
+                                    {isWithinHour(appointment.time) &&
+                                      appointment.status !== 'Finalizado' && (
+                                        <KeyboardArrowRightIcon
+                                          fontSize="small"
+                                          style={{ cursor: 'pointer', color: 'white' }}
+                                          onClick={() => handleClientService(appointment)}
+                                        />
+                                      )}
+                                  </>
+                                ) : null
                               ) : (
-                                <AddIcon
-                                  fontSize="small"
-                                  style={{ cursor: 'pointer', color: 'white' }}
-                                  onClick={handleAddAppointment}
-                                />
+                                !isCurrentHourLaterThanVago(hour) && (
+                                  <AddIcon
+                                    fontSize="small"
+                                    style={{ cursor: 'pointer', color: 'white' }}
+                                    onClick={handleAddAppointment}
+                                  />
+                                )
                               )}
                             </ActionIcons>
                           </SchedulingCardContent>
