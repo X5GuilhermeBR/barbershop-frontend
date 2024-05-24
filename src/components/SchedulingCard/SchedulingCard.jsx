@@ -1,14 +1,25 @@
-/* eslint-disable no-nested-ternary */
-/* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-unused-vars */
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
+import {
+  Alert,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Rating,
+  Snackbar,
+  Tooltip,
+} from '@mui/material';
+import { useState } from 'react';
 
-import { Alert, IconButton, Snackbar, Tooltip } from '@mui/material';
-import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateSchedule } from '../../service/api';
+import colors from '../../utils/colors';
 import {
   StyledCard,
   StyledCardActions,
@@ -24,7 +35,9 @@ function SchedulingCard({ appointment }) {
   const [isRatingSelected, setIsRatingSelected] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
-  const [snackbarSeverity, setSnackbarSeverity] = useState('success'); // 'success' or 'error'
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [tempRating, setTempRating] = useState(null); // Temporarily store the rating
 
   const handleEditAppointment = (appoin) => {
     if (appointment.status === 'Agendado') {
@@ -33,18 +46,20 @@ function SchedulingCard({ appointment }) {
   };
 
   const handleRatingChange = (event, newValue) => {
-    setUserRating(newValue);
-    setIsRatingSelected(true); // Habilitar o botão de avaliação quando o usuário selecionar uma quantidade de estrelas
+    setTempRating(newValue); // Store the rating temporarily
+    setIsRatingSelected(true);
   };
 
   const handleSaveRating = async () => {
     if (appointment.status === 'Finalizado') {
       try {
-        await updateSchedule(appointment.id, { rating: userRating });
+        setUserRating(tempRating); // Save the rating locally
+        await updateSchedule(appointment.id, { rating: tempRating }); // Update the rating in the database
         setSnackbarMessage('Avaliação salva com sucesso!');
         setSnackbarSeverity('success');
         setSnackbarOpen(true);
         setIsRatingEditable(false);
+        setIsModalOpen(false);
       } catch (error) {
         console.error('Erro ao salvar avaliação:', error);
         setSnackbarMessage('Erro ao salvar avaliação. Tente novamente mais tarde.');
@@ -53,20 +68,6 @@ function SchedulingCard({ appointment }) {
       }
     } else {
       setSnackbarMessage("Você só pode avaliar agendamentos com status 'Finalizado'");
-      setSnackbarSeverity('error');
-      setSnackbarOpen(true);
-    }
-  };
-
-  const handleCancelAppointment = async () => {
-    try {
-      await updateSchedule(appointment.id, { status: 'Cancelado' });
-      setSnackbarMessage('Agendamento cancelado com sucesso!');
-      setSnackbarSeverity('success');
-      setSnackbarOpen(true);
-    } catch (error) {
-      console.error('Erro ao cancelar agendamento:', error);
-      setSnackbarMessage('Erro ao cancelar agendamento. Tente novamente mais tarde.');
       setSnackbarSeverity('error');
       setSnackbarOpen(true);
     }
@@ -116,10 +117,48 @@ function SchedulingCard({ appointment }) {
                 </Tooltip>
               </>
             ) : appointment.status === 'Finalizado' ? (
-              <p style={{ cursor: 'pointer', color: 'white' }}>AVALIAR ATENDIMENTO</p>
+              userRating !== null ? (
+                <Rating
+                  name="half-rating-read"
+                  value={userRating}
+                  readOnly
+                  style={{ color: colors.second }}
+                  precision={0.5}
+                />
+              ) : (
+                <>
+                  <Button variant="contained" color="primary" onClick={() => setIsModalOpen(true)}>
+                    AVALIAR ATENDIMENTO
+                  </Button>
+                  <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <DialogTitle>Avaliar Atendimento</DialogTitle>
+                    <DialogContent>
+                      <p>Por favor, avalie o atendimento com as estrelas abaixo:</p>
+                      <Rating
+                        name="half-rating"
+                        value={tempRating}
+                        onChange={handleRatingChange}
+                        style={{ color: colors.second }}
+                        precision={0.5}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={() => setIsModalOpen(false)} color="primary">
+                        Cancelar
+                      </Button>
+                      <Button
+                        onClick={handleSaveRating}
+                        color="primary"
+                        disabled={!isRatingSelected}
+                      >
+                        Salvar Avaliação
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </>
+              )
             ) : null}
           </div>
-
           <p style={{ color: 'green' }}>R${appointment.service_price},00 </p>
         </StyledCardActions>
       </StyledCard>

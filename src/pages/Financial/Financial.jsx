@@ -85,8 +85,26 @@ const StyledCard = styled(Card)`
 
 const ExportButton = styled(Button)`
   && {
-    width: 100%; /* Definindo o botão para ocupar toda a largura */
-    background-color: ${colors.red}; /* Alterando a cor do botão para vermelho */
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: black;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    margin-top: 20px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4rem;
   }
 `;
 
@@ -498,7 +516,7 @@ function Financial() {
             </StyledCard>
           )}
           <ExportButton variant="contained" color="primary" onClick={() => setOpen(true)}>
-            Exportar Dados
+            EXPORTAR DADOS{' '}
           </ExportButton>
         </Grid>
       </Grid>
