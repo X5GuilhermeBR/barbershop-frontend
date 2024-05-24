@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable react/prop-types */
 import { CheckCircleOutline, Visibility, VisibilityOff } from '@mui/icons-material';
 import { Tooltip } from '@mui/material';
@@ -32,23 +33,29 @@ function WalletCard({ schedule }) {
   };
 
   useEffect(() => {
-    const currentBalanceAmount = schedule.reduce((accumulator, appointment) => {
+    let currentBalanceAmount = 0;
+    let completedCount = 0;
+
+    // Calcular o saldo atual e o número de atendimentos finalizados
+    schedule.forEach((appointment) => {
       if (appointment.status === 'Finalizado') {
+        currentBalanceAmount += parseFloat(appointment.amount);
+        completedCount++;
+      }
+    });
+
+    setCurrentBalance(currentBalanceAmount);
+
+    // Calcular o saldo previsto
+    const predictedBalanceAmount = schedule.reduce((accumulator, appointment) => {
+      if (appointment.status !== 'Cancelado') {
         return accumulator + parseFloat(appointment.service_price);
       }
       return accumulator;
     }, 0);
-    setCurrentBalance(currentBalanceAmount);
-
-    const predictedBalanceAmount = schedule.reduce(
-      (accumulator, appointment) => accumulator + parseFloat(appointment.service_price),
-      0
-    );
     setPredictedBalance(predictedBalanceAmount);
 
-    const completedCount = schedule.filter(
-      (appointment) => appointment.status === 'Finalizado'
-    ).length;
+    // Definir o número de atendimentos finalizados
     setCompletedAppointments(completedCount);
   }, [schedule]);
 
@@ -78,7 +85,10 @@ function WalletCard({ schedule }) {
     renderHiddenValue()
   );
 
-  const progressPercentage = (currentBalance / predictedBalance) * 100 || 0;
+  const progressPercentage =
+    (`${schedule.filter((appointment) => appointment.status === 'Finalizado').length}` /
+      `${schedule.filter((appointment) => appointment.status !== 'Finalizado').length}`) *
+      100 || 0;
 
   return (
     <WalletCardContainer>
@@ -104,7 +114,7 @@ function WalletCard({ schedule }) {
           <StyledLinearTitle>
             <p>ATENDIMENTO(S) FINALIZADO(S)</p>
             <div>
-              <p>{`${completedAppointments}/${schedule.length}`}</p>
+              <p>{`${completedAppointments}/${schedule.filter((appointment) => appointment.status !== 'Finalizado').length}`}</p>
               <CheckCircleOutline sx={{ color: 'green', fontSize: '18px' }} />
             </div>
           </StyledLinearTitle>

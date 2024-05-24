@@ -52,13 +52,12 @@ function HomePage() {
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0];
         const { data } = await checkScheduleById(formattedDate, '', userInfo.id);
-        const sortedSchedule = data
-          .filter(
-            (appointment) =>
-              appointment.status !== 'Cancelado' && appointment.status !== 'Finalizado'
-          ) // Filtra "Cancelado" e "Finalizado"
-          .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        // Remover a filtragem por status 'Cancelado' e 'Finalizado'
+        const sortedSchedule = data.sort((a, b) => new Date(a.date) - new Date(b.date));
         setSchedule(sortedSchedule);
+
+        // Verificar se há agendamento hoje (incluindo cancelados e finalizados)
         const hasAppointmentToday = sortedSchedule.some((appointment) => {
           const appointmentDate = new Date(appointment.date);
           return (
