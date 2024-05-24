@@ -99,6 +99,7 @@ function EditPassword() {
               backgroundColor: colors.second,
               color: 'black',
               height: '60px',
+              fontWeight: 'bold',
             }}
             onClick={handleUpdatePassword}
           >

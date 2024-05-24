@@ -133,10 +133,9 @@ function EditProfile() {
             />
           </div>
           <Button
+            ExportButton
             variant="contained"
             color="primary"
-            size="large"
-            fullWidth
             onClick={handleUpdateProfile}
             disabled={buttonDisabled || loading}
             style={{
@@ -146,6 +145,7 @@ function EditProfile() {
               backgroundColor: colors.second,
               color: 'black',
               height: '60px',
+              fontWeight: 'bold',
             }}
           >
             Atualizar

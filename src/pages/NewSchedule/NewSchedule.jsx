@@ -368,6 +368,7 @@ function NewSchedule() {
               backgroundColor: isFormValid || isEditing ? colors.second : '#f0f0f0',
               color: 'black',
               height: '60px',
+              fontWeight: 'bold',
             }}
             onClick={handleSubmit}
             disabled={!isFormValid || isSubmitting}
