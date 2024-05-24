@@ -311,45 +311,50 @@ function CustomerService() {
                 color="primary"
                 onClick={handleAddToCart}
                 fullWidth
-                style={{ marginBottom: '1rem' }}
+                style={{
+                  marginBottom: '1rem',
+                  height: '60px',
+                  backgroundColor: colors.second,
+                  color: 'black',
+                }}
               >
                 Adicionar ao Carrinho
               </Button>
             </>
           )}
-          <Typography variant="h6" style={{ marginBottom: '1rem' }}>
-            Carrinho:
-          </Typography>
-          {selectedProducts.length > 0 ? (
-            <List>
-              {selectedProducts.map((item, index) => (
-                <ListItem key={index}>
-                  <ListItemText
-                    primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
-                  />
-                  <ListItemSecondaryAction>
-                    <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      onClick={() => handleRemoveFromCart(index)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>
-              ))}
+          <StyledCardContent>
+            <h2>CARRINHO</h2>
+            {selectedProducts.length > 0 ? (
+              <List>
+                {selectedProducts.map((item, index) => (
+                  <ListItem key={index}>
+                    <ListItemText
+                      primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => handleRemoveFromCart(index)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+                <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
+                  Valor do Consumo: R$ {totalConsumption}
+                </Typography>
+                <Typography variant="subtitle1">
+                  Total: R$ {serviceCost + totalConsumption}
+                </Typography>
+              </List>
+            ) : (
               <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
-                Valor do Consumo: R$ {totalConsumption}
+                Carrinho vazio
               </Typography>
-              <Typography variant="subtitle1">
-                Total: R$ {serviceCost + totalConsumption}
-              </Typography>
-            </List>
-          ) : (
-            <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
-              Carrinho vazio
-            </Typography>
-          )}
+            )}
+          </StyledCardContent>
           <Divider />
           <Title>Pagamento</Title>
           {scheduleStatus !== 'Agendado' && (
