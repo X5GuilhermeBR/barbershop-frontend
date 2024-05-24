@@ -350,25 +350,22 @@ function CustomerService() {
               Carrinho vazio
             </Typography>
           )}
+          <Divider />
+          <Title>Pagamento</Title>
           {scheduleStatus !== 'Agendado' && (
-            <>
-              <Typography variant="h6" style={{ marginTop: '1rem' }}>
-                Forma de Pagamento:
-              </Typography>
-              <FormControl component="fieldset" style={{ marginBottom: '1rem' }}>
-                <RadioGroup
-                  aria-label="forma-pagamento"
-                  name="forma-pagamento"
-                  value={paymentMethod}
-                  onChange={handlePaymentMethodChange}
-                >
-                  <FormControlLabel value="PIX" control={<Radio />} label="PIX" />
-                  <FormControlLabel value="Dinheiro" control={<Radio />} label="Dinheiro" />
-                  <FormControlLabel value="Débito" control={<Radio />} label="Débito" />
-                  <FormControlLabel value="Crédito" control={<Radio />} label="Crédito" />
-                </RadioGroup>
-              </FormControl>
-            </>
+            <FormControl component="fieldset" style={{ marginBottom: '0rem', marginTop: '-1rem' }}>
+              <RadioGroup
+                aria-label="forma-pagamento"
+                name="forma-pagamento"
+                value={paymentMethod}
+                onChange={handlePaymentMethodChange}
+              >
+                <FormControlLabel value="PIX" control={<Radio />} label="PIX" />
+                <FormControlLabel value="Dinheiro" control={<Radio />} label="Dinheiro" />
+                <FormControlLabel value="Débito" control={<Radio />} label="Débito" />
+                <FormControlLabel value="Crédito" control={<Radio />} label="Crédito" />
+              </RadioGroup>
+            </FormControl>
           )}
           {isProcessing ? (
             <Button disabled fullWidth style={{ marginTop: '1rem' }}>
