@@ -79,7 +79,12 @@ function Schedule() {
     const date = new Date(dateString);
     date.setDate(date.getDate() + 1);
     const dayOfWeek = daysOfWeek[date.getDay()];
-    return `Atendimentos Previstos para ${dayOfWeek}`;
+    return (
+      <>
+        Atendimentos Previstos <br />
+        para {dayOfWeek}
+      </>
+    );
   };
 
   const generateAvailableHoursArray = () => {
@@ -155,8 +160,15 @@ function Schedule() {
   const isWithinHour = (appointmentTime) => {
     const now = new Date();
     const appointmentDateTime = new Date(`${selectedDate}T${appointmentTime}`);
-    const timeDiff = (appointmentDateTime - now) / (1000 * 60 * 60); // diferença em horas
-    return timeDiff <= 1 && timeDiff >= 0;
+
+    // Calcula a diferença em milissegundos
+    const timeDiffMilliseconds = appointmentDateTime - now;
+
+    // Converte a diferença para horas
+    const timeDiffHours = timeDiffMilliseconds / (1000 * 60 * 60);
+
+    // Verifica se a diferença está entre -1 (1 hora antes) e 1.5 (1 hora e meia depois)
+    return timeDiffHours >= -1 && timeDiffHours <= 1.5;
   };
 
   const isMoreThanFourHoursSinceFinalized = (appointmentTime) => {
@@ -170,6 +182,13 @@ function Schedule() {
     const now = new Date();
     const vagoTime = new Date(`${selectedDate}T${hour}`);
     return now > vagoTime;
+  };
+
+  const isWithinStartWindow = (appointmentTime) => {
+    const now = new Date();
+    const appointmentDateTime = new Date(`${selectedDate}T${appointmentTime}`);
+    const endOfWindow = new Date(appointmentDateTime.getTime() + 90 * 60 * 1000); // 1 hora e 30 minutos depois do horário final
+    return now <= endOfWindow;
   };
 
   return (
