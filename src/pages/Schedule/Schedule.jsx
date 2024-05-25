@@ -148,9 +148,7 @@ function Schedule() {
   };
 
   const handleEditAppointment = (appointment) => {
-    if (appointment.status === 'Agendado') {
-      navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
-    }
+    navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
   };
 
   const handleClientService = (appointment) => {

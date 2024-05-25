@@ -110,13 +110,7 @@ function NewSchedule() {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          let barberId = null;
-          if (userInfo.profile === 'barber') {
-            barberId = selectedBarber;
-          } else {
-            barberId = selectedBarber.user_id;
-          }
-          const { data } = await getSchedule(selectedDate, selectedDate, barberId);
+          const { data } = await getSchedule(selectedDate, selectedDate, userInfo.id);
           setSchedule(data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
