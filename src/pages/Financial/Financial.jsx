@@ -388,7 +388,12 @@ function Financial() {
                           fontSize: '18px',
                         }}
                       >
-                        {`${service.name}: `} <span>{`R$ ${service.total_value}`}</span>
+                        {`${service.name}: `}{' '}
+                        <span
+                          style={{
+                            width: '62px',
+                          }}
+                        >{`R$ ${service.total_value}`}</span>
                       </Typography>
                       <Typography
                         variant="body1"
@@ -421,7 +426,12 @@ function Financial() {
                           fontSize: '18px',
                         }}
                       >
-                        {`${product.name}: `} <span>{`R$ ${product.total_value}`}</span>
+                        {`${product.name}: `}{' '}
+                        <span
+                          style={{
+                            width: '62px',
+                          }}
+                        >{`R$ ${product.total_value}`}</span>
                       </Typography>
                       <Typography
                         variant="body1"

@@ -4,7 +4,7 @@ import ContentCutIcon from '@mui/icons-material/ContentCut';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import { Alert, AlertTitle, Container, Grid } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importando useNavigate
+import { useNavigate } from 'react-router-dom';
 import BarberCard from '../../components/BarberCard/BarberCard';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -53,19 +53,17 @@ function HomePage() {
         const formattedDate = today.toISOString().split('T')[0];
         const { data } = await checkScheduleById(formattedDate, '', userInfo.id);
 
-        // Remover a filtragem por status 'Cancelado' e 'Finalizado'
+        // Ordenar agendamentos por data
         const sortedSchedule = data.sort((a, b) => new Date(a.date) - new Date(b.date));
-        setSchedule(sortedSchedule);
 
-        // Verificar se há agendamento hoje (incluindo cancelados e finalizados)
-        const hasAppointmentToday = sortedSchedule.some((appointment) => {
+        // Filtrar apenas o agendamento mais próximo à data atual
+        const nearestAppointment = sortedSchedule.find((appointment) => {
           const appointmentDate = new Date(appointment.date);
-          return (
-            appointmentDate.toISOString().split('T')[0] === formattedDate &&
-            appointment.status === 'Agendado'
-          );
+          return appointmentDate.toISOString().split('T')[0] >= formattedDate;
         });
-        setHasScheduledAppointment(hasAppointmentToday);
+
+        setSchedule(nearestAppointment ? [nearestAppointment] : []);
+        setHasScheduledAppointment(!!nearestAppointment);
       }
     }
 
@@ -88,11 +86,11 @@ function HomePage() {
   };
 
   const handleAgendarClick = () => {
-    navigate('/novo-agendamento'); // Redirecionar para a rota '/agendar' ao clicar no botão
+    navigate('/novo-agendamento');
   };
 
   const handleSchecule = () => {
-    navigate('/agenda'); // Redirecionar para a rota '/agendar' ao clicar no botão
+    navigate('/agenda');
   };
 
   return (
@@ -111,7 +109,7 @@ function HomePage() {
               variant="contained"
               backgroundColor={colors.secundary}
               startIcon={<AddIcon />}
-              onClick={handleAgendarClick} // Adicionando o evento onClick
+              onClick={handleAgendarClick}
             >
               QUERO MARCAR UM HORÁRIO
             </CustomButton>
@@ -125,20 +123,20 @@ function HomePage() {
             </CustomButton>
 
             {Array.isArray(schedule) &&
-              schedule
-                .filter((appointment) => appointment.status === 'Agendado')
-                .map((appointment) => (
-                  <>
-                    <Divider />
-                    <LocationContainer>
-                      <LocationTitle>Próximo Atendimento</LocationTitle>
-                    </LocationContainer>
-                    <SchedulingCard key={appointment.id} appointment={appointment} />
-                  </>
-                ))}
+              schedule.map((appointment) => (
+                <React.Fragment key={appointment.id}>
+                  <Divider />
+                  <LocationContainer>
+                    <LocationTitle>Próximo Atendimento</LocationTitle>
+                  </LocationContainer>
+                  <SchedulingCard appointment={appointment} />
+                </React.Fragment>
+              ))}
+
             <Divider />
             <LocationContainer>
               <LocationTitle>Principais Serviços</LocationTitle>
+
               <ServiceCardContainer>
                 <ServiceCard>
                   <ServiceImage src="https://i.postimg.cc/nLqDWhrY/cabelo.jpg" alt="Cabelo" />

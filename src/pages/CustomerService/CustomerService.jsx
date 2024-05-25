@@ -127,6 +127,15 @@ export const StyledChip = styled(Chip)`
   }
 `;
 
+const styles = {
+  radio: {
+    color: 'white',
+    '&.Mui-checked': {
+      color: 'white',
+    },
+  },
+};
+
 function CustomerService() {
   const [clientName, setClientName] = useState('');
   const [barberName, setBarberName] = useState('');
@@ -241,6 +250,7 @@ function CustomerService() {
       );
 
       setIsProcessing(false);
+      setTimeout(() => navigate('/agenda'), 1000);
     } catch (error) {
       console.error('Erro ao finalizar o atendimento:', error);
       setIsProcessing(false);
@@ -284,6 +294,8 @@ function CustomerService() {
               <br />
               <strong>Barbeiro:</strong> {barberName}
               <br />
+              <strong>Serviço:</strong> {scheduleService}
+              <br />
               <strong>Data:</strong> {scheduledDate}
               <br />
               <strong>Hora:</strong> {scheduledTime}
@@ -292,10 +304,12 @@ function CustomerService() {
               <br />
             </p>
           </StyledCardContent>
-          <Divider />
-          <Title>Carrinho</Title>
+
           {scheduleStatus !== 'Agendado' && (
             <>
+              <Divider />
+              <Title>Carrinho</Title>
+
               <FormControl fullWidth style={{ marginBottom: '1rem' }}>
                 <InfoText>Produto</InfoText>
                 <StyledTextField
@@ -323,8 +337,8 @@ function CustomerService() {
                   onChange={(e) => setSelectedQuantity(e.target.value)}
                 >
                   {[...Array(5).keys()].map((quantity) => (
-                    <MenuItem key={quantity} value={quantity}>
-                      {quantity}
+                    <MenuItem key={quantity + 1} value={quantity + 1}>
+                      {quantity + 1}
                     </MenuItem>
                   ))}
                 </StyledTextField>
@@ -337,63 +351,90 @@ function CustomerService() {
                 style={{
                   marginBottom: '1rem',
                   height: '60px',
-                  backgroundColor: colors.second,
-                  color: 'black',
+                  borderColor: colors.second,
+                  borderWidth: '1px', // Adding borderWidth
+                  marginTop: '1rem',
+                  borderStyle: 'solid',
+                  backgroundColor: 'transparent',
+                  color: colors.second,
                 }}
               >
                 Adicionar ao Carrinho
               </Button>
-            </>
-          )}
-          <StyledCardContent>
-            <h2>CARRINHO</h2>
-            {selectedProducts.length > 0 ? (
-              <List>
-                {selectedProducts.map((item, index) => (
-                  <StyledListItem key={index}>
-                    <ListItemText
-                      primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
+
+              <StyledCardContent>
+                <h2>CARRINHO</h2>
+                {selectedProducts.length > 0 ? (
+                  <List>
+                    {selectedProducts.map((item, index) => (
+                      <StyledListItem key={index}>
+                        <ListItemText
+                          primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            aria-label="delete"
+                            onClick={() => handleRemoveFromCart(index)}
+                          >
+                            <DeleteIcon style={{ color: 'white' }} />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </StyledListItem>
+                    ))}
+                    <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
+                      Valor do Consumo: R${totalConsumption},00
+                    </Typography>
+                    <Typography variant="subtitle1">
+                      Total: R${Number(serviceCost) + Number(totalConsumption)},00
+                    </Typography>
+                  </List>
+                ) : (
+                  <Typography
+                    variant="subtitle1"
+                    style={{ marginTop: '1rem', textAlign: 'center', fontSize: '14px' }}
+                  >
+                    NENHUM PRODUTO ADICIONADO
+                  </Typography>
+                )}
+              </StyledCardContent>
+              <Divider />
+              <Title>Pagamento</Title>
+              {scheduleStatus !== 'Agendado' && (
+                <FormControl
+                  component="fieldset"
+                  style={{ marginBottom: '0rem', marginTop: '-1rem' }}
+                >
+                  <RadioGroup
+                    aria-label="forma-pagamento"
+                    name="forma-pagamento"
+                    value={paymentMethod}
+                    onChange={handlePaymentMethodChange}
+                  >
+                    <FormControlLabel
+                      value="PIX"
+                      control={<Radio sx={styles.radio} />}
+                      label="PIX"
                     />
-                    <ListItemSecondaryAction>
-                      <IconButton
-                        edge="end"
-                        aria-label="delete"
-                        onClick={() => handleRemoveFromCart(index)}
-                      >
-                        <DeleteIcon style={{ color: 'white' }} />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </StyledListItem>
-                ))}
-                <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
-                  Valor do Consumo: R$ {totalConsumption}
-                </Typography>
-                <Typography variant="subtitle1">
-                  Total: R$ {serviceCost + totalConsumption}
-                </Typography>
-              </List>
-            ) : (
-              <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
-                Carrinho vazio
-              </Typography>
-            )}
-          </StyledCardContent>
-          <Divider />
-          <Title>Pagamento</Title>
-          {scheduleStatus !== 'Agendado' && (
-            <FormControl component="fieldset" style={{ marginBottom: '0rem', marginTop: '-1rem' }}>
-              <RadioGroup
-                aria-label="forma-pagamento"
-                name="forma-pagamento"
-                value={paymentMethod}
-                onChange={handlePaymentMethodChange}
-              >
-                <FormControlLabel value="PIX" control={<Radio />} label="PIX" />
-                <FormControlLabel value="Dinheiro" control={<Radio />} label="Dinheiro" />
-                <FormControlLabel value="Débito" control={<Radio />} label="Débito" />
-                <FormControlLabel value="Crédito" control={<Radio />} label="Crédito" />
-              </RadioGroup>
-            </FormControl>
+                    <FormControlLabel
+                      value="Dinheiro"
+                      control={<Radio sx={styles.radio} />}
+                      label="Dinheiro"
+                    />
+                    <FormControlLabel
+                      value="Débito"
+                      control={<Radio sx={styles.radio} />}
+                      label="Débito"
+                    />
+                    <FormControlLabel
+                      value="Crédito"
+                      control={<Radio sx={styles.radio} />}
+                      label="Crédito"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              )}
+            </>
           )}
           {isProcessing ? (
             <Button disabled fullWidth style={{ marginTop: '1rem' }}>
@@ -402,10 +443,16 @@ function CustomerService() {
           ) : scheduleStatus === 'Em Andamento' ? (
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               onClick={handleFinishService}
               fullWidth
-              style={{ marginTop: '1rem' }}
+              style={{
+                marginBottom: '1rem',
+                height: '60px',
+                backgroundColor: colors.second,
+                color: 'black',
+                marginTop: '1rem',
+              }}
             >
               Finalizar Atendimento
             </Button>
@@ -415,7 +462,13 @@ function CustomerService() {
               color="primary"
               onClick={handleEditService}
               fullWidth
-              style={{ marginTop: '1rem' }}
+              style={{
+                marginTop: '1rem',
+                marginBottom: '1rem',
+                height: '60px',
+                backgroundColor: colors.second,
+                color: 'black',
+              }}
             >
               Editar Atendimento
             </Button>
@@ -425,7 +478,13 @@ function CustomerService() {
               color="primary"
               onClick={handleStartService}
               fullWidth
-              style={{ marginTop: '1rem' }}
+              style={{
+                marginTop: '1rem',
+                marginBottom: '1rem',
+                height: '60px',
+                backgroundColor: colors.second,
+                color: 'black',
+              }}
             >
               Iniciar Atendimento
             </Button>
