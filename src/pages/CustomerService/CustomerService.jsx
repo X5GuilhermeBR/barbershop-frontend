@@ -76,6 +76,29 @@ export const StyledCardContent = styled(CardContent)`
   }
 `;
 
+export const StyledListItem = styled(ListItem)`
+  && {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: ${colors.basic};
+    color: white;
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: ${colors.third};
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 28px;
+      margin-bottom: 10px;
+    }
+  }
+`;
+
 export const StyledChip = styled(Chip)`
   && {
     font-size: 10px;
@@ -327,7 +350,7 @@ function CustomerService() {
             {selectedProducts.length > 0 ? (
               <List>
                 {selectedProducts.map((item, index) => (
-                  <ListItem key={index}>
+                  <StyledListItem key={index}>
                     <ListItemText
                       primary={`${item.product.name} - R$${item.product.price} x ${item.quantity}`}
                     />
@@ -337,10 +360,10 @@ function CustomerService() {
                         aria-label="delete"
                         onClick={() => handleRemoveFromCart(index)}
                       >
-                        <DeleteIcon />
+                        <DeleteIcon style={{ color: 'white' }} />
                       </IconButton>
                     </ListItemSecondaryAction>
-                  </ListItem>
+                  </StyledListItem>
                 ))}
                 <Typography variant="subtitle1" style={{ marginTop: '1rem' }}>
                   Valor do Consumo: R$ {totalConsumption}
