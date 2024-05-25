@@ -164,15 +164,19 @@ function NewSchedule() {
           setSelectedDate(data.date);
           setSelectedHour(data.time);
           let selectedBarberId = null;
+          let initialClient = '';
           if (userInfo?.profile === 'barber') {
             selectedBarberId = userInfo.id;
-            setSelectedClient(data.id_user_client); // Usando o userId do cliente do agendamento
+            initialClient = data.id_user_client; // Usando o userId do cliente do agendamento
           } else {
             selectedBarberId = data.id_user_barber;
-            setSelectedClient(userInfo?.id); // Usando o userId do próprio usuário (cliente)
+            initialClient = userInfo?.id; // Usando o userId do próprio usuário (cliente)
           }
+          setSelectedClient(initialClient);
           const selectedBarberData = barbers.find((barber) => barber.user_id === selectedBarberId);
           setSelectedBarber(selectedBarberData);
+          const selectedClientData = clients.find((client) => client.user_id === initialClient);
+          setSelectedClient(selectedClientData);
           const selectedServiceData = services.find((service) => service.id === data.id_service);
           setSelectedService(selectedServiceData);
           setIsEditing(true);
