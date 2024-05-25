@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable react/prop-types */
 import ContentCutIcon from '@mui/icons-material/ContentCut';
 import StarIcon from '@mui/icons-material/Star';
@@ -16,8 +17,68 @@ import {
   ReviewItem,
 } from './BarberCardStyled';
 
+const getRandomName = () => {
+  const names = [
+    'Luke Skywalker',
+    'Darth Vader',
+    'Indiana Jones',
+    'James Bond',
+    'Forrest Gump',
+    'Rocky Balboa',
+    'Tony Montana',
+    'Vito Corleone',
+    'Michael Corleone',
+    'Ellen Ripley',
+    'Harry Potter',
+    'Hermione Granger',
+    'Ron Weasley',
+    'Frodo Baggins',
+    'Gollum',
+    'Dorothy Gale',
+    'The Terminator',
+    'Marty McFly',
+    'The Joker',
+    'Batman',
+    'Superman',
+    'Spider-Man',
+    'Wolverine',
+    'Hannibal Lecter',
+    'Jack Sparrow',
+    'Neo',
+    'Trinity',
+    'Morpheus',
+    "Scarlett O'Hara",
+    'Rhett Butler',
+    'Norman Bates',
+    'Mary Poppins',
+    'Mulan',
+    'Simba',
+    'Buzz Lightyear',
+    'Woody',
+    'Yoda',
+    'Gandalf',
+    'Legolas',
+    'Aragorn',
+    'Princess Leia',
+    'Han Solo',
+    'Chewbacca',
+    'R2-D2',
+    'C-3PO',
+    'E.T.',
+    'Atticus Finch',
+    'Clarice Starling',
+    'Don Vito Corleone',
+    'Blondie',
+    'The Dude',
+    'Tyler Durden',
+  ];
+
+  return names[Math.floor(Math.random() * names.length)];
+};
+
 function BarberCard({ profile }) {
   const [barberData, setBarberData] = useState(null);
+  const [reviewsWithRandomNames, setReviewsWithRandomNames] = useState([]);
 
   useEffect(() => {
     const fetchBarberRating = async () => {
@@ -25,6 +86,14 @@ function BarberCard({ profile }) {
         if (profile && profile.id) {
           const response = await getRatingByBarber(profile.id);
           setBarberData(response || {});
+
+          if (response?.last_appointments) {
+            const reviewsWithNames = response.last_appointments.map((review) => ({
+              ...review,
+              randomName: getRandomName(),
+            }));
+            setReviewsWithRandomNames(reviewsWithNames);
+          }
         }
       } catch (error) {
         console.error('Error fetching barber rating:', error);
@@ -32,7 +101,7 @@ function BarberCard({ profile }) {
     };
 
     fetchBarberRating();
-  }, []);
+  }, [profile]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -67,27 +136,25 @@ function BarberCard({ profile }) {
       </BarberInfoContainer>
       <LatestReviewsContainer>
         <h2>ÚLTIMAS AVALIAÇÕES</h2>
-        {barberData &&
-          (barberData?.last_appointments?.length > 0 ? (
-            barberData?.last_appointments.map((review, index) => (
-              <ReviewItem>
-                <ReviewDetails>
-                  <p>
-                    {review.client.split(' ')[0] || '-'} -{' '}
-                    <span>{formatDate(review.date) || '-'}</span>
-                  </p>
-                </ReviewDetails>
-                <Rating
-                  name={`rating-${index}`}
-                  value={review.rating || 0}
-                  precision={0.5}
-                  readOnly
-                />
-              </ReviewItem>
-            ))
-          ) : (
-            <p>Nenhuma avaliação encontrada</p>
-          ))}
+        {reviewsWithRandomNames.length > 0 ? (
+          reviewsWithRandomNames.map((review, index) => (
+            <ReviewItem key={index}>
+              <ReviewDetails>
+                <p>
+                  {review.randomName} - <span>{formatDate(review.date) || '-'}</span>
+                </p>
+              </ReviewDetails>
+              <Rating
+                name={`rating-${index}`}
+                value={review.rating || 0}
+                precision={0.5}
+                readOnly
+              />
+            </ReviewItem>
+          ))
+        ) : (
+          <p>Nenhuma avaliação encontrada</p>
+        )}
       </LatestReviewsContainer>
     </BarberCardContainer>
   );

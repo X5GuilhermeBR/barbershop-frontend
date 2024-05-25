@@ -20,13 +20,23 @@ import Header from '../../components/Header/Header';
 import { getByProfile, updateStatusUser } from '../../service/api';
 import colors from '../../utils/colors';
 
+function maskPhoneNumber(phoneNumber) {
+  if (!phoneNumber) return '';
+  return phoneNumber.replace(/(\d{2})(\d{1})(\d{2})(\d{2})(\d{4})/, '($1) $2 $3**-****');
+}
+
 function formatPhoneNumber(phoneNumber) {
   const cleaned = `${phoneNumber}`.replace(/\D/g, '');
   const match = cleaned.match(/^(\d{2})(\d{1})(\d{4})(\d{4})$/);
   if (match) {
-    return `+55 (${match[1]}) ${match[2]} ${match[3]}-${match[4]}`;
+    return `+55 ${maskPhoneNumber(phoneNumber)}`;
   }
   return null;
+}
+function maskEmail(email) {
+  const [user, domain] = email.split('@');
+  const maskedUser = user.length > 2 ? `${user[0]}****${user[user.length - 1]}` : `${user[0]}****`;
+  return `${maskedUser}@${domain}`;
 }
 
 // Estiliza o componente TextField com styled-components
@@ -112,7 +122,7 @@ function Clients() {
             ),
           }}
         />
-        <Grid container spacing={2}>
+        <Grid container spacing={2} marginBottom={10} marginTop={0.5}>
           {Array.isArray(filteredUsers) &&
             filteredUsers.map((user) => {
               const nameParts = user.client_name.split(' ');
@@ -137,7 +147,7 @@ function Clients() {
                       <Typography variant="h6" style={{ color: colors.third, fontSize: '18px' }}>
                         {firstName} {lastName}
                       </Typography>
-                      <Typography variant="body1">{user.email}</Typography>
+                      <Typography variant="body1">{maskEmail(user.email)}</Typography>
                       <Typography variant="body1">
                         {formatPhoneNumber(user.client_cellphone)}
                       </Typography>
@@ -147,9 +157,9 @@ function Clients() {
                         onClick={() => handleOpenConfirmationDialog('toggle', user.user_id)}
                       >
                         {user.disable ? (
-                          <LockOpen style={{ color: 'white' }} />
-                        ) : (
                           <Lock style={{ color: 'white' }} />
+                        ) : (
+                          <LockOpen style={{ color: 'white' }} />
                         )}
                       </IconButton>
                       <IconButton

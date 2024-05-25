@@ -117,7 +117,7 @@ function Schedule() {
     }
 
     if (appointment) {
-      const formattedPrice = `R$${appointment.service_price.replace('.', ',')}`;
+      const formattedPrice = `R$${appointment.service_price.replace('.', ',')},00`;
       const fullName = appointment.client_name.split(' ');
       const firstName = fullName[0];
       const lastName = fullName[fullName.length - 1];
