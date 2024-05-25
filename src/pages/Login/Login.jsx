@@ -1,9 +1,56 @@
-import { Box, Button, Card, CardActions, Snackbar, TextField, Typography } from '@mui/material';
+/* eslint-disable no-unused-vars */
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  Grid,
+  Snackbar,
+  TextField,
+  Typography,
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import * as yup from 'yup';
 import background from '../../assets/background.jpg';
+import logo from '../../assets/logo.png'; // Importe sua imagem de logo
 import { useAuth } from '../../context/AuthContext';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 14px;
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: ${(props) => props.color || 'black'};
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+  }
+`;
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -80,7 +127,9 @@ function Login() {
         backgroundPosition: 'center',
       }}
     >
-      <Card sx={{ maxWidth: 400 }}>
+      <Card
+        sx={{ maxWidth: 400, backgroundColor: 'transparent', boxShadow: 'none', border: 'none' }}
+      >
         <Box
           sx={{
             display: 'flex',
@@ -90,22 +139,25 @@ function Login() {
             padding: 2,
           }}
         >
-          <Typography variant="h5" align="center">
-            Login
+          <Typography variant="h5" align="center" style={{ position: 'relative' }}>
+            <img src={logo} alt="Logo" style={{ marginBottom: '-60px' }} width={250} height={250} />
           </Typography>
 
-          <TextField
+          <InfoText>E-MAIL</InfoText>
+          <StyledTextField
             fullWidth
-            label="Email"
+            placeholder="Digite seu e-mail"
             type="email"
             error={!!emailError}
             helperText={emailError}
             onChange={(e) => setEmail(e.target.value)}
             onKeyDown={() => setEmailError('')}
           />
-          <TextField
+
+          <InfoText>SENHA</InfoText>
+          <StyledTextField
             fullWidth
-            label="Senha"
+            placeholder="Digite sua senha"
             type="password"
             error={!!passwordError}
             helperText={passwordError}
@@ -114,19 +166,31 @@ function Login() {
           />
         </Box>
         <CardActions>
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', gap: 2 }}>
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }} // Cor do botão e cor do hover
-              onClick={handleSubmit}
-              disabled={isLoading}
-            >
-              Entrar
-            </Button>
-            <Button component={Link} to="/registre-se">
-              Registre-se
-            </Button>
-          </Box>
+          <Grid container spacing={2} direction="column">
+            <Grid item xs={12}>
+              <StyledButton variant="contained" onClick={handleSubmit} disabled={isLoading}>
+                ENTRAR
+              </StyledButton>
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                style={{
+                  marginBottom: '1rem',
+                  height: '55px',
+                  borderColor: colors.second,
+                  borderWidth: '1px', // Adding borderWidth
+                  borderStyle: 'solid',
+                  backgroundColor: 'transparent',
+                  color: colors.second,
+                  width: '100%',
+                }}
+                component={Link}
+                to="/registre-se"
+              >
+                REGISTRE-SE
+              </Button>
+            </Grid>
+          </Grid>
         </CardActions>
       </Card>
       <Snackbar
