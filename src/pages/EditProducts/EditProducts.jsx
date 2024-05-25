@@ -18,6 +18,30 @@ const InfoText = styled.div`
   font-size: 20px;
 `;
 
+const StyledButton = styled(Button)`
+  && {
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: ${(props) => props.color || 'black'};
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+  }
+`;
+
 function EditProduct() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -151,28 +175,29 @@ function EditProduct() {
         </Grid>
         <Grid container spacing={2} direction="column" marginTop={1}>
           <Grid item xs={12}>
-            <Button
+            <StyledButton
               variant="contained"
-              style={{
-                backgroundColor: colors.third,
-                color: 'black',
-              }}
               size="large"
               fullWidth
               onClick={handleSaveProduct}
               disabled={loading}
             >
-              {productId ? 'Salvar' : 'Criar'}
+              {productId ? 'SALVAR' : 'CRIAR'}
               {loading && <CircularProgress size={24} />}
-            </Button>
+            </StyledButton>
           </Grid>
           {productId && (
             <Grid item xs={12}>
               <Button
                 variant="outlined"
                 style={{
-                  borderColor: colors.third,
-                  color: colors.third,
+                  marginBottom: '1rem',
+                  height: '55px',
+                  borderColor: colors.second,
+                  borderWidth: '1px', // Adding borderWidth
+                  borderStyle: 'solid',
+                  backgroundColor: 'transparent',
+                  color: colors.second,
                 }}
                 size="large"
                 fullWidth

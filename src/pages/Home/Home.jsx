@@ -141,12 +141,12 @@ function HomePage() {
                 <ServiceCard>
                   <ServiceImage src="https://i.postimg.cc/nLqDWhrY/cabelo.jpg" alt="Cabelo" />
                   <ServiceName>CABELO</ServiceName>
-                  <ServiceDescription>Descrição breve do Serviço 1.</ServiceDescription>
+                  <ServiceDescription>Incrível e atual</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
                   <ServiceImage src="https://i.postimg.cc/P5RyHJdg/barba.jpg" alt="Barba" />
                   <ServiceName>BARBA</ServiceName>
-                  <ServiceDescription>Descrição breve do Serviço 2.</ServiceDescription>
+                  <ServiceDescription>Elegante e charmosa</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
                   <ServiceImage
@@ -154,12 +154,12 @@ function HomePage() {
                     alt="Pigmentação"
                   />
                   <ServiceName>PIGMENTAÇÃO</ServiceName>
-                  <ServiceDescription>Pigmentação</ServiceDescription>
+                  <ServiceDescription>Forma eficaz</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
                   <ServiceImage src="https://i.postimg.cc/sXNs9pzn/platinado.jpg" alt="Platinado" />
                   <ServiceName>Platinado</ServiceName>
-                  <ServiceDescription>Descrição breve do Serviço 4.</ServiceDescription>
+                  <ServiceDescription>Estilo sempre</ServiceDescription>
                 </ServiceCard>
               </ServiceCardContainer>
             </LocationContainer>

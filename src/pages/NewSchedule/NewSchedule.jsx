@@ -365,7 +365,7 @@ function NewSchedule() {
               marginTop: '1rem',
               backgroundColor: isFormValid || isEditing ? colors.second : '#f0f0f0',
               color: 'black',
-              height: '60px',
+              height: '55px',
               fontWeight: 'bold',
             }}
             onClick={handleSubmit}

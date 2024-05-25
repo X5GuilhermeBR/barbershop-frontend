@@ -350,7 +350,7 @@ function CustomerService() {
                 fullWidth
                 style={{
                   marginBottom: '1rem',
-                  height: '60px',
+                  height: '55px',
                   borderColor: colors.second,
                   borderWidth: '1px', // Adding borderWidth
                   marginTop: '1rem',
@@ -448,7 +448,7 @@ function CustomerService() {
               fullWidth
               style={{
                 marginBottom: '1rem',
-                height: '60px',
+                height: '55px',
                 backgroundColor: colors.second,
                 color: 'black',
                 marginTop: '1rem',
@@ -465,7 +465,7 @@ function CustomerService() {
               style={{
                 marginTop: '1rem',
                 marginBottom: '1rem',
-                height: '60px',
+                height: '55px',
                 backgroundColor: colors.second,
                 color: 'black',
               }}
@@ -481,7 +481,7 @@ function CustomerService() {
               style={{
                 marginTop: '1rem',
                 marginBottom: '1rem',
-                height: '60px',
+                height: '55px',
                 backgroundColor: colors.second,
                 color: 'black',
               }}
