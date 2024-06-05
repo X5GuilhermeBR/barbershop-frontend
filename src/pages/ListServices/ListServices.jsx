@@ -13,7 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
@@ -23,6 +23,31 @@ import colors from '../../utils/colors';
 const StyledTextField = styled(TextField)`
   background-color: white; // Define o fundo como branco
   color: black; // Define a cor do texto como preto
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: ${(props) => props.color || 'black'};
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    margin-top: 20px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+  }
 `;
 
 function ListServices() {
@@ -85,6 +110,10 @@ function ListServices() {
         service.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+  const handleCreateService = () => {
+    navigate(`/configuracoes/servicos/novo-servico`);
+  };
+
   return (
     <>
       <Header title="Serviços" />
@@ -105,21 +134,7 @@ function ListServices() {
         />
         <Grid container spacing={2}>
           <Grid item xs={12}>
-            <Link to="/configuracoes/servicos/novo-servico">
-              <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                style={{
-                  borderRadius: 0,
-                  backgroundColor: colors.third,
-                  color: 'black',
-                  marginTop: '10px',
-                }}
-              >
-                Criar Novo Serviço
-              </Button>
-            </Link>
+            <StyledButton onClick={handleCreateService}>CRIAR NOVO SERVIÇO</StyledButton>
           </Grid>
           {filteredServices &&
             filteredServices.map((service) => (
