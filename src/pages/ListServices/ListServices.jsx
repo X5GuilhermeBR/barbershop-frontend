@@ -152,7 +152,10 @@ function ListServices() {
                   }}
                 >
                   <div>
-                    <Typography variant="h6" style={{ color: colors.third, fontSize: '18px' }}>
+                    <Typography
+                      variant="h6"
+                      style={{ color: colors.third, fontSize: '18px', maxWidth: '270px' }}
+                    >
                       {service.name.toUpperCase()}
                     </Typography>
                     <Typography variant="body1" style={{ maxWidth: '270px' }}>

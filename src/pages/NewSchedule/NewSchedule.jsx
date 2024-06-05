@@ -58,6 +58,15 @@ const InfoContainer = styled.div`
   border-radius: 8px;
 `;
 
+const styles = {
+  radio: {
+    color: 'white',
+    '&.Mui-checked': {
+      color: 'white',
+    },
+  },
+};
+
 function NewSchedule() {
   const [barbers, setBarbers] = useState([]);
   const [clients, setClients] = useState([]);
@@ -292,8 +301,16 @@ function NewSchedule() {
                   value={appointmentType}
                   onChange={(e) => setAppointmentType(e.target.value)}
                 >
-                  <FormControlLabel value="Marcado" control={<Radio />} label="Marcado" />
-                  <FormControlLabel value="Encaixe" control={<Radio />} label="Encaixe" />
+                  <FormControlLabel
+                    value="Marcado"
+                    control={<Radio sx={styles.radio} />}
+                    label="Marcado"
+                  />
+                  <FormControlLabel
+                    value="Encaixe"
+                    control={<Radio sx={styles.radio} />}
+                    label="Encaixe"
+                  />
                 </RadioGroup>
               </FormControl>
             )}

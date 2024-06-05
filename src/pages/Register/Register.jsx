@@ -1,22 +1,76 @@
+/* eslint-disable no-unused-vars */
 import {
   Box,
   Button,
   Card,
   CardActions,
   CardContent,
-  CircularProgress,
+  FormControl,
   FormControlLabel,
   FormLabel,
   Radio,
   RadioGroup,
   TextField,
-  Typography,
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import * as yup from 'yup';
 import background from '../../assets/background.jpg';
 import { createAccount } from '../../service/api';
+import colors from '../../utils/colors';
+
+const StyledTextField = styled(TextField)`
+  background-color: white; // Define o fundo como branco
+  color: black; // Define a cor do texto como preto
+`;
+
+const InfoText = styled.div`
+  color: ${colors.third};
+  font-size: 14px;
+`;
+
+const StyledButton = styled(Button)`
+  && {
+    width: 100%;
+    padding: 12px;
+    background-color: ${(props) => props.backgroundColor || '#f6a700'};
+    color: ${(props) => props.color || 'black'};
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    height: 55px;
+    font-weight: bold;
+    -webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.75);
+    text-transform: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none !important;
+  }
+`;
+
+export const Title = styled.h2`
+  margin-bottom: 20px;
+  text-align: center;
+  color: ${colors.third};
+`;
+
+const styles = {
+  radio: {
+    color: 'white',
+    '&.Mui-checked': {
+      color: 'white',
+    },
+  },
+  radioLabel: {
+    color: 'white',
+  },
+};
 
 function Register() {
   const navigate = useNavigate();
@@ -110,11 +164,11 @@ function Register() {
         backgroundPosition: 'center',
       }}
     >
-      <Card sx={{ maxWidth: 400 }}>
+      <Card
+        sx={{ maxWidth: 400, backgroundColor: 'transparent', boxShadow: 'none', border: 'none' }}
+      >
         <CardContent>
-          <Typography variant="h5" align="center">
-            Cadastre-se
-          </Typography>
+          <Title>Cadastre-se</Title>
           <Box
             sx={{
               display: 'flex',
@@ -124,9 +178,10 @@ function Register() {
               padding: 2,
             }}
           >
-            <TextField
+            <InfoText>NOME COMPLETO</InfoText>
+            <StyledTextField
               fullWidth
-              label="Nome Completo"
+              placeholder="Digite seu Nome..."
               type="text"
               name="name"
               value={formData.name}
@@ -134,9 +189,9 @@ function Register() {
               error={!!formErrors.name}
               helperText={formErrors.name}
             />
-            <TextField
+            <InfoText>DATA DE NASCIMENTO</InfoText>
+            <StyledTextField
               fullWidth
-              label="Data de Nascimento"
               type="date"
               name="birthday"
               value={formData.birthday}
@@ -147,9 +202,10 @@ function Register() {
                 inputProps: { max: currentDate },
               }}
             />
-            <TextField
+            <InfoText>WHATSAPP</InfoText>
+            <StyledTextField
               fullWidth
-              label="WhatsApp"
+              placeholder="Digite seu número WhatsApp..."
               type="tel"
               name="cellphone"
               value={formData.cellphone}
@@ -157,9 +213,10 @@ function Register() {
               error={!!formErrors.cellphone}
               helperText={formErrors.cellphone}
             />
-            <TextField
+            <InfoText>E-MAIL</InfoText>
+            <StyledTextField
               fullWidth
-              label="Email"
+              placeholder="Digite seu E-mail"
               type="email"
               name="email"
               value={formData.email}
@@ -167,9 +224,10 @@ function Register() {
               error={!!formErrors.email}
               helperText={formErrors.email}
             />
-            <TextField
+            <InfoText>SENHA</InfoText>
+            <StyledTextField
               fullWidth
-              label="Senha"
+              placeholder="Digite sua Senha..."
               type="password"
               name="password"
               value={formData.password}
@@ -177,24 +235,30 @@ function Register() {
               error={!!formErrors.password}
               helperText={formErrors.password}
             />
-            <FormLabel component="legend">Sexo</FormLabel>
-            <RadioGroup name="sex" value={formData.sex} onChange={handleInputChange}>
-              <FormControlLabel value="M" control={<Radio />} label="Masculino" />
-              <FormControlLabel value="F" control={<Radio />} label="Feminino" />
-            </RadioGroup>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">
+                <InfoText>SEXO</InfoText>
+              </FormLabel>
+              <RadioGroup name="sex" value={formData.sex} onChange={handleInputChange}>
+                <FormControlLabel
+                  value="M"
+                  control={<Radio sx={styles.radio} />}
+                  label="Masculino"
+                  sx={{ '.MuiFormControlLabel-label': styles.radioLabel }}
+                />
+                <FormControlLabel
+                  value="F"
+                  control={<Radio sx={styles.radio} />}
+                  label="Feminino"
+                  sx={{ '.MuiFormControlLabel-label': styles.radioLabel }}
+                />
+              </RadioGroup>
+            </FormControl>
           </Box>
         </CardContent>
         <CardActions>
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Button
-              variant="contained"
-              sx={{ backgroundColor: '#2231ff', '&:hover': { backgroundColor: '#2231ff' } }}
-              onClick={handleSubmit}
-              disabled={!isFormValid || isLoading}
-              endIcon={isLoading ? <CircularProgress variant="indeterminate" size={20} /> : null}
-            >
-              CRIAR CONTA
-            </Button>
+            <StyledButton onClick={handleSubmit}>CRIAR CONTA</StyledButton>
           </Box>
         </CardActions>
       </Card>
