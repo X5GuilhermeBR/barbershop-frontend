@@ -353,10 +353,10 @@ function CustomerService() {
                   height: '55px',
                   borderColor: colors.second,
                   borderWidth: '1px', // Adding borderWidth
-                  marginTop: '1rem',
                   borderStyle: 'solid',
                   backgroundColor: 'transparent',
                   color: colors.second,
+                  fontWeight: 'bold',
                 }}
               >
                 Adicionar ao Carrinho
@@ -452,6 +452,7 @@ function CustomerService() {
                 backgroundColor: colors.second,
                 color: 'black',
                 marginTop: '1rem',
+                fontWeight: 'bold',
               }}
             >
               Finalizar Atendimento
@@ -484,6 +485,7 @@ function CustomerService() {
                 height: '55px',
                 backgroundColor: colors.second,
                 color: 'black',
+                fontWeight: 'bold',
               }}
             >
               Iniciar Atendimento

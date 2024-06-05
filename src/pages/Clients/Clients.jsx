@@ -1,6 +1,8 @@
 import { Lock, LockOpen, Search, WhatsApp } from '@mui/icons-material';
 import GroupsIcon from '@mui/icons-material/Groups';
+import PasswordIcon from '@mui/icons-material/Password';
 import {
+  Alert,
   Button,
   Container,
   Dialog,
@@ -17,7 +19,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import FooterNavigation from '../../components/FooterNavigation/FooterNavigation';
 import Header from '../../components/Header/Header';
-import { getByProfile, updateStatusUser } from '../../service/api';
+import { changePassword, getByProfile, updateStatusUser } from '../../service/api';
 import colors from '../../utils/colors';
 
 function maskPhoneNumber(phoneNumber) {
@@ -33,6 +35,7 @@ function formatPhoneNumber(phoneNumber) {
   }
   return null;
 }
+
 function maskEmail(email) {
   const [user, domain] = email.split('@');
   const maskedUser = user.length > 2 ? `${user[0]}****${user[user.length - 1]}` : `${user[0]}****`;
@@ -52,6 +55,12 @@ function Clients() {
   const [confirmationDialogAction, setConfirmationDialogAction] = useState(null);
   const [confirmationDialogUserId, setConfirmationDialogUserId] = useState(null);
   const [selectedProfile] = useState('clients');
+
+  const [message, setMessage] = useState('');
+  const [severity, setSeverity] = useState(''); // 'success' ou 'error'
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
 
   useEffect(() => {
     async function fetchClients() {
@@ -94,6 +103,31 @@ function Clients() {
     });
     setUsers(updatedUsers);
     handleCloseConfirmationDialog();
+  };
+
+  const handleOpenResetPasswordDialog = (userId) => {
+    setSelectedUserId(userId);
+    setResetPasswordDialogOpen(true);
+  };
+
+  const handleCloseResetPasswordDialog = () => {
+    setResetPasswordDialogOpen(false);
+    setSelectedUserId(null);
+  };
+
+  const handleResetPassword = async () => {
+    try {
+      await changePassword(selectedUserId, '', '123456');
+      setMessage('Senha alterada com sucesso!');
+      setSeverity('success');
+      setAlertOpen(true);
+      handleCloseResetPasswordDialog();
+    } catch (error) {
+      console.error('Erro ao atualizar a senha:', error.message);
+      setMessage('Erro ao atualizar a senha. Por favor, tente novamente.');
+      setSeverity('error');
+      setAlertOpen(true);
+    }
   };
 
   const filteredUsers =
@@ -153,6 +187,9 @@ function Clients() {
                       </Typography>
                     </div>
                     <div>
+                      <IconButton onClick={() => handleOpenResetPasswordDialog(user.user_id)}>
+                        <PasswordIcon style={{ color: 'white' }} />
+                      </IconButton>
                       <IconButton
                         onClick={() => handleOpenConfirmationDialog('toggle', user.user_id)}
                       >
@@ -201,6 +238,34 @@ function Clients() {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog
+        open={resetPasswordDialogOpen}
+        onClose={handleCloseResetPasswordDialog}
+        aria-labelledby="reset-password-dialog-title"
+        aria-describedby="reset-password-dialog-description"
+      >
+        <DialogTitle id="reset-password-dialog-title">Resetar Senha</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="reset-password-dialog-description">
+            Tem certeza de que deseja resetar a senha deste usuário?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseResetPasswordDialog} color="secondary">
+            Cancelar
+          </Button>
+          <Button onClick={handleResetPassword} color="primary">
+            Confirmar
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {alertOpen && (
+        <Alert severity={severity} onClose={() => setAlertOpen(false)}>
+          {message}
+        </Alert>
+      )}
     </>
   );
 }

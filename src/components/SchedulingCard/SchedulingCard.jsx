@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import EditIcon from '@mui/icons-material/Edit';
 import {
   Alert,
@@ -101,21 +100,14 @@ function SchedulingCard({ appointment }) {
         <StyledCardActions>
           <div>
             {appointment.status === 'Agendado' ? (
-              <>
-                <Tooltip title="Editar">
-                  <IconButton color="primary" onClick={() => handleEditAppointment(appointment)}>
-                    <EditIcon
-                      fontSize="small"
-                      style={{ cursor: 'pointer', color: 'white', marginRight: '12px' }}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Calendário" style={{ cursor: 'pointer', color: 'white' }}>
-                  <IconButton color="primary">
-                    <CalendarTodayIcon />
-                  </IconButton>
-                </Tooltip>
-              </>
+              <Tooltip title="Editar">
+                <IconButton color="primary" onClick={() => handleEditAppointment(appointment)}>
+                  <EditIcon
+                    fontSize="small"
+                    style={{ cursor: 'pointer', color: 'white', marginRight: '12px' }}
+                  />
+                </IconButton>
+              </Tooltip>
             ) : appointment.status === 'Finalizado' ? (
               userRating !== null ? (
                 <Rating

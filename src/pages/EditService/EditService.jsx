@@ -185,8 +185,14 @@ function EditService() {
               <Button
                 variant="outlined"
                 style={{
-                  borderColor: colors.third,
-                  color: colors.third,
+                  marginBottom: '1rem',
+                  height: '55px',
+                  borderColor: colors.second,
+                  borderWidth: '1px', // Adding borderWidth
+                  borderStyle: 'solid',
+                  backgroundColor: 'transparent',
+                  color: colors.second,
+                  fontWeight: 'bold',
                 }}
                 color="error"
                 size="large"

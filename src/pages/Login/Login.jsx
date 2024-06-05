@@ -182,6 +182,7 @@ function Login() {
                   borderStyle: 'solid',
                   backgroundColor: 'transparent',
                   color: colors.second,
+                  fontWeight: 'bold',
                   width: '100%',
                 }}
                 component={Link}

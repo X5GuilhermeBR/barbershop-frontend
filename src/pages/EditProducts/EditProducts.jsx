@@ -198,6 +198,7 @@ function EditProduct() {
                   borderStyle: 'solid',
                   backgroundColor: 'transparent',
                   color: colors.second,
+                  fontWeight: 'bold',
                 }}
                 size="large"
                 fullWidth
