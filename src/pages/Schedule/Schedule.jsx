@@ -148,7 +148,11 @@ function Schedule() {
   };
 
   const handleEditAppointment = (appointment) => {
-    navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
+    if (appointment.status === 'Finalizado') {
+      navigate(`/agenda/atendimento-ao-cliente?scheduleId=${appointment.id}`);
+    } else {
+      navigate(`/novo-agendamento?scheduleId=${appointment.id}`);
+    }
   };
 
   const handleClientService = (appointment) => {

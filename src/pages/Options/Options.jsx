@@ -36,7 +36,9 @@ export default function Options() {
 
   const handleWhatsAppClick = () => {
     const phoneNumber = '5521972862906';
-    const message = encodeURIComponent('mensagem');
+    const message = encodeURIComponent(
+      `Olá, Tudo bem? Me chamo ${userInfo.name} e vim através do app Flow Barbershop e gostaria de tirar algumas dúvidas com vocês.`
+    );
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
     window.location.href = whatsappUrl;

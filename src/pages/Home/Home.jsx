@@ -30,6 +30,7 @@ function HomePage() {
   const { userInfo } = useAuth();
   const [schedule, setSchedule] = useState([]);
   const [hasScheduledAppointment, setHasScheduledAppointment] = useState(false);
+  const [isAppointmentWithinFourHours, setIsAppointmentWithinFourHours] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +39,7 @@ function HomePage() {
         const today = new Date();
         const formattedDate = today.toISOString().split('T')[0];
         const { data } = await checkScheduleById(formattedDate, formattedDate, userInfo.id);
+        console.log('data', data);
         setSchedule(data);
         setHasScheduledAppointment(data.length > 0);
       }
@@ -59,11 +61,27 @@ function HomePage() {
         // Filtrar apenas o agendamento mais próximo à data atual
         const nearestAppointment = sortedSchedule.find((appointment) => {
           const appointmentDate = new Date(appointment.date);
-          return appointmentDate.toISOString().split('T')[0] >= formattedDate;
+          return (
+            appointmentDate.toISOString().split('T')[0] >= formattedDate &&
+            appointment.status !== 'Finalizado' &&
+            appointment.status !== 'Cancelado'
+          );
         });
 
-        setSchedule(nearestAppointment ? [nearestAppointment] : []);
-        setHasScheduledAppointment(!!nearestAppointment);
+        if (userInfo.profile === 'client') {
+          setSchedule(nearestAppointment ? [nearestAppointment] : []);
+          setHasScheduledAppointment(!!nearestAppointment);
+        }
+
+        // Check if the nearest appointment is within 4 hours
+        if (nearestAppointment) {
+          const now = new Date();
+          const appointmentDateTime = new Date(
+            `${nearestAppointment.date}T${nearestAppointment.time}`
+          );
+          const timeDifference = (appointmentDateTime - now) / (1000 * 60 * 60);
+          setIsAppointmentWithinFourHours(timeDifference <= 4);
+        }
       }
     }
 
@@ -79,7 +97,9 @@ function HomePage() {
 
   const handleWhatsAppClick = () => {
     const phoneNumber = '5521972862906';
-    const message = encodeURIComponent('mensagem');
+    const message = encodeURIComponent(
+      `Olá, Tudo bem? Me chamo ${userInfo.name} e vim através do app Flow Barbershop e gostaria de tirar algumas dúvidas com vocês.`
+    );
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
 
     window.location.href = whatsappUrl;
@@ -99,7 +119,7 @@ function HomePage() {
       <Grid item style={{ marginBottom: '5rem', marginTop: '2rem', flex: '1 0 auto', zIndex: 1 }}>
         {userInfo?.profile === 'client' ? (
           <Container>
-            {hasScheduledAppointment && (
+            {hasScheduledAppointment && isAppointmentWithinFourHours && (
               <Alert sx={{ backgroundColor: colors.third, color: '#black' }}>
                 <AlertTitle>Você tem um agendamento hoje!</AlertTitle>
                 <strong>Chegue com 10 minutos de antecedência</strong>
@@ -157,8 +177,8 @@ function HomePage() {
                   <ServiceDescription>Forma eficaz</ServiceDescription>
                 </ServiceCard>
                 <ServiceCard>
-                  <ServiceImage src="https://i.postimg.cc/sXNs9pzn/platinado.jpg" alt="Platinado" />
-                  <ServiceName>Platinado</ServiceName>
+                  <ServiceImage src="https://i.postimg.cc/sXNs9pzn/platinado.jpg" alt="PLATINADO" />
+                  <ServiceName>PLATINADO</ServiceName>
                   <ServiceDescription>Estilo sempre</ServiceDescription>
                 </ServiceCard>
               </ServiceCardContainer>

@@ -119,8 +119,15 @@ function NewSchedule() {
     const fetchScheduleData = async () => {
       if (selectedBarber && selectedService && selectedDate) {
         try {
-          const { data } = await getSchedule(selectedDate, selectedDate, userInfo.id);
-          setSchedule(data);
+          let scheduleData;
+          if (userInfo.profile === 'client') {
+            // Se o perfil for cliente, faz a chamada com o ID do barbeiro selecionado
+            scheduleData = await getSchedule(selectedDate, selectedDate, selectedBarber.user_id);
+          } else if (userInfo.profile === 'barber') {
+            // Se o perfil for barbeiro, faz a chamada com o próprio ID do usuário
+            scheduleData = await getSchedule(selectedDate, selectedDate, userInfo.id);
+          }
+          setSchedule(scheduleData.data);
         } catch (error) {
           console.error('Erro ao buscar agendamentos:', error);
         }
@@ -128,7 +135,7 @@ function NewSchedule() {
     };
 
     fetchScheduleData();
-  }, [selectedBarber, selectedService, selectedDate, userInfo.profile]);
+  }, [selectedBarber, selectedService, selectedDate, userInfo.profile, userInfo.id]);
 
   useEffect(() => {
     setIsFormValid(

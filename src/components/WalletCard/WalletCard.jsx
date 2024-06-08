@@ -34,6 +34,7 @@ function WalletCard({ schedule }) {
 
   useEffect(() => {
     let currentBalanceAmount = 0;
+
     let completedCount = 0;
 
     // Calcular o saldo atual e o número de atendimentos finalizados
@@ -46,14 +47,15 @@ function WalletCard({ schedule }) {
 
     setCurrentBalance(currentBalanceAmount);
 
+    console.log('schedule aqui', schedule);
+    let accumulator = 0;
     // Calcular o saldo previsto
-    const predictedBalanceAmount = schedule.reduce((accumulator, appointment) => {
+    schedule.forEach((appointment) => {
       if (appointment.status !== 'Cancelado') {
-        return accumulator + parseFloat(appointment.service_price);
+        accumulator += parseFloat(appointment.amount);
       }
-      return accumulator;
-    }, 0);
-    setPredictedBalance(predictedBalanceAmount);
+    });
+    setPredictedBalance(accumulator);
 
     // Definir o número de atendimentos finalizados
     setCompletedAppointments(completedCount);
@@ -87,7 +89,7 @@ function WalletCard({ schedule }) {
 
   const progressPercentage =
     (`${schedule.filter((appointment) => appointment.status === 'Finalizado').length}` /
-      `${schedule.filter((appointment) => appointment.status !== 'Finalizado').length}`) *
+      `${schedule.filter((appointment) => appointment.status !== 'Cancelado').length}`) *
       100 || 0;
 
   return (
@@ -114,7 +116,7 @@ function WalletCard({ schedule }) {
           <StyledLinearTitle>
             <p>ATENDIMENTO(S) FINALIZADO(S)</p>
             <div>
-              <p>{`${completedAppointments}/${schedule.filter((appointment) => appointment.status !== 'Finalizado').length}`}</p>
+              <p>{`${completedAppointments}/${schedule.filter((appointment) => appointment.status !== 'Cancelado').length}`}</p>
               <CheckCircleOutline sx={{ color: 'green', fontSize: '18px' }} />
             </div>
           </StyledLinearTitle>
