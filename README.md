@@ -1,70 +1,75 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<h1>App Flow Barbershop - Frontend</h1> 
 
-## Available Scripts
+<p align="center">
+  <img src="https://img.shields.io/static/v1?label=react&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
+   <img src="http://img.shields.io/static/v1?label=STATUS&message=VERSÃO ALPHA%20&color=RED&style=for-the-badge"/>
+</p>
 
-In the project directory, you can run:
+### Tópicos 
+:small_blue_diamond: [Descrição do projeto](#descrição-do-projeto)
 
-### `npm start`
+:small_blue_diamond: [Funcionalidades](#funcionalidades)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+:small_blue_diamond: [Deploy da Aplicação](#deploy-da-aplicação-dash)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+:small_blue_diamond: [Pré-requisitos](#pré-requisitos)
 
-### `npm test`
+:small_blue_diamond: [Como rodar a aplicação](#como-rodar-a-aplicação-arrow_forward)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Descrição do projeto 
+<p align="justify">
+  Descrição breve do projeto compondo um paragrafo ou dois. 
+</p>
 
-### `npm run build`
+## Funcionalidades
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+:heavy_check_mark: Funcionalidade 1  
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+:heavy_check_mark: Funcionalidade 2  
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+:heavy_check_mark: Funcionalidade 3  
 
-### `npm run eject`
+:heavy_check_mark: Funcionalidade 4  
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Layout da Aplicação
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+> Link do deploy da aplicação. Exemplo com netlify: https://certificates-for-everyone-womakerscode.netlify.app/
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+... 
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Se ainda não houver deploy, insira capturas de tela da aplicação ou gifs
 
-## Learn More
+## Pré-requisitos
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+:warning: [Node](https://nodejs.org/en/download/)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Como rodar a aplicação
 
-### Code Splitting
+No terminal, clone o projeto: 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+git clone https://github.com/React-Bootcamp-WoMarkersCode/certificate-generator
+```
 
-### Analyzing the Bundle Size
+##  :books: Linguagens, dependencias e libs utilizadas
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- [React](https://pt-br.reactjs.org/docs/create-a-new-react-app.html)
+- [React PDF](https://react-pdf.org/) 
 
-### Making a Progressive Web App
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Tarefas em aberto
 
-### Advanced Configuration
+Se for o caso, liste tarefas/funcionalidades que ainda precisam ser implementadas na sua aplicação
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+:memo: Tarefa 1 
 
-### Deployment
+:memo: Tarefa 2 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+:memo: Tarefa 3 
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Desenvolvedores/Contribuintes
+| [<img src="https://avatars2.githubusercontent.com/u/46378210?s=400&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Guilherme José</sub>](https://github.com/Diana-ops) |
+| :---: | :---: | :---: 
+## Licença 
+Copyright :copyright: 2024 - App Flow Barbershop
