@@ -1,75 +1,86 @@
+App Flow Barbershop - Frontend
 
-<h1>App Flow Barbershop - Frontend</h1> 
+## Sumário
+- [Sobre](#sobre)
 
-<p align="center">
-  <img src="https://img.shields.io/static/v1?label=react&message=framework&color=blue&style=for-the-badge&logo=REACT"/>
-   <img src="http://img.shields.io/static/v1?label=STATUS&message=VERSÃO ALPHA%20&color=RED&style=for-the-badge"/>
-</p>
+- [Funcionalidades](#funcionalidades)
 
-### Tópicos 
-:small_blue_diamond: [Descrição do projeto](#descrição-do-projeto)
+- [Dependências](#dependências)
 
-:small_blue_diamond: [Funcionalidades](#funcionalidades)
+- [Instalação](#instalação)
 
-:small_blue_diamond: [Deploy da Aplicação](#deploy-da-aplicação-dash)
+- [Demo](#demo)
 
-:small_blue_diamond: [Pré-requisitos](#pré-requisitos)
+- [Paleta de Cores](#paleta-de-cores)
 
-:small_blue_diamond: [Como rodar a aplicação](#como-rodar-a-aplicação-arrow_forward)
+- [Trabalhos em Aberto](#trabalhos-em-aberto)
 
-## Descrição do projeto 
-<p align="justify">
-  Descrição breve do projeto compondo um paragrafo ou dois. 
-</p>
+- [Desenvolvedor](#desenvolvedor)
+
+- [Licença](#licença)
+
+
+## Sobre
+Ao definir o escopo do projeto para o nosso aplicativo, realizamos uma análise de mercado detalhada, examinando os aplicativos já consolidados no setor de barbearias, como o "App Barber" e o "Trinks".
+
+Para atender às necessidades da Flow Barbershop, propomos uma plataforma web responsiva, focada na experiência do usuário, visando simplicidade e eficiência. A arquitetura escolhida baseia-se nas tecnologias Node.js e React. O Node.js oferece um ambiente de execução leve e rápido, adequado para comunicação assíncrona entre servidor e cliente, enquanto o React facilita a criação de interfaces dinâmicas e responsivas, priorizando a usabilidade.
 
 ## Funcionalidades
+- Cadastro de novos usuários
+- Agendar atendimento na visão de persona Cliente
+- Consultar agendamento na visão de persona Cliente
+- Consultar histórico de agendamento na visão  de persona Cliente
+- Editar dados pessoais na visão  de persona Cliente
+- Ver notas dos atendimento na visão de persona Barbeiro
+- Ver carteira com saldo atual e previsto na visão de persona Barbeiro
+- Listar atendimentos por dia na visão de persona Barbeiro
+- Agendar atendimento na visão de persona Barbeiro
+- Consultar histórico de atendimento visão de persona Barbeiro
+- Editar dados pessoais na visão de persona Barbeiro
+- Criar, editar e excluir serviços e produtos na visão de persona Barbeiro
+- Gerar relatório financeiro com opções de exportar na visão de persona Barbeiro
 
-:heavy_check_mark: Funcionalidade 1  
+## Dependências
+- [Documentation](https://linktodocumentation)
 
-:heavy_check_mark: Funcionalidade 2  
 
-:heavy_check_mark: Funcionalidade 3  
+## Instalação
+Install my-project with npm
 
-:heavy_check_mark: Funcionalidade 4  
-
-## Layout da Aplicação
-
-> Link do deploy da aplicação. Exemplo com netlify: https://certificates-for-everyone-womakerscode.netlify.app/
-
-... 
-
-Se ainda não houver deploy, insira capturas de tela da aplicação ou gifs
-
-## Pré-requisitos
-
-:warning: [Node](https://nodejs.org/en/download/)
-
-## Como rodar a aplicação
-
-No terminal, clone o projeto: 
-
+```bash
+  npm install my-project
+  cd my-project
 ```
-git clone https://github.com/React-Bootcamp-WoMarkersCode/certificate-generator
-```
+    
+## Demo
+Insert gif or link to demo
 
-##  :books: Linguagens, dependencias e libs utilizadas
+## Paleta de Cores
+| Color             | Hex                                                                |
+| ----------------- | ------------------------------------------------------------------ |
+| primary | ![#1F2B32](https://via.placeholder.com/10/1F2B32?text=+) #1F2B32 |
+| second | ![#FFB800](https://via.placeholder.com/10/FFB800?text=+) #FFB800 |
+| third | ![#FFEEB0](https://via.placeholder.com/10/FFEEB0?text=+) #FFEEB0 |
+| fourth | ![#00A124](https://via.placeholder.com/10/00A124?text=+) #00A124 |
+| basic | ![#59676F](https://via.placeholder.com/10/59676F?text=+) #59676F |
+| primaryText | ![#FFFFFF](https://via.placeholder.com/10/FFFFFF?text=+) #FFFFFF |
 
-- [React](https://pt-br.reactjs.org/docs/create-a-new-react-app.html)
-- [React PDF](https://react-pdf.org/) 
 
+## Trabalhos em Aberto
+Reconhecemos que há oportunidades adicionais para expandir e aprimorar ainda mais nossa aplicação web. À medida que avançamos, identificamos várias áreas que poderiam ser exploradas em trabalhos futuros, visando aprimorar a experiência do cliente e oferecer funcionalidades adicionais que agreguem valor ao negócio da barbearia, como por exemplo:
 
-## Tarefas em aberto
+- Implementação do Cartão Fidelidade
+- Implementação do Google Calendar
+- Implementação do Check-in com PIN Aleatório nos Agendamentos
+- Integração de Notificações via WhatsApp
+- Implementação de Relatórios de Atendimentos
+- Inclusão de Possíveis Filiais
+- Bate-papo Direto com a Barbearia
+- Melhoria da Experiência em Versão Desktop
 
-Se for o caso, liste tarefas/funcionalidades que ainda precisam ser implementadas na sua aplicação
+## Desenvolvedor
+- [@x5guilhermebr](https://www.github.com/x5guilhermebr)
 
-:memo: Tarefa 1 
+## Licença
+Copyright 2024 - App Flow Barbershop
 
-:memo: Tarefa 2 
-
-:memo: Tarefa 3 
-
-## Desenvolvedores/Contribuintes
-| [<img src="https://avatars2.githubusercontent.com/u/46378210?s=400&u=071f7791bb03f8e102d835bdb9c2f0d3d24e8a34&v=4" width=115><br><sub>Guilherme José</sub>](https://github.com/Diana-ops) |
-| :---: | :---: | :---: 
-## Licença 
-Copyright :copyright: 2024 - App Flow Barbershop
