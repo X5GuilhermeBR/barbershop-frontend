@@ -41,22 +41,39 @@ Para atender às necessidades da Flow Barbershop, propomos uma plataforma web re
 - Gerar relatório financeiro com opções de exportar na visão de persona Barbeiro
 
 ## Dependências
-- [Documentation](https://linktodocumentation)
-
+- [axios](https://www.npmjs.com/package/axios) - chamadas estilo AJAX
+- [bootstrap](https://www.npmjs.com/package/bootstrap) - framework frontend (apenas o componente de grid responsivo é usado)
+- [react](https://www.npmjs.com/package/react) - biblioteca para criação de interfaces de usuário dinâmicas
+- [styled-components](https://www.npmjs.com/package/styled-components) - estilização de componentes com uma mistura de CSS e ES6
 
 ## Instalação
-Install my-project with npm
 
-```bash
-  npm install my-project
-  cd my-project
-```
-    
+Baixe e instale a versão mais recente do Node.js em https://nodejs.org (o NPM será instalado junto).v
+
+1. Certifique-se de ter versões recentes do Node.js e NPM instalados na máquina:
+    ```
+    $ node -v
+    $ npm -v
+    ```
+2. Clone o repositório no seu diretório de projetos:
+    ```
+    $ git clone https://github.com/X5GuilhermeBR/git-hub-challenge.git
+    ```
+3. No diretório do projeto, instale as dependências do projeto:
+    ```
+    $ npm install
+    ```
+4. No diretório do projeto, execute:
+    ```
+    npm start
+    ```
+5. Acesse no navegador a url informada na linha de comando
+
 ## Demo
 Insert gif or link to demo
 
 ## Paleta de Cores
-| Color             | Hex                                                                |
+| Cores            | Hex                                                                |
 | ----------------- | ------------------------------------------------------------------ |
 | primary | ![#1F2B32](https://via.placeholder.com/10/1F2B32?text=+) #1F2B32 |
 | second | ![#FFB800](https://via.placeholder.com/10/FFB800?text=+) #FFB800 |
